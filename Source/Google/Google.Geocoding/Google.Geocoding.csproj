@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Proxoft.Maps.Google.Geocoding</RootNamespace>
+        <AssemblyName>Proxoft.Maps.Google.Geocoding</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft</Authors>
+        <Company>Proxoft s.r.o.</Company>
+        <Product>Maps</Product>
+        <PackageId>Proxoft.Maps.Google.Geocoding</PackageId>
+        <PackageIcon>Map.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\Map.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Proxoft.Extensions.Options" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+      <ProjectReference Include="..\Google.Common\Google.Common.csproj" />
+    </ItemGroup>
+
+</Project>

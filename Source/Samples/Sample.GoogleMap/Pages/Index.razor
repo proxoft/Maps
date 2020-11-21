@@ -1,0 +1,17 @@
+﻿@page "/"
+
+<h1>Hello, Google maps!</h1>
+
+Welcome to your new app.
+
+@code {
+    [Inject]
+    public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        await MapFactory.Initialize("");
+        await MapFactory.Initialize("");
+    }
+}
