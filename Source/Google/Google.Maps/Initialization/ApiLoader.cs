@@ -35,7 +35,11 @@ namespace Proxoft.Maps.Google.Maps.Initialization
         [JSInvokable]
         public void NotifyLoadScriptStatus(string status)
         {
-            Enum.TryParse<ApiStatus>(status, out var apiStatus);
+            if(!Enum.TryParse<ApiStatus>(status, out var apiStatus))
+            {
+                apiStatus = ApiStatus.FatalError;
+            }
+
             _taskCompletionSource.SetResult(apiStatus);
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.NetworkInformation;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 
@@ -11,7 +8,7 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
     {
         private readonly string _elementId;
         private readonly IJSObjectReference _jsRuntime;
-        private DotNetObjectReference<GoogleMap> _ref;
+        private readonly DotNetObjectReference<GoogleMap> _ref;
 
         private GoogleMap(string elementId, IJSObjectReference jsRuntime)
         {

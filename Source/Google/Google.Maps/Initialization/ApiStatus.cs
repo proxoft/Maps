@@ -4,6 +4,7 @@
     {
         None,
         Loaded,
-        Failed
+        Failed,
+        FatalError
     }
 }
