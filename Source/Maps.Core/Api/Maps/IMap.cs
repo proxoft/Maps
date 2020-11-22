@@ -1,6 +1,9 @@
-﻿namespace Proxoft.Maps.Core.Api
+﻿using System;
+
+namespace Proxoft.Maps.Core.Api
 {
-    public interface IMap
+    public interface IMap: IDisposable
     {
+        IObservable<LatLng> OnCenter { get; }
     }
 }

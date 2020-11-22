@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 
@@ -7,26 +9,39 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
     internal class GoogleMap: IMap
     {
         private readonly string _elementId;
-        private readonly IJSObjectReference _jsRuntime;
+        private readonly IJSInProcessObjectReference _jsRuntime;
         private readonly DotNetObjectReference<GoogleMap> _ref;
 
-        private GoogleMap(string elementId, IJSObjectReference jsRuntime)
+        private readonly Subject<LatLng> _onCenter = new ();
+
+        public IObservable<LatLng> OnCenter => _onCenter;
+
+        [JSInvokable]
+        public void OnCenterChanged(LatLng latLng)
+            => _onCenter.OnNext(latLng);
+
+        private GoogleMap(string elementId, IJSInProcessObjectReference jsRuntime)
         {
             _elementId = elementId;
             _jsRuntime = jsRuntime;
             _ref = DotNetObjectReference.Create(this);
         }
 
-        private async Task Initialize(MapOptions options)
+        private void Initialize(MapOptions options)
         {
-            await _jsRuntime.InvokeVoidAsync("InitializeMap", new object[] { _elementId, options, _ref });
+            _jsRuntime.InvokeVoid("InitializeMap", new object[] { _elementId, options, _ref });
         }
 
-        public static async Task<GoogleMap> Create(string elementId, MapOptions options, IJSObjectReference jsRuntime)
+        public static GoogleMap Create(string elementId, MapOptions options, IJSInProcessObjectReference jsRuntime)
         {
             var map = new GoogleMap(elementId, jsRuntime);
-            await map.Initialize(options);
+            map.Initialize(options);
             return map;
+        }
+
+        public void Dispose()
+        {
+            _onCenter.Dispose();
         }
     }
 }

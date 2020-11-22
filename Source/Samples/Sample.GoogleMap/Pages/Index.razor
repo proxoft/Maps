@@ -5,36 +5,21 @@
 <div id="map-container">
 </div>
 
+<div id="map-container-log">
+    @foreach(var l in Map1Log)
+    {
+        <span>@l</span><br/>
+    }
+</div>
+
 <br/>
 
 <div id="map-container-2">
 </div>
 
-@code {
-    private Proxoft.Maps.Core.Api.IMap _map1;
-    private Proxoft.Maps.Core.Api.IMap _map2;
-
-    [Inject]
-    public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+<div id="map-container-log2">
+    @foreach (var l in Map2Log)
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            _map1 = await MapFactory.Initialize("map-container", new Proxoft.Maps.Core.Api.MapOptions {
-                Latitude = -34.397m,
-                Longitude = 150.644m,
-                Zoom = 10
-            });
-
-            _map2 = await MapFactory.Initialize("map-container-2", new Proxoft.Maps.Core.Api.MapOptions
-            {
-                Latitude = 19.397m,
-                Longitude = 87.644m,
-                Zoom = 7
-            });
-        }
+        <span>@l</span><br />
     }
-}
+</div>

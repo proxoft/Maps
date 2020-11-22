@@ -2,8 +2,7 @@
 {
     public class MapOptions
     {
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public LatLng Center { get; set; }
         public int Zoom { get; set; }
     }
 }

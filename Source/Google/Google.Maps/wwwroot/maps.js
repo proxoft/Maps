@@ -16,6 +16,8 @@ export function InitializeMap(elementId, options, netObjRef) {
         ref: netObjRef
     };
 
+    addListeners(mapElement);
+
     mapElements.push(mapElement);
 }
 
@@ -28,11 +30,22 @@ function findMap(elementId) {
 
 function createMap(elementId, options) {
     let element = document.getElementById(elementId);
-    return new google.maps.Map(
+    let map = new google.maps.Map(
         element,
         {
-            center: { lat: options.latitude, lng: options.longitude },
+            center: { lat: options.center.latitude, lng: options.center.longitude },
             zoom: options.zoom,
         }
     );
+
+    return map;
+}
+
+function addListeners(mapEl) {
+    let map = mapEl.map;
+
+    map.addListener("center_changed", () => {
+        let center = map.getCenter();
+        mapEl.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat(), longitude: center.lng() });
+    });
 }

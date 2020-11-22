@@ -10,7 +10,7 @@ namespace Proxoft.Maps.Google.Maps
 {
     public class MapFactory : IMapFactory, IAsyncDisposable 
     {
-        private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
+        private readonly Lazy<Task<IJSInProcessObjectReference>> _moduleTask;
         private readonly ApiLoader _api;
         private readonly GoogleApiConfiguration _configuration;
 
@@ -19,7 +19,7 @@ namespace Proxoft.Maps.Google.Maps
             _api = new ApiLoader(jsRuntime);
             _configuration = configuration;
 
-            _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+            _moduleTask = new(() => jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                "import",
                "./_content/Proxoft.Maps.Google.Maps/maps.js").AsTask());
         }
@@ -33,7 +33,7 @@ namespace Proxoft.Maps.Google.Maps
             }
 
             var m = await _moduleTask.Value;
-            var map = await GoogleMap.Create(elementId, options, m);
+            var map = GoogleMap.Create(elementId, options, m);
             return map;
         }
 
