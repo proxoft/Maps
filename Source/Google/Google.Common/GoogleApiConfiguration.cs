@@ -2,7 +2,10 @@
 {
     public class GoogleApiConfiguration
     {
-        public GoogleApiConfiguration(string apiKey, string language, string region)
+        public GoogleApiConfiguration(
+            string apiKey,
+            string language,
+            string region)
         {
             this.ApiKey = apiKey;
             this.Language = language;

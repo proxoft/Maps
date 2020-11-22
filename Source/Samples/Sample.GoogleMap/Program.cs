@@ -23,7 +23,7 @@ namespace Sample.GoogleMap
         private static void ConfigureGoogleMapsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddGoogleMaps(ServiceLifetime.Scoped)
-                .Configure(() => new Proxoft.Maps.Google.Common.GoogleApiConfiguration("AIza", "en", "en"))
+                .Configure(configuration)
                 .Build();
         }
     }

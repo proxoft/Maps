@@ -4,11 +4,13 @@ using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Google.Common;
 using Proxoft.Maps.Google.Maps.Initialization;
+using Proxoft.Maps.Google.Maps.Models.Maps;
 
 namespace Proxoft.Maps.Google.Maps
 {
     public class MapFactory : IMapFactory, IAsyncDisposable 
     {
+        private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
         private readonly ApiLoader _api;
         private readonly GoogleApiConfiguration _configuration;
 
@@ -16,14 +18,23 @@ namespace Proxoft.Maps.Google.Maps
         {
             _api = new ApiLoader(jsRuntime);
             _configuration = configuration;
+
+            _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+               "import",
+               "./_content/Proxoft.Maps.Google.Maps/maps.js").AsTask());
         }
 
-        public async Task<IMap> Initialize(string cssSelector)
+        public async Task<IMap> Initialize(string elementId, MapOptions options)
         {
             var status = await _api.LoadGoogleScripts(_configuration);
+            if (status != ApiStatus.Loaded)
+            {
+                return new ErrorMap();
+            }
 
-            Console.WriteLine($"google api load result: {status}");
-            return null;
+            var m = await _moduleTask.Value;
+            var map = await GoogleMap.Create(elementId, options, m);
+            return map;
         }
 
         public async ValueTask DisposeAsync()

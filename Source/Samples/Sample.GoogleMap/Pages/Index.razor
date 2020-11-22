@@ -2,16 +2,39 @@
 
 <h1>Hello, Google maps!</h1>
 
-Welcome to your new app.
+<div id="map-container">
+</div>
+
+<br/>
+
+<div id="map-container-2">
+</div>
 
 @code {
+    private Proxoft.Maps.Core.Api.IMap _map1;
+    private Proxoft.Maps.Core.Api.IMap _map2;
+
     [Inject]
     public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        await MapFactory.Initialize("");
-        await MapFactory.Initialize("");
+
+        if (firstRender)
+        {
+            _map1 = await MapFactory.Initialize("map-container", new Proxoft.Maps.Core.Api.MapOptions {
+                Latitude = -34.397m,
+                Longitude = 150.644m,
+                Zoom = 10
+            });
+
+            _map2 = await MapFactory.Initialize("map-container-2", new Proxoft.Maps.Core.Api.MapOptions
+            {
+                Latitude = 19.397m,
+                Longitude = 87.644m,
+                Zoom = 7
+            });
+        }
     }
 }
