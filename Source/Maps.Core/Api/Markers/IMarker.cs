@@ -10,5 +10,7 @@ namespace Proxoft.Maps.Core.Api
         void SetPosition(LatLng latLng);
 
         void SetDraggable(bool draggable);
+
+        void SetOpacity(Opacity opacity);
     }
 }

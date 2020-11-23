@@ -17,6 +17,10 @@ namespace Proxoft.Maps.Core.Api.Markers
         {
         }
 
+        public void SetOpacity(Opacity opacity)
+        {
+        }
+
         public void SetPosition(LatLng latLng)
         {
         }

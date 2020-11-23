@@ -23,8 +23,13 @@
     Draggable <input type="checkbox" @bind-value="Draggable" />
 </div>
 
+<div>
+    Visible <input type="checkbox" @bind-value="Visible" />
+</div>
+
 @code {
-    private bool _draggable;
+    private bool _draggable = true;
+    private Opacity _opacity = Opacity.Visible;
 
     private IMap _map = Proxoft.Maps.Core.Api.Maps.NoMap.Instance;
     private IMarker _marker = Proxoft.Maps.Core.Api.Markers.NoMarker.Instance;
@@ -45,6 +50,16 @@
         }
     }
 
+    private bool Visible
+    {
+        get => _opacity == Opacity.Visible;
+        set
+        {
+            _opacity = Opacity.From(value);
+            _marker.SetOpacity(_opacity);
+        }
+    }
+
     private decimal Lat { get; set; } = -34.397m;
     private decimal Lng { get; set; } = 150.644m;
 
@@ -61,10 +76,17 @@
             };
 
             _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
-            _marker = _map.AddMarker(new MarkerOptions() { Position = center, Draggable = false });
+            _marker = _map.AddMarker(new MarkerOptions() {
+                Position = center,
+                Draggable = _draggable,
+                Opacity = _opacity
+            });
 
             _marker.OnEvent
                 .Subscribe(e => this.AddLog(e.Name));
+
+            _map.OnClick()
+                .Subscribe(latlng => _marker.SetPosition(latlng));
         }
     }
 

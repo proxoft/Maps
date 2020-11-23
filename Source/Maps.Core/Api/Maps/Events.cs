@@ -13,4 +13,11 @@
         {
         }
     }
+
+    public class MapClickEvent : Event<LatLng>
+    {
+        public MapClickEvent(LatLng value) : base(value, EventSource.Js)
+        {
+        }
+    }
 }

@@ -21,7 +21,11 @@ namespace Proxoft.Maps.Core.Api.Maps
 
         [JSInvokable]
         public void OnZoomChanged(int zoom)
-           => this.Push(new ZoomChanged(zoom));
+            => this.Push(new ZoomChanged(zoom));
+
+        [JSInvokable]
+        public void OnMapClicked(LatLng latLng)
+            => this.Push(new MapClickEvent(latLng));
 
         protected abstract void Remove();
 

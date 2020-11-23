@@ -25,5 +25,10 @@ namespace Proxoft.Maps.Core.Api
                 .OfType<ZoomChanged>()
                 .Where(e => filter(e))
                 .Select(e => e.Value);
+
+        public static IObservable<LatLng> OnClick(this IMap map)
+            => map.OnEvent
+                .OfType<MapClickEvent>()
+                .Select(e => e.Value);
     }
 }

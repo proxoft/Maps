@@ -18,6 +18,9 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Markers
         public override void SetDraggable(bool draggable)
             => this.InvokeVoidJs("SetMarkerDraggable", _markerId, draggable);
 
+        public override void SetOpacity(Opacity opacity)
+            => this.InvokeVoidJs("SetMarkerOpacity", _markerId, opacity.Value);
+
         public override void SetPosition(LatLng latLng)
             => this.InvokeVoidJs("SetMarkerPosition", _markerId, latLng);
     }

@@ -56,7 +56,7 @@ function createMapOnElement(options, hostElement) {
 export function CreateMarker(markerId, options, mapId, netRef) {
     let mapWrapper = findMapWrapper(mapId);
 
-    let marker = L.marker([options.position.latitude, options.position.longitude]);
+    let marker = L.marker([options.position.latitude, options.position.longitude], { opacity: options.opacity.value });
     mapWrapper.map.addLayer(marker);
 
     if (options.draggable) {
@@ -83,6 +83,12 @@ export function SetMarkerPosition(markerId, position) {
     let wrapper = findMarkerWrapper(markerId);
 
     wrapper.marker.setLatLng([position.latitude, position.longitude]);
+}
+
+export function SetMarkerOpacity(markerId, opacity) {
+    let wrapper = findMarkerWrapper(markerId);
+
+    wrapper.marker.setOpacity(opacity);
 }
 
 function findMarkerWrapper(markerId) {
@@ -115,6 +121,11 @@ function createMapWrapper(mapId, map, netRef) {
         wrapper.ref.invokeMethodAsync("OnZoomChanged", zoom);
     });
 
+    map.on("click", (e) => {
+        let latlng = { latitude: e.latlng.lat, longitude: e.latlng.lng };
+        wrapper.ref.invokeMethodAsync("OnMapClicked", latlng);
+    });
+
     return wrapper;
 }
 
@@ -127,10 +138,15 @@ function createMarkerWrapper(markerId, marker, map, netRef) {
         ref: netRef,    // net object reference
     };
 
-    marker.on("moveend", () => {
+    marker.on("move", () => {
         let position = marker.getLatLng();
         wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
     });
+
+    //marker.on("moveend", () => {
+    //    let position = marker.getLatLng();
+    //    wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
+    //});
 
     return wrapper;
 }

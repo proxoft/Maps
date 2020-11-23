@@ -17,6 +17,8 @@ namespace Proxoft.Maps.Core.Api
 
         public abstract void SetPosition(LatLng latLng);
 
+        public abstract void SetOpacity(Opacity opacity);
+
         [JSInvokable]
         public void OnPositionChanged(LatLng position)
             => this.Push(new MarkerPositionChangedEvent(position));
