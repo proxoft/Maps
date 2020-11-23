@@ -19,9 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Google\Googl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenStreetMap", "OpenStreetMap", "{A532A588-7A32-4FD8-BB57-7D37BBE617BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenStreetMap.Maps", "OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj", "{608E7743-20FD-4353-A471-C03D4F6CE65D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Maps", "OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj", "{608E7743-20FD-4353-A471-C03D4F6CE65D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenStreetMap.Hosting", "OpenStreetMap\OpenStreetMap.Hosting\OpenStreetMap.Hosting.csproj", "{0C4939A7-DD61-49B9-8BD7-90AD38AC1683}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Hosting", "OpenStreetMap\OpenStreetMap.Hosting\OpenStreetMap.Hosting.csproj", "{0C4939A7-DD61-49B9-8BD7-90AD38AC1683}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Maps", "Samples\Sample.Maps\Sample.Maps.csproj", "{8460BD2F-7002-491D-B65F-C2869E902E6D}"
 EndProject

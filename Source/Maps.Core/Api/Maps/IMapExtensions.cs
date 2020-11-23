@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
-using Proxoft.Maps.Core.Api.Maps.Events;
+using Proxoft.Maps.Core.Api.Maps;
 
 namespace Proxoft.Maps.Core.Api
 {

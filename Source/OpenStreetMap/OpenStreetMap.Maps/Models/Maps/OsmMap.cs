@@ -32,7 +32,6 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
         {
             OsmMarker marker = new (System.Guid.NewGuid().ToString(), this.JsModule);
             marker.AddToMap(_mapId, options);
-            // this.InvokeVoidJs("AddMarker", new object[] { _mapId, , options });
             return marker;
         }
 

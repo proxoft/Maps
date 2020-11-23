@@ -1,4 +1,4 @@
-﻿namespace Proxoft.Maps.Core.Api.Maps.Events
+﻿namespace Proxoft.Maps.Core.Api.Maps
 {
     public class CenterChangedEvent : Event<LatLng>
     {

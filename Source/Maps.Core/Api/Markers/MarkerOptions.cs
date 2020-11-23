@@ -3,5 +3,6 @@
     public record MarkerOptions
     {
         public LatLng Position { get; set; }
+        public bool Draggable { get; set; } = true;
     }
 }
