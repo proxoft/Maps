@@ -15,6 +15,11 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
     mapWrappers.push(wrapper);
 }
 
+export function Remove(mapId) {
+    let i = mapWrappers.findIndex(me => me.mapId == mapId);
+    mapWrappers.splice(i, 1);
+}
+
 export function PanTo(mapId, center) {
     let wrapper = findMapWrapper(mapId);
     wrapper.map.panTo([center.latitude, center.longitude]);
@@ -43,14 +48,14 @@ function createMapOnElement(options, hostElement) {
     return map;
 }
 
-export function AddMarker(mapElementId) {
-    console.log("MarkersLoaded - really?");
-}
-
 //-----------------------------------------------
 
 //--Markers--------------------------------------
 
+export function AddMarker(mapId, markerId, netRef) {
+    let wrapper = findMapWrapper(mapId);
+    
+}
 //-----------------------------------------------
 
 function createMapWrapper(mapId, map, netRef) {
@@ -77,7 +82,7 @@ function createMapWrapper(mapId, map, netRef) {
     return wrapper;
 }
 
-function createMarkerWrapper() {
+function createMarkerWrapper(marker, netRef) {
     return {
     };
 }

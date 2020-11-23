@@ -1,4 +1,5 @@
 ﻿@page "/MapMethods"
+@implements IDisposable
 
 @using System.Reactive.Linq;
 @using Proxoft.Maps.Core.Api
@@ -69,5 +70,10 @@
     {
         this.MapLog.Add(logMessage);
         this.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _map.Dispose();
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace Proxoft.Maps.Core.Api
+﻿using System;
+
+namespace Proxoft.Maps.Core.Api
 {
-    public interface IMarker
+    public interface IMarker : IDisposable
     {
     }
 }
