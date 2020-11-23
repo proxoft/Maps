@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.Core.Api.Maps;
 using Proxoft.Maps.Google.Common;
 using Proxoft.Maps.Google.Maps.Initialization;
 using Proxoft.Maps.Google.Maps.Models.Maps;
@@ -31,7 +32,7 @@ namespace Proxoft.Maps.Google.Maps
             var status = await _api.LoadGoogleScripts(_configuration);
             if (status != ApiStatus.Loaded)
             {
-                return new ErrorMap();
+                return NoMap.Instance;
             }
 
             var m = await _moduleTask.Value;

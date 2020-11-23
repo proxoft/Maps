@@ -18,6 +18,8 @@ namespace Proxoft.Maps.Core.Api.Maps
 
         public IObservable<LatLng> OnCenter => _onCenter;
 
+        public abstract void PanTo(LatLng center);
+
         protected DotNetObjectReference<T> SelfRef { get; private set; }
 
         protected void InvokeVoidJs(string identifier, params object[] args)
@@ -43,5 +45,7 @@ namespace Proxoft.Maps.Core.Api.Maps
                 _onCenter.Dispose();
             }
         }
+
+        
     }
 }

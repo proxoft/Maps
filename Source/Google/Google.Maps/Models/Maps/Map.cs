@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 
@@ -42,6 +41,11 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         public void Dispose()
         {
             _onCenter.Dispose();
+        }
+
+        public void PanTo(LatLng center)
+        {
+            throw new NotImplementedException();
         }
     }
 }

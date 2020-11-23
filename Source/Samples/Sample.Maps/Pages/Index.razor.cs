@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Proxoft.Maps.Core.Api;
 
 namespace Sample.Maps.Pages
 {
@@ -61,6 +62,11 @@ namespace Sample.Maps.Pages
                         this.StateHasChanged();
                     });
             }
+        }
+
+        private void PanToClick()
+        {
+            _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
         }
     }
 }

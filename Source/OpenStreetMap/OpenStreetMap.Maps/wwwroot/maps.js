@@ -1,26 +1,31 @@
 ﻿var mapElements = [];
 
 export function InitializeMap(elementId, options, netObjRef) {
-    let mapElement = findMap(elementId);
-    if (mapElement !== null) {
-        mapElement.ref = netObjRef;
+    let wrapper = findMapWrapper(elementId);
+    if (wrapper !== null) {
+        wrapper.ref = netObjRef;
         return;
     }
 
     let map = createMap(elementId, options);
 
-    mapElement = {
+    wrapper = {
         elementId: elementId,
         map: map,
         ref: netObjRef
     };
 
-    addListeners(mapElement);
+    addListeners(wrapper);
 
-    mapElements.push(mapElement);
+    mapElements.push(wrapper);
 }
 
-function findMap(elementId) {
+export function PanTo(elementId, center) {
+    var wrapper = findMapWrapper(elementId);
+    wrapper.map.panTo([center.latitude, center.longitude]);
+}
+
+function findMapWrapper(elementId) {
     let i = mapElements.findIndex(me => me.elementId == elementId);
     return i === -1
         ? null
@@ -38,11 +43,11 @@ function createMap(elementId, options) {
     return map;
 }
 
-function addListeners(mapEl) {
-    let map = mapEl.map;
+function addListeners(wrapper) {
+    let map = wrapper.map;
 
-    mapEl.map.on("moveend", () => {
+    map.on("moveend", () => {
         let center = map.getCenter();
-        mapEl.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+        wrapper.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
     });
 }

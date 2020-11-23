@@ -16,5 +16,9 @@ namespace Proxoft.Maps.Core.Api.Maps
         public void Dispose()
         {
         }
+
+        public void PanTo(LatLng center)
+        {
+        }
     }
 }

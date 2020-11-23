@@ -24,5 +24,8 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
             map.Initialize(options);
             return map;
         }
+
+        public override void PanTo(LatLng center)
+            => this.InvokeVoidJs("PanTo", new object[] { _elementId, center });
     }
 }
