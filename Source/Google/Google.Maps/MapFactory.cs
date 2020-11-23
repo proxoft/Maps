@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
@@ -43,6 +44,11 @@ namespace Proxoft.Maps.Google.Maps
         public async ValueTask DisposeAsync()
         {
             await _api.DisposeAsync();
+        }
+
+        public Task<IMap> Initialize(MapOptions options, ElementReference hostElement)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,39 +1,39 @@
-﻿var mapElements = [];
+﻿var mapWrappers = [];
 
-export function InitializeMap(elementId, options, netObjRef) {
-    let wrapper = findMapWrapper(elementId);
+//--Maps-----------------------------------------
+export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
+    let wrapper = findMapWrapper(mapId);
     if (wrapper !== null) {
         wrapper.ref = netObjRef;
         return;
     }
 
-    let map = createMap(elementId, options);
+    let map = createMapOnElement(options, hostElement);
 
-    wrapper = {
-        elementId: elementId,
-        map: map,
-        ref: netObjRef
-    };
+    wrapper = createMapWrapper(mapId, map, netRef);
 
-    addListeners(wrapper);
-
-    mapElements.push(wrapper);
+    mapWrappers.push(wrapper);
 }
 
-export function PanTo(elementId, center) {
-    var wrapper = findMapWrapper(elementId);
+export function PanTo(mapId, center) {
+    let wrapper = findMapWrapper(mapId);
     wrapper.map.panTo([center.latitude, center.longitude]);
 }
 
-function findMapWrapper(elementId) {
-    let i = mapElements.findIndex(me => me.elementId == elementId);
-    return i === -1
-        ? null
-        : mapElements[i];
+export function ZoomTo(mapId, zoom) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.map.setZoom(zoom);
 }
 
-function createMap(elementId, options) {
-    let map = L.map(elementId)
+function findMapWrapper(mapId) {
+    let i = mapWrappers.findIndex(me => me.mapId == mapId);
+    return i === -1
+        ? null
+        : mapWrappers[i];
+}
+
+function createMapOnElement(options, hostElement) {
+    let map = L.map(hostElement)
         .setView([options.center.latitude, options.center.longitude], options.zoom);
 
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -43,11 +43,41 @@ function createMap(elementId, options) {
     return map;
 }
 
-function addListeners(wrapper) {
-    let map = wrapper.map;
+export function AddMarker(mapElementId) {
+    console.log("MarkersLoaded - really?");
+}
+
+//-----------------------------------------------
+
+//--Markers--------------------------------------
+
+//-----------------------------------------------
+
+function createMapWrapper(mapId, map, netRef) {
+    let wrapper = {
+        mapId: mapId,
+        map: map,    // map instance
+        ref: netRef, // net object reference
+
+        addMarker: function () {
+            return 1;
+        }
+    };
 
     map.on("moveend", () => {
         let center = map.getCenter();
         wrapper.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
     });
+
+    map.on("zoomend", () => {
+        let zoom = map.getZoom();
+        wrapper.ref.invokeMethodAsync("OnZoomChanged", zoom);
+    });
+
+    return wrapper;
+}
+
+function createMarkerWrapper() {
+    return {
+    };
 }

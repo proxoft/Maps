@@ -1,0 +1,26 @@
+﻿@page "/TwoMaps"
+
+<div id="map-container" @ref="Map1Host">
+</div>
+
+<div id="map-container-log">
+    @foreach (var l in Map1Log)
+    {
+        <span>@l</span><br />
+    }
+</div>
+
+<div>
+    <button @onclick="PanToClick">PanTo</button>
+</div>
+<br />
+
+<div id="map-container-2" @ref="Map2Host">
+</div>
+
+<div id="map-container-log2">
+    @foreach (var l in Map2Log)
+    {
+        <span>@l</span><br />
+    }
+</div>

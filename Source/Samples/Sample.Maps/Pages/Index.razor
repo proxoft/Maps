@@ -1,28 +1,11 @@
 ﻿@page "/"
 
-<h1>@Provider!</h1>
-
-<div id="map-container">
+<div id="map-container" @ref="MapHost">
 </div>
 
 <div id="map-container-log">
-    @foreach(var l in Map1Log)
+    @foreach(var l in MapLog)
     {
         <span>@l</span><br/>
-    }
-</div>
-
-<div>
-    <button @onclick="PanToClick">PanTo</button>
-</div>
-<br/>
-
-<div id="map-container-2">
-</div>
-
-<div id="map-container-log2">
-    @foreach (var l in Map2Log)
-    {
-        <span>@l</span><br />
     }
 </div>

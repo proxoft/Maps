@@ -7,18 +7,18 @@ using Proxoft.Maps.Core.Api;
 
 namespace Sample.Maps.Pages
 {
-    public partial class Index
+    public sealed partial class Index : IDisposable
     {
-        private Proxoft.Maps.Core.Api.IMap _map1;
-        private Proxoft.Maps.Core.Api.IMap _map2;
+        private IMap _map1;
 
         [Inject]
-        public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
+        public IMapFactory MapFactory { get; set; }
+
+        ElementReference MapHost { get; set; }
 
         public string Provider => this.MapFactory.Name;
 
-        private List<string> Map1Log { get; set; } = new();
-        private List<string> Map2Log { get; set; } = new();
+        private List<string> MapLog { get; set; } = new();
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -26,47 +26,32 @@ namespace Sample.Maps.Pages
 
             if (firstRender)
             {
-                _map1 = await MapFactory.Initialize("map-container", new Proxoft.Maps.Core.Api.MapOptions
+                LatLng center = new ()
                 {
-                    Center = new Proxoft.Maps.Core.Api.LatLng
-                    {
-                        Latitude = -34.397m,
-                        Longitude = 150.644m
-                    },
+                    Latitude = -34.397m,
+                    Longitude = 150.644m
+                };
+
+                _map1 = await MapFactory.Initialize(new MapOptions
+                {
+                    Center = center,
                     Zoom = 10
-                });
+                },
+                this.MapHost);
 
                 _map1.OnCenter
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {
-                        this.Map1Log.Add("center changed");
-                        this.StateHasChanged();
-                    });
-
-                _map2 = await MapFactory.Initialize("map-container-2", new Proxoft.Maps.Core.Api.MapOptions
-                {
-                    Center = new Proxoft.Maps.Core.Api.LatLng
-                    {
-                        Latitude = 19.397m,
-                        Longitude = 87.644m
-                    },
-                    Zoom = 7
-                });
-
-                _map2.OnCenter
-                    .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Subscribe(ll =>
-                    {
-                        this.Map2Log.Add("center changed");
+                        this.MapLog.Add("center changed");
                         this.StateHasChanged();
                     });
             }
         }
 
-        private void PanToClick()
+        public void Dispose()
         {
-            _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
+            _map1.Dispose();
         }
     }
 }

@@ -1,5 +1,17 @@
 ﻿@inherits LayoutComponentBase
 
+@inject Proxoft.Maps.Core.Api.IMapFactory mapFactory
+
+<div>
+    <a href="/">Single Map</a>
+    <a href="/TwoMaps">2 Maps</a>
+    <a href="/MapMethods">Map methods</a>
+</div>
+
+<h1>
+    @mapFactory.Name
+</h1>
+
 <div class="page">
     <div class="main">
         <div class="content px-4">

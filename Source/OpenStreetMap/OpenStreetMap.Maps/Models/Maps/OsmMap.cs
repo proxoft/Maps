@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 
@@ -6,26 +7,35 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
 {
     internal class OsmMap : MapBase<OsmMap>
     {
-        private readonly string _elementId;
+        private readonly string _mapId;
 
-        public OsmMap(string elementId, IJSInProcessObjectReference jsModule) : base(jsModule)
+        public OsmMap(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
         {
-            _elementId = elementId;
+            _mapId = mapId;
         }
 
-        public void Initialize(MapOptions options) 
+        private void Initialize(MapOptions options, ElementReference hostElement)
         {
-            this.InvokeVoidJs("InitializeMap", new object[] { _elementId, options, this.SelfRef });
+            this.InvokeVoidJs("InitializeMapOnElement", new object[] { _mapId, options, hostElement, this.SelfRef });
         }
 
-        public static OsmMap Create(string elementId, MapOptions options, IJSInProcessObjectReference jsModule)
-        {
-            var map = new OsmMap(elementId, jsModule);
-            map.Initialize(options);
-            return map;
-        }
+        public override void ZoomTo(int zoom)
+            => this.InvokeVoidJs("ZoomTo", new object[] { _mapId, zoom });
 
         public override void PanTo(LatLng center)
-            => this.InvokeVoidJs("PanTo", new object[] { _elementId, center });
+            => this.InvokeVoidJs("PanTo", new object[] { _mapId, center });
+
+        public override IMarker AddMarker(MarkerOptions options)
+        {
+            this.InvokeVoidJs("AddMarker", new object[] { _mapId, options });
+            return null;
+        }
+
+        public static OsmMap Create(string mapId, MapOptions options, ElementReference hostElement, IJSInProcessObjectReference jsModule)
+        {
+            var map = new OsmMap(mapId, jsModule);
+            map.Initialize(options, hostElement);
+            return map;
+        }
     }
 }

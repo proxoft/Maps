@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace Proxoft.Maps.Core.Api
 {
@@ -6,6 +7,6 @@ namespace Proxoft.Maps.Core.Api
     {
         string Name { get; }
 
-        Task<IMap> Initialize(string elementId, MapOptions options);
+        Task<IMap> Initialize(MapOptions options, ElementReference hostElement);
     }
 }

@@ -15,6 +15,8 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
 
         public IObservable<LatLng> OnCenter => _onCenter;
 
+        public IObservable<int> OnZoom => throw new NotImplementedException();
+
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
             => _onCenter.OnNext(latLng);
@@ -44,6 +46,16 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         }
 
         public void PanTo(LatLng center)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMarker AddMarker(MarkerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ZoomTo(int zoom)
         {
             throw new NotImplementedException();
         }

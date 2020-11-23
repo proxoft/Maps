@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
@@ -24,7 +25,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
 
         public string Name => "OpenStreetMaps";
 
-        public async Task<IMap> Initialize(string elementId, MapOptions options)
+        public async Task<IMap> Initialize(MapOptions options, ElementReference hostElement)
         {
             var status = await _api.LoadGoogleScripts();
             if (status != ApiStatus.Loaded)
@@ -32,8 +33,9 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
                 return NoMap.Instance;
             }
 
+            var mapId = Guid.NewGuid().ToString();
             var module = await _moduleTask.Value;
-            var map = OsmMap.Create(elementId, options, module);
+            var map = OsmMap.Create(mapId, options, hostElement, module);
             return map;
         }
     }
