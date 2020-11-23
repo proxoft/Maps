@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Proxoft.Maps.Core</RootNamespace>
+        <AssemblyName>Proxoft.Maps.Core</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft</Authors>
+        <Company>Proxoft s.r.o.</Company>
+        <Product>Maps</Product>
+        <PackageIcon>Map.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\Map.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Proxoft.Extensions.Options" Version="1.2.0" />
+      <PackageReference Include="System.Reactive" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

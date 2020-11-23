@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Proxoft.Maps.Google.Common</RootNamespace>
+        <AssemblyName>Proxoft.Maps.Google.Common</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft</Authors>
+        <Company>Proxoft s.r.o.</Company>
+        <Product>Maps</Product>
+        <PackageId>Proxoft.Maps.Google.Common</PackageId>
+        <PackageIcon>Map.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\Map.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+</Project>

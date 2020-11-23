@@ -1,0 +1,33 @@
+﻿#map-container {
+    display: inline-block;
+    width: 800px;
+    height: 450px;
+    background-color: aqua;
+}
+
+#map-container-log {
+    vertical-align: top;
+    padding-left: 10px;
+    display: inline-block;
+    overflow-y: scroll;
+    width: 600px;
+    height: 450px;
+    background-color: aqua;
+}
+
+#map-container-2 {
+    display: inline-block;
+    width: 900px;
+    height: 550px;
+    background-color: blueviolet;
+}
+
+#map-container-log2 {
+    vertical-align: top;
+    padding-left: 10px;
+    display: inline-block;
+    overflow-y: scroll;
+    width: 500px;
+    height: 550px;
+    background-color: blueviolet;
+}
