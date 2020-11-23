@@ -23,6 +23,8 @@ namespace Proxoft.Maps.Google.Maps.Initialization
 
         public async Task<ApiStatus> LoadGoogleScripts(GoogleApiConfiguration configuration)
         {
+            Console.WriteLine(configuration.ApiKey);
+
             _taskCompletionSource = new TaskCompletionSource<ApiStatus>();
 
             var v = await _moduleTask.Value;
