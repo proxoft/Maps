@@ -9,6 +9,7 @@
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
         <PackageId>Proxoft.Maps.OpenStreetMap.Hosting</PackageId>
+        <Version>0.0.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
