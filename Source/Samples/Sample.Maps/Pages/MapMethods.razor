@@ -45,12 +45,9 @@
             };
 
             _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
-            _map.OnCenter
-                .Throttle(TimeSpan.FromMilliseconds(200))
-                .Subscribe(_ => this.AddLog("center changed"));
+            _map.OnEvent
+                .Subscribe(e => this.AddLog(e.Name));
 
-            _map.OnZoom
-                .Subscribe(_ => this.AddLog("zoom changed"));
         }
     }
 

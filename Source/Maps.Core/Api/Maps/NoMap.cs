@@ -12,9 +12,7 @@ namespace Proxoft.Maps.Core.Api.Maps
         {
         }
 
-        public IObservable<LatLng> OnCenter => Observable.Never<LatLng>();
-
-        public IObservable<int> OnZoom => Observable.Never<int>();
+        public IObservable<Event> OnEvent => Observable.Never<Event>();
 
         public IMarker AddMarker(MarkerOptions options)
             => NoMarker.Instance;

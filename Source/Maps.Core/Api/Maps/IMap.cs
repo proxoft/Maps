@@ -4,8 +4,7 @@ namespace Proxoft.Maps.Core.Api
 {
     public interface IMap : IDisposable
     {
-        IObservable<LatLng> OnCenter { get; }
-        IObservable<int> OnZoom { get; }
+        IObservable<Event> OnEvent { get; }
 
         void PanTo(LatLng center);
 

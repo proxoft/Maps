@@ -17,6 +17,8 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
 
         public IObservable<int> OnZoom => throw new NotImplementedException();
 
+        public IObservable<Event> OnEvent => throw new NotImplementedException();
+
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
             => _onCenter.OnNext(latLng);

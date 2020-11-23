@@ -43,7 +43,7 @@ namespace Sample.Maps.Pages
                 },
                 this.Map1Host);
 
-                _map1.OnCenter
+                _map1.OnCenter()
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {
@@ -64,7 +64,7 @@ namespace Sample.Maps.Pages
                 },
                 this.Map2Host);
 
-                _map2.OnCenter
+                _map2.OnCenter()
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {

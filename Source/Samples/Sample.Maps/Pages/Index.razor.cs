@@ -39,7 +39,7 @@ namespace Sample.Maps.Pages
                 },
                 this.MapHost);
 
-                _map1.OnCenter
+                _map1.OnCenter()
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {

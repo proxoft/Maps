@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Api.Maps.Events;
 
 namespace Proxoft.Maps.Core.Api.Maps
 {
     public abstract class MapBase<T> : IMap
         where T: MapBase<T>
     {
-        private readonly Subject<LatLng> _onCenter = new();
-        private readonly Subject<int> _onZoom = new();
+        private readonly Subject<Event> _events = new();
 
         private readonly IJSInProcessObjectReference _jsModule;
 
@@ -18,8 +18,7 @@ namespace Proxoft.Maps.Core.Api.Maps
             _jsModule = jsModule;
         }
 
-        public IObservable<LatLng> OnCenter => _onCenter;
-        public IObservable<int> OnZoom => _onZoom;
+        public IObservable<Event> OnEvent => _events;
 
         public abstract void PanTo(LatLng center);
         public abstract void ZoomTo(int zoom);
@@ -36,11 +35,11 @@ namespace Proxoft.Maps.Core.Api.Maps
 
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
-            => _onCenter.OnNext(latLng);
+            => _events.OnNext(new CenterChangedEvent(latLng));
 
         [JSInvokable]
         public void OnZoomChanged(int zoom)
-           => _onZoom.OnNext(zoom);
+           => _events.OnNext(new ZoomChanged(zoom));
 
         public void Dispose()
         {
@@ -52,7 +51,7 @@ namespace Proxoft.Maps.Core.Api.Maps
         {
             if (disposing)
             {
-                _onCenter.Dispose();
+                _events.Dispose();
             }
         }
     }
