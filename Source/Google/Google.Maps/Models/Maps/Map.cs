@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
 
@@ -15,6 +14,10 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         private readonly Subject<LatLng> _onCenter = new ();
 
         public IObservable<LatLng> OnCenter => _onCenter;
+
+        public IObservable<int> OnZoom => throw new NotImplementedException();
+
+        public IObservable<Event> OnEvent => throw new NotImplementedException();
 
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
@@ -42,6 +45,21 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         public void Dispose()
         {
             _onCenter.Dispose();
+        }
+
+        public void PanTo(LatLng center)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMarker AddMarker(MarkerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ZoomTo(int zoom)
+        {
+            throw new NotImplementedException();
         }
     }
 }

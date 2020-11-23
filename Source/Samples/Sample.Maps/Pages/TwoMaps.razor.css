@@ -2,7 +2,6 @@
     display: inline-block;
     width: 800px;
     height: 450px;
-    background-color: aqua;
 }
 
 #map-container-log {
@@ -12,14 +11,15 @@
     overflow-y: scroll;
     width: 600px;
     height: 450px;
-    background-color: aqua;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
 }
 
 #map-container-2 {
     display: inline-block;
     width: 900px;
     height: 550px;
-    background-color: blueviolet;
 }
 
 #map-container-log2 {
@@ -29,5 +29,7 @@
     overflow-y: scroll;
     width: 500px;
     height: 550px;
-    background-color: blueviolet;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
 }

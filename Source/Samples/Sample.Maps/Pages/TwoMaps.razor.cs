@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Proxoft.Maps.Core.Api;
 
-namespace Sample.GoogleMap.Pages
+namespace Sample.Maps.Pages
 {
-    public partial class Index
+    public partial class TwoMaps
     {
-        private Proxoft.Maps.Core.Api.IMap _map1;
-        private Proxoft.Maps.Core.Api.IMap _map2;
+        private IMap _map1;
+        private IMap _map2;
 
         [Inject]
-        public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
+        public IMapFactory MapFactory { get; set; }
+
+        ElementReference Map1Host { get; set; }
+
+        ElementReference Map2Host { get; set; }
+
+        public string Provider => this.MapFactory.Name;
 
         private List<string> Map1Log { get; set; } = new();
         private List<string> Map2Log { get; set; } = new();
@@ -23,17 +30,20 @@ namespace Sample.GoogleMap.Pages
 
             if (firstRender)
             {
-                _map1 = await MapFactory.Initialize("map-container", new Proxoft.Maps.Core.Api.MapOptions
+                LatLng center = new()
                 {
-                    Center = new Proxoft.Maps.Core.Api.LatLng
-                    {
-                        Latitude = -34.397m,
-                        Longitude = 150.644m
-                    },
-                    Zoom = 10
-                });
+                    Latitude = -34.397m,
+                    Longitude = 150.644m
+                };
 
-                _map1.OnCenter
+                _map1 = await MapFactory.Initialize(new MapOptions
+                {
+                    Center = center,
+                    Zoom = 10
+                },
+                this.Map1Host);
+
+                _map1.OnCenter()
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {
@@ -41,17 +51,20 @@ namespace Sample.GoogleMap.Pages
                         this.StateHasChanged();
                     });
 
-                _map2 = await MapFactory.Initialize("map-container-2", new Proxoft.Maps.Core.Api.MapOptions
+                _map1.AddMarker(new MarkerOptions { Position = center });
+
+                _map2 = await MapFactory.Initialize(new MapOptions
                 {
-                    Center = new Proxoft.Maps.Core.Api.LatLng
+                    Center = new LatLng
                     {
                         Latitude = 19.397m,
                         Longitude = 87.644m
                     },
                     Zoom = 7
-                });
+                },
+                this.Map2Host);
 
-                _map2.OnCenter
+                _map2.OnCenter()
                     .Throttle(TimeSpan.FromMilliseconds(200))
                     .Subscribe(ll =>
                     {
@@ -59,6 +72,11 @@ namespace Sample.GoogleMap.Pages
                         this.StateHasChanged();
                     });
             }
+        }
+
+        private void PanToClick()
+        {
+            _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
         }
     }
 }

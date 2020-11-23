@@ -1,0 +1,11 @@
+﻿@page "/"
+
+<div id="map-container" @ref="MapHost">
+</div>
+
+<div id="map-container-log">
+    @foreach(var l in MapLog)
+    {
+        <span>@l</span><br/>
+    }
+</div>

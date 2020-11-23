@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Proxoft.Maps.OpenStreetMap.Hosting</RootNamespace>
+        <AssemblyName>Proxoft.Maps.OpenStreetMap.Hosting</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft</Authors>
+        <Company>Proxoft s.r.o.</Company>
+        <Product>Maps</Product>
+        <PackageId>Proxoft.Maps.OpenStreetMap.Hosting</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+      <ProjectReference Include="..\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj" />
+    </ItemGroup>
+
+</Project>

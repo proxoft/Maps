@@ -1,0 +1,79 @@
+﻿@page "/MapMethods"
+@implements IDisposable
+
+@using System.Reactive.Linq;
+@using Proxoft.Maps.Core.Api
+
+<div class="map-container" @ref="MapHost">
+</div>
+
+<div class="map-event-log">
+    @foreach (var l in MapLog)
+    {
+        <span>@l</span><br />
+    }
+</div>
+
+<div>
+    <button @onclick="PanToClick">PanTo</button>
+    <span>Lat:</span><input @bind-value="PanLat" />
+    <span>Lng:</span><input @bind-value="PanLng"/>
+</div>
+<div>
+    <button @onclick="ZoomToClick">Zoom</button>
+    <span>Zoom:</span><input @bind-value="Zoom" />
+</div>
+
+@code {
+    private IMap _map;
+
+    [Inject]
+    public IMapFactory MapFactory { get; set; }
+
+    ElementReference MapHost { get; set; }
+
+    private List<string> MapLog { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            LatLng center = new()
+            {
+                Latitude = -34.397m,
+                Longitude = 150.644m
+            };
+
+            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
+            _map.OnEvent
+                .Subscribe(e => this.AddLog(e.Name));
+
+        }
+    }
+
+    private decimal PanLat { get; set; } = 48.15m;
+    private decimal PanLng { get; set; } = 17.6m;
+    private int Zoom { get; set; } = 7;
+
+    private void PanToClick()
+    {
+        _map.PanTo(new LatLng { Latitude = PanLat, Longitude = PanLng });
+    }
+
+    private void ZoomToClick()
+    {
+        _map.ZoomTo(this.Zoom);
+    }
+
+    private void AddLog(string logMessage)
+    {
+        this.MapLog.Add(logMessage);
+        this.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _map.Dispose();
+    }
+}
