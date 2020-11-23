@@ -14,6 +14,8 @@ namespace Proxoft.Maps.Google.Maps
         private readonly ApiLoader _api;
         private readonly GoogleApiConfiguration _configuration;
 
+        public string Name => "GoogleMaps";
+
         public MapFactory(GoogleApiConfiguration configuration, IJSRuntime jsRuntime)
         {
             _api = new ApiLoader(jsRuntime);

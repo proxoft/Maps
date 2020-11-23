@@ -16,6 +16,8 @@
     <ProjectReference Include="..\..\Google\Google.Maps.Hosting\Google.Maps.Hosting.csproj" />
     <ProjectReference Include="..\..\Google\Google.Maps\Google.Maps.csproj" />
     <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+    <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.Hosting\OpenStreetMap.Hosting.csproj" />
+    <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj" />
   </ItemGroup>
 
 </Project>

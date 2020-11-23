@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Sample.GoogleMap
+namespace Sample.Maps
 {
     public static class Program
     {
@@ -15,8 +15,9 @@ namespace Sample.GoogleMap
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.ConfigureGoogleMapsServices(builder.Configuration);
 
+            // builder.Services.ConfigureGoogleMapsServices(builder.Configuration);
+            builder.Services.ConfigureOpenStreetMapsServices();
             await builder.Build().RunAsync();
         }
 
@@ -25,6 +26,12 @@ namespace Sample.GoogleMap
             services.AddGoogleMaps(ServiceLifetime.Scoped)
                 .Configure(configuration)
                 .Build();
+        }
+
+        private static void ConfigureOpenStreetMapsServices(this IServiceCollection services)
+        {
+            services.AddOpenStreetMaps(ServiceLifetime.Scoped)
+                .Register();
         }
     }
 }

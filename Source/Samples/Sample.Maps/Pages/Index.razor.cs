@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
-namespace Sample.GoogleMap.Pages
+namespace Sample.Maps.Pages
 {
     public partial class Index
     {
@@ -13,6 +13,8 @@ namespace Sample.GoogleMap.Pages
 
         [Inject]
         public Proxoft.Maps.Core.Api.IMapFactory MapFactory { get; set; }
+
+        public string Provider => this.MapFactory.Name;
 
         private List<string> Map1Log { get; set; } = new();
         private List<string> Map2Log { get; set; } = new();
