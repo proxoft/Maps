@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Hosting", "Op
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Maps", "Samples\Sample.Maps\Sample.Maps.csproj", "{8460BD2F-7002-491D-B65F-C2869E902E6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenStreetMap.Geocoding", "OpenStreetMap\OpenStreetMap.Geocoding\OpenStreetMap.Geocoding.csproj", "{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenStreetMap.Common", "OpenStreetMap\OpenStreetMap.Common\OpenStreetMap.Common.csproj", "{0B7677C0-1E06-4D52-A264-052FB983992E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{8460BD2F-7002-491D-B65F-C2869E902E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8460BD2F-7002-491D-B65F-C2869E902E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8460BD2F-7002-491D-B65F-C2869E902E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7677C0-1E06-4D52-A264-052FB983992E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7677C0-1E06-4D52-A264-052FB983992E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7677C0-1E06-4D52-A264-052FB983992E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7677C0-1E06-4D52-A264-052FB983992E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +87,8 @@ Global
 		{608E7743-20FD-4353-A471-C03D4F6CE65D} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
 		{0C4939A7-DD61-49B9-8BD7-90AD38AC1683} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
 		{8460BD2F-7002-491D-B65F-C2869E902E6D} = {3585860D-7919-4FCC-BC90-D489CA53FB4A}
+		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
+		{0B7677C0-1E06-4D52-A264-052FB983992E} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07F377B1-0785-4E61-B913-1C549725EA55}

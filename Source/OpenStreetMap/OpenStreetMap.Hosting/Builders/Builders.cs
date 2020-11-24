@@ -4,7 +4,9 @@ using Proxoft.Maps.OpenStreetMap.Maps;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders
 {
-    internal class OpenStreetMapBuilder : IOpenStreetMapApiBuilder
+    internal class OpenStreetMapBuilder :
+        IOpenStreetMapApiBuilder,
+        IOpenStreetMapGeocodingBuilder
     {
         private readonly IServiceCollection _services;
         private readonly ServiceLifetime _serviceLifetime;
@@ -13,6 +15,11 @@ namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders
         {
             _services = services;
             _serviceLifetime = serviceLifetime;
+        }
+
+        public IOpenStreetMapApiBuilder AddGeocoder(string language)
+        {
+            throw new System.NotImplementedException();
         }
 
         void IOpenStreetMapApiBuilder.Register()
