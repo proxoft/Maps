@@ -17,7 +17,7 @@ namespace Sample.Maps
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             // builder.Services.ConfigureGoogleMapsServices(builder.Configuration);
-            builder.Services.ConfigureOpenStreetMapsServices();
+            builder.Services.ConfigureOpenStreetMapsServices(builder.Configuration);
             await builder.Build().RunAsync();
         }
 
@@ -28,9 +28,11 @@ namespace Sample.Maps
                 .Build();
         }
 
-        private static void ConfigureOpenStreetMapsServices(this IServiceCollection services)
+        private static void ConfigureOpenStreetMapsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOpenStreetMaps(ServiceLifetime.Scoped)
+                .Configure(configuration)
+                .AddGeocoder()
                 .Register();
         }
     }

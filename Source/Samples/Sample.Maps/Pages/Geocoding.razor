@@ -1,0 +1,48 @@
+﻿@page "/Geocoding"
+
+@using Proxoft.Extensions.Options
+@using Proxoft.Maps.Core.Geocoding
+ 
+<h3>Geocoding</h3>
+
+<div>
+    <input @bind-value="Search" />
+    <button @onclick="async () => await this.OnSearchClick()">Search</button>
+</div>
+
+<div>
+    @if (this.Result is Left<ErrorStatus, Address> error)
+    {
+        <span> @((ErrorStatus)error)</span>
+    }
+    else
+    {
+        <span>Address</span><br />
+        @Address.Street <br />
+        @Address.StreetNumber<br />
+        @Address.City <br />
+        @Address.Zip <br />
+        @Address.Country <br />
+        <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
+    }
+
+</div>
+
+@code {
+    [Inject]
+    Proxoft.Maps.Core.Geocoding.IGeocoder Geocoder { get; set; }
+
+    private string Search { get; set; } = "Banska Bystrica";
+
+    private Either<ErrorStatus, Address> Result { get; set; } = ErrorStatus.ZeroResults;
+
+    private Address Address => (Right<ErrorStatus, Address>)this.Result;
+
+    private bool ShowError { get; set; }
+
+    private async Task OnSearchClick()
+    {
+        this.Result = await this.Geocoder.Geocode(this.Search);
+        this.StateHasChanged();
+    }
+}

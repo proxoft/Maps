@@ -2,6 +2,6 @@
 {
     public class OpenStreetMapOptions
     {
-        public string Language { get; set; }
+        public string Language { get; set; } = "en";
     }
 }
