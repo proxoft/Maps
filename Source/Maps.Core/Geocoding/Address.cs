@@ -1,4 +1,6 @@
-﻿namespace Proxoft.Maps.Core.Geocoding
+﻿using Proxoft.Maps.Core.Api;
+
+namespace Proxoft.Maps.Core.Geocoding
 {
     public class Address
     {
@@ -16,8 +18,6 @@
 
         public string Zip { get; set; }
 
-        public decimal Latitude { get; set; }
-
-        public decimal Longitude { get; set; }
+        public LatLng LatLng { get; set; }
     }
 }

@@ -9,7 +9,9 @@
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
         <PackageId>Proxoft.Maps.OpenStreetMap.Maps</PackageId>
-        <Version>0.0.1</Version>
+        <Version>0.1.0</Version>
+        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
+        <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,6 +24,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\Map.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>

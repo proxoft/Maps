@@ -1,0 +1,91 @@
+﻿@page "/Geocoding"
+
+@using System
+@using System.Reactive.Threading.Tasks
+@using System.Reactive.Linq
+@using Proxoft.Extensions.Options
+@using Proxoft.Maps.Core.Api;
+@using Proxoft.Maps.Core.Geocoding
+
+
+<h3>Geocoding</h3>
+
+<div>
+    <input @bind-value="Search" />
+    <button @onclick="async () => await this.OnSearchClick()">Search</button>
+</div>
+
+<div>
+    @if (this.Result is Left<ErrorStatus, Address> error)
+    {
+        <span> @((ErrorStatus)error)</span>
+    }
+    else
+    {
+        <span>Address</span><br />
+        @Address.Street <br />
+        @Address.StreetNumber<br />
+        @Address.City <br />
+        @Address.Zip <br />
+        @Address.Country <br />
+        <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
+    }
+
+</div>
+
+<div class="map-container" @ref="MapHost"></div>
+
+@code {
+    [Inject]
+    IGeocoder Geocoder { get; set; }
+
+    [Inject]
+    IMapFactory MapFactory { get; set; }
+
+    private ElementReference MapHost { get; set; }
+
+    private IMap _map = Proxoft.Maps.Core.Api.Maps.NoMap.Instance;
+
+    private string Search { get; set; } = "Banska Bystrica";
+
+    private Either<ErrorStatus, Address> Result { get; set; } = ErrorStatus.ZeroResults;
+
+    private Address Address => (Right<ErrorStatus, Address>)this.Result;
+
+    private bool ShowError { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _map = await this.MapFactory.Initialize(new MapOptions {
+                Center = new LatLng
+                {
+                    Latitude = 48.569m,
+                    Longitude = 18.569m
+                },
+                Zoom = 9
+            }, this.MapHost);
+
+            _map.OnClick()
+                .Select(latLng =>
+                {
+                    Console.WriteLine($"latlng {latLng}");
+                    return this.Geocoder.Geocode(latLng.Latitude, latLng.Longitude).ToObservable();
+                })
+                .Concat()
+                .Subscribe(result =>
+                {
+                    this.Result = result;
+                    this.StateHasChanged();
+                });
+        }
+    }
+
+    private async Task OnSearchClick()
+    {
+        this.Result = await this.Geocoder.Geocode(this.Search);
+        this.StateHasChanged();
+    }
+}

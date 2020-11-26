@@ -86,9 +86,22 @@ namespace Proxoft.Maps.Google.Geocoding
                 RegisterNumber = registerNumber,
                 StreetNumber = streetNumber,
                 Zip = zip,
-                Latitude = latitude,
-                Longitude = longitude
+                LatLng = new Core.Api.LatLng
+                {
+                    Latitude = latitude,
+                    Longitude = longitude
+                }
             };
+        }
+
+        public Task<Either<ErrorStatus, Core.Api.LatLng>> Geocode(Address address)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Either<ErrorStatus, Address>> Geocode(Core.Api.LatLng latLng)
+        {
+            throw new NotImplementedException();
         }
     }
 }
