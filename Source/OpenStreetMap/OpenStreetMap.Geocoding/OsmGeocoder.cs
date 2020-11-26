@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.Api;
@@ -12,8 +12,9 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 {
     public sealed class OsmGeocoder : IGeocoder, IDisposable
     {
-        private readonly OpenStreetMapOptions _options;
         private readonly IOsmResultParser _parser;
+        private readonly string _resultParameters;
+
         private readonly HttpClient _http = new()
         {
             BaseAddress= new Uri("https://nominatim.openstreetmap.org/")
@@ -21,41 +22,84 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 
         public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
         {
-            _options = options;
             _parser = parser;
+            _resultParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
         }
 
         public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(string location)
         {
             try
             {
-                var response = await _http.GetStringAsync($"search?addressdetails=1&format=json&accept-language={_options.Language}&q={location}");
-                Result[] results = JsonSerializer.Deserialize<Result[]>(response);
-
-                if(results.Length == 0)
-                {
-                    return ErrorStatus.ZeroResults;
-                }
-
-                var address = _parser.Parse(results[0]);
-                return address;
+                var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&q={location}");
+                return this.ParseResults(response);
             }
-            catch(Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                Console.Write(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        public Task<Either<ErrorStatus, LatLng>> Geocode(Core.Geocoding.Address address)
+        public async Task<Either<ErrorStatus, LatLng>> Geocode(Core.Geocoding.Address address)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&city={address.City}");
+                return ErrorStatus.UnknownError;
+            }
+            catch
+            {
+                return ErrorStatus.UnknownError;
+            }
         }
 
-        public Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(decimal latitude, decimal longitude)
+        public Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(LatLng latLng)
+            => this.Geocode(latLng.Latitude, latLng.Longitude);
+
+        public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(decimal latitude, decimal longitude)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var json = await _http.GetStringAsync($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
+                Console.WriteLine(json);
+                var response = await _http.GetFromJsonAsync<Result>($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
+                return this.ParseResult(response);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return ErrorStatus.UnknownError;
+            }
+        }
+
+        private Either<ErrorStatus, Core.Geocoding.Address> ParseResults(Result[] results)
+        {
+            try
+            {
+                if (results.Length == 0)
+                {
+                    return ErrorStatus.ZeroResults;
+                }
+
+                var address = this.ParseResult(results[0]);
+                return address;
+            }
+            catch
+            {
+                return ErrorStatus.UnknownError;
+            }
+        }
+
+        private Either<ErrorStatus, Core.Geocoding.Address> ParseResult(Result result)
+        {
+            try
+            {
+                var address = _parser.Parse(result);
+                return address;
+            }
+            catch
+            {
+                return ErrorStatus.UnknownError;
+            }
         }
 
         public void Dispose()

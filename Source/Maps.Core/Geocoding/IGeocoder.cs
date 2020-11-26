@@ -10,6 +10,8 @@ namespace Proxoft.Maps.Core.Geocoding
 
         Task<Either<ErrorStatus, LatLng>> Geocode(Address address);
 
+        Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng);
+
         Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude);
     }
 }

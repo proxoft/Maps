@@ -98,5 +98,10 @@ namespace Proxoft.Maps.Google.Geocoding
         {
             throw new NotImplementedException();
         }
+
+        public Task<Either<ErrorStatus, Address>> Geocode(Core.Api.LatLng latLng)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
