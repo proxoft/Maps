@@ -33,7 +33,8 @@ export function ZoomTo(mapId, zoom) {
 
 export function FitBounds(mapId, bounds, padding, zoom) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.map.fitBounds([
+    wrapper.map.fitBounds(
+        [
             [bounds.southWest.latitude, bounds.southWest.longitude],
             [bounds.northEast.latitude, bounds.northEast.longitude]
         ],
@@ -121,22 +122,32 @@ function createMapWrapper(mapId, map, netRef) {
 
         addMarker: function () {
             return 1;
+        },
+
+        invokeRef: function (...args) {
+            try {
+                wrapper.ref.invokeMethodAsync(...args);
+            }
+            catch(e)
+            {
+                console.log(e);
+            }
         }
     };
 
     map.on("moveend", () => {
         let center = map.getCenter();
-        wrapper.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+        wrapper.invokeRef("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
     });
 
     map.on("zoomend", () => {
         let zoom = map.getZoom();
-        wrapper.ref.invokeMethodAsync("OnZoomChanged", zoom);
+        wrapper.invokeRef("OnZoomChanged", zoom);
     });
 
     map.on("click", (e) => {
         let latlng = { latitude: e.latlng.lat, longitude: e.latlng.lng };
-        wrapper.ref.invokeMethodAsync("OnMapClicked", latlng);
+        wrapper.invokeRef("OnMapClicked", latlng);
     });
 
     return wrapper;
