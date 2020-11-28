@@ -15,10 +15,17 @@
 </div>
 
 <div>
+    <button @onclick="SetCenterClick">Set Center</button>
+    <span>Lat:</span><input @bind-value="CenterLat" />
+    <span>Lng:</span><input @bind-value="CenterLng" />
+</div>
+
+<div>
     <button @onclick="PanToClick">PanTo</button>
     <span>Lat:</span><input @bind-value="PanLat" />
-    <span>Lng:</span><input @bind-value="PanLng"/>
+    <span>Lng:</span><input @bind-value="PanLng" />
 </div>
+
 <div>
     <button @onclick="ZoomToClick">Zoom</button>
     <span>Zoom:</span><input @bind-value="Zoom" />
@@ -54,7 +61,16 @@
 
     private decimal PanLat { get; set; } = 48.15m;
     private decimal PanLng { get; set; } = 17.6m;
+
+    private decimal CenterLat { get; set; } = 48.15m;
+    private decimal CenterLng { get; set; } = 17.6m;
+
     private int Zoom { get; set; } = 7;
+
+    private void SetCenterClick()
+    {
+        _map.SetCenter(new LatLng { Latitude = CenterLat, Longitude = CenterLng });
+    }
 
     private void PanToClick()
     {
