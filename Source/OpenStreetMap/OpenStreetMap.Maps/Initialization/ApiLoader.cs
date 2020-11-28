@@ -10,7 +10,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
        
 
         private readonly DotNetObjectReference<ApiLoader> _netObjRef;
-        private TaskCompletionSource<ApiStatus> _taskCompletionSource;
+        private TaskCompletionSource<LoadResponse> _taskCompletionSource;
 
         public ApiLoader(IJSRuntime jsRuntime)
         {
@@ -20,9 +20,9 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
 
         }
 
-        public async Task<ApiStatus> LoadGoogleScripts()
+        public async Task<LoadResponse> LoadGoogleScripts()
         {
-            _taskCompletionSource = new TaskCompletionSource<ApiStatus>();
+            _taskCompletionSource = new TaskCompletionSource<LoadResponse>();
 
             var v = await _moduleTask.Value;
             await v.InvokeVoidAsync("addOpenStreetMapScripts", new object[] { _netObjRef });
@@ -34,9 +34,9 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
         [JSInvokable]
         public void NotifyLoadScriptStatus(string status)
         {
-            if(!Enum.TryParse<ApiStatus>(status, out var apiStatus))
+            if(!Enum.TryParse<LoadResponse>(status, out var apiStatus))
             {
-                apiStatus = ApiStatus.FatalError;
+                apiStatus = LoadResponse.FatalError;
             }
 
             _taskCompletionSource.SetResult(apiStatus);

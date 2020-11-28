@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 
-namespace Proxoft.Maps.Core.Api.Markers
+namespace Proxoft.Maps.Core.Api
 {
     public sealed class NoMarker : IMarker
     {

@@ -1,6 +1,6 @@
 ﻿namespace Proxoft.Maps.Google.Maps.Initialization
 {
-    public enum ApiStatus
+    public enum LoadResponse
     {
         None,
         Loaded,

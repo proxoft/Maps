@@ -5,6 +5,8 @@ namespace Proxoft.Maps.Core.Api.Maps
     public abstract class MapBase<T> : ApiBaseObject<T>, IMap
         where T: MapBase<T>
     {
+        public ApiStatus Status => ApiStatus.Available;
+
         protected MapBase(IJSInProcessObjectReference jsModule) : base(jsModule)
         {
         }

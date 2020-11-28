@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Proxoft.Extensions.Options;
+using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Geocoding;
 using Proxoft.Maps.Google.Common;
 
@@ -21,6 +22,8 @@ namespace Proxoft.Maps.Google.Geocoding
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+
+        public ApiStatus Status => ApiStatus.Available;
 
         public GoogleGeocoder(GoogleApiConfiguration configuration)
         {

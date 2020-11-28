@@ -1,6 +1,6 @@
 ﻿namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
 {
-    public enum ApiStatus
+    public enum LoadResponse
     {
         None,
         Loaded,

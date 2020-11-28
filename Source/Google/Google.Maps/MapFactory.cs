@@ -31,7 +31,7 @@ namespace Proxoft.Maps.Google.Maps
         public async Task<IMap> Initialize(string elementId, MapOptions options)
         {
             var status = await _api.LoadGoogleScripts(_configuration);
-            if (status != ApiStatus.Loaded)
+            if (status != LoadResponse.Loaded)
             {
                 return NoMap.Instance;
             }
