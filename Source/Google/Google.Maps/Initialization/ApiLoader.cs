@@ -11,7 +11,7 @@ namespace Proxoft.Maps.Google.Maps.Initialization
        
 
         private readonly DotNetObjectReference<ApiLoader> _netObjRef;
-        private TaskCompletionSource<ApiStatus> _taskCompletionSource;
+        private TaskCompletionSource<LoadResponse> _taskCompletionSource;
 
         public ApiLoader(IJSRuntime jsRuntime)
         {
@@ -21,11 +21,11 @@ namespace Proxoft.Maps.Google.Maps.Initialization
 
         }
 
-        public async Task<ApiStatus> LoadGoogleScripts(GoogleApiConfiguration configuration)
+        public async Task<LoadResponse> LoadGoogleScripts(GoogleApiConfiguration configuration)
         {
             Console.WriteLine(configuration.ApiKey);
 
-            _taskCompletionSource = new TaskCompletionSource<ApiStatus>();
+            _taskCompletionSource = new TaskCompletionSource<LoadResponse>();
 
             var v = await _moduleTask.Value;
             await v.InvokeVoidAsync("addGoogleMapsScripts", new object[] { configuration.ApiKey, configuration.Language, _netObjRef });
@@ -37,9 +37,9 @@ namespace Proxoft.Maps.Google.Maps.Initialization
         [JSInvokable]
         public void NotifyLoadScriptStatus(string status)
         {
-            if(!Enum.TryParse<ApiStatus>(status, out var apiStatus))
+            if(!Enum.TryParse<LoadResponse>(status, out var apiStatus))
             {
-                apiStatus = ApiStatus.FatalError;
+                apiStatus = LoadResponse.FatalError;
             }
 
             _taskCompletionSource.SetResult(apiStatus);

@@ -31,8 +31,8 @@
     private bool _draggable = true;
     private Opacity _opacity = Opacity.Visible;
 
-    private IMap _map = Proxoft.Maps.Core.Api.Maps.NoMap.Instance;
-    private IMarker _marker = Proxoft.Maps.Core.Api.Markers.NoMarker.Instance;
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
 
     [Inject]
     public IMapFactory MapFactory { get; set; }

@@ -19,6 +19,8 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
 
         public IObservable<Event> OnEvent => throw new NotImplementedException();
 
+        public ApiStatus Status => ApiStatus.Available;
+
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
             => _onCenter.OnNext(latLng);

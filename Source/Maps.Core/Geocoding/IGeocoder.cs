@@ -6,6 +6,8 @@ namespace Proxoft.Maps.Core.Geocoding
 {
     public interface IGeocoder
     {
+        ApiStatus Status { get; }
+
         Task<Either<ErrorStatus, Address>> Geocode(string location);
 
         Task<Either<ErrorStatus, LatLng>> Geocode(Address address);

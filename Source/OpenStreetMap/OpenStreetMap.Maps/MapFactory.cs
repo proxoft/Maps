@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
-using Proxoft.Maps.Core.Api.Maps;
 using Proxoft.Maps.OpenStreetMap.Maps.Initialization;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Maps;
 
@@ -28,7 +27,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
         public async Task<IMap> Initialize(MapOptions options, ElementReference hostElement)
         {
             var status = await _api.LoadGoogleScripts();
-            if (status != ApiStatus.Loaded)
+            if (status != LoadResponse.Loaded)
             {
                 return NoMap.Instance;
             }

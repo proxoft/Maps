@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
-using Proxoft.Maps.Core.Api.Markers;
 
-namespace Proxoft.Maps.Core.Api.Maps
+namespace Proxoft.Maps.Core.Api
 {
     public sealed class NoMap : IMap
     {
@@ -13,6 +12,8 @@ namespace Proxoft.Maps.Core.Api.Maps
         }
 
         public IObservable<Event> OnEvent => Observable.Never<Event>();
+
+        public ApiStatus Status => ApiStatus.NotAvailable;
 
         public IMarker AddMarker(MarkerOptions options)
             => NoMarker.Instance;

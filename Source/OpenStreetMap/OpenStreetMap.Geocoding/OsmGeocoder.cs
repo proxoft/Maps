@@ -20,6 +20,8 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
             BaseAddress= new Uri("https://nominatim.openstreetmap.org/")
         };
 
+        public ApiStatus Status => ApiStatus.Available;
+
         public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
         {
             _parser = parser;
