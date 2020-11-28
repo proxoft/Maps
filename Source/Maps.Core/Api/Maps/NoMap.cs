@@ -22,11 +22,23 @@ namespace Proxoft.Maps.Core.Api
         {
         }
 
+        public void FitBounds(LatLngBounds bounds)
+        {
+        }
+
+        public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
+        {
+        }
+
         public void PanTo(LatLng center)
         {
         }
 
-        public void ZoomTo(int zoom)
+        public void SetCenter(LatLng position)
+        {
+        }
+
+        public void ZoomTo(ZoomLevel zoom)
         {
         }
     }

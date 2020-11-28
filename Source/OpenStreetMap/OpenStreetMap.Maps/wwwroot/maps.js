@@ -31,6 +31,19 @@ export function ZoomTo(mapId, zoom) {
     wrapper.map.setZoom(zoom);
 }
 
+export function FitBounds(mapId, bounds, padding, zoom) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.map.fitBounds([
+            [bounds.southWest.latitude, bounds.southWest.longitude],
+            [bounds.northEast.latitude, bounds.northEast.longitude]
+        ],
+        [
+            [padding.top, padding.left]
+            [padding.bottom, padding.right]
+        ],
+        zoom || null);
+}
+
 function findMapWrapper(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
     return i === -1

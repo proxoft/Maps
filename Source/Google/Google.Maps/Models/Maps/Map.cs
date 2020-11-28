@@ -63,5 +63,25 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         {
             throw new NotImplementedException();
         }
+
+        public void SetCenter(LatLng position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ZoomTo(ZoomLevel zoom)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FitBounds(LatLngBounds bounds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace Proxoft.Maps.Core.Api
             this.JsModule = jsModule;
         }
 
-        public IJSInProcessObjectReference JsModule { get; }
+        protected IJSInProcessObjectReference JsModule { get; }
 
         public IObservable<Event> OnEvent => _events;
 

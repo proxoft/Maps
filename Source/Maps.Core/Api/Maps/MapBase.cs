@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Linq;
+using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Maps
 {
@@ -7,13 +8,27 @@ namespace Proxoft.Maps.Core.Api.Maps
     {
         public ApiStatus Status => ApiStatus.Available;
 
-        protected MapBase(IJSInProcessObjectReference jsModule) : base(jsModule)
+        protected string MapId { get; }
+
+        protected MapBase(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
         {
+            this.MapId = mapId;
         }
 
-        public abstract void PanTo(LatLng center);
+        public void PanTo(LatLng center)
+            => this.InvokeMapJs("PanTo", center);
 
-        public abstract void ZoomTo(int zoom);
+        public void SetCenter(LatLng position)
+            => this.InvokeMapJs("SetCenter", position);
+
+        public void ZoomTo(ZoomLevel zoom)
+            => this.InvokeMapJs("ZoomTo", zoom.Value);
+
+        public void FitBounds(LatLngBounds bounds)
+            => this.FitBounds(bounds, Padding.Zero, null);
+
+        public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
+            => this.InvokeMapJs("FitBounds", bounds, padding, zoom?.Value ?? null);
 
         public abstract IMarker AddMarker(MarkerOptions options);
 
@@ -29,16 +44,17 @@ namespace Proxoft.Maps.Core.Api.Maps
         public void OnMapClicked(LatLng latLng)
             => this.Push(new MapClickEvent(latLng));
 
-        protected abstract void Remove();
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this.Remove();
+                this.InvokeMapJs("Remove");
             }
 
             base.Dispose(disposing);
         }
+
+        protected void InvokeMapJs(string method, params object[] args)
+            => this.InvokeVoidJs(method, new object[] { this.MapId }.Concat(args).ToArray());
     }
 }

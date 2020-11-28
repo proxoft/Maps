@@ -8,10 +8,15 @@ namespace Proxoft.Maps.Core.Api
 
         IObservable<Event> OnEvent { get; }
 
-        void PanTo(LatLng center);
+        void SetCenter(LatLng position);
 
-        void ZoomTo(int zoom);
+        void PanTo(LatLng position);
+
+        void ZoomTo(ZoomLevel zoom);
 
         IMarker AddMarker(MarkerOptions options);
+
+        void FitBounds(LatLngBounds bounds);
+        void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom);
     }
 }

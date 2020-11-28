@@ -63,7 +63,7 @@
 
     private void ZoomToClick()
     {
-        _map.ZoomTo(this.Zoom);
+        _map.ZoomTo(new ZoomLevel(this.Zoom));
     }
 
     private void AddLog(string logMessage)
