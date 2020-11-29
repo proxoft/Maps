@@ -4,11 +4,11 @@
 @using System.Reactive.Linq;
 @using Proxoft.Maps.Core.Api
 
-<div class="map-container" @ref="MapHost">
+<div style="width: 100%; height: 500px;" @ref="MapHost">
 </div>
 
 <div class="map-event-log">
-    @foreach (var l in MapLog)
+    @foreach (var l in MapLog.Reverse<string>())
     {
         <span>@l</span><br />
     }
@@ -54,6 +54,7 @@
 
             _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
             _map.OnEvent
+                .Where(e => !(e is MouseMoveEvent))
                 .Subscribe(e => this.AddLog(e.Name));
 
         }

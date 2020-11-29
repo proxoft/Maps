@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Maps
@@ -6,14 +7,20 @@ namespace Proxoft.Maps.Core.Api.Maps
     public abstract class MapBase<T> : ApiBaseObject<T>, IMap
         where T: MapBase<T>
     {
-        public ApiStatus Status => ApiStatus.Available;
-
-        protected string MapId { get; }
+        private readonly MapJsCallback _mapJsCallback;
 
         protected MapBase(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
         {
             this.MapId = mapId;
+            _mapJsCallback = new MapJsCallback(this.Push);
+            this.MapJsCallback = DotNetObjectReference.Create(_mapJsCallback);
         }
+
+        public ApiStatus Status => ApiStatus.Available;
+
+        protected string MapId { get; }
+
+        protected DotNetObjectReference<MapJsCallback> MapJsCallback { get; private set; }
 
         public void PanTo(LatLng center)
             => this.InvokeMapJs("PanTo", center);
@@ -32,22 +39,16 @@ namespace Proxoft.Maps.Core.Api.Maps
 
         public abstract IMarker AddMarker(MarkerOptions options);
 
-        [JSInvokable]
-        public void OnCenterChanged(LatLng latLng)
-            => this.Push(new CenterChangedEvent(latLng));
-
-        [JSInvokable]
-        public void OnZoomChanged(int zoom)
-            => this.Push(new ZoomChanged(zoom));
-
-        [JSInvokable]
-        public void OnMapClicked(LatLng latLng)
-            => this.Push(new MapClickEvent(latLng));
+        protected void Initialize(MapOptions options, ElementReference hostElement)
+        {
+            this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, this.MapJsCallback });
+        }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                _mapJsCallback.Dispose();
                 this.InvokeMapJs("Remove");
             }
 

@@ -22,8 +22,9 @@ namespace Proxoft.Maps.Core.Api
         public static readonly ZoomLevel Fifteen = new (15);
         public static readonly ZoomLevel Sixteen = new (16);
         public static readonly ZoomLevel Seventeen = new (17);
+        public static readonly ZoomLevel Eighteen = new (18);
 
-        public ZoomLevel(int value) : base(value, 0, 17)
+        public ZoomLevel(int value) : base(value, 0, 18)
         {
         }
     }

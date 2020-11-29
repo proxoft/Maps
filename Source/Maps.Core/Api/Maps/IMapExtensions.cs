@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Reactive.Linq;
 using Proxoft.Maps.Core.Api.Maps;
 
@@ -6,29 +7,19 @@ namespace Proxoft.Maps.Core.Api
 {
     public static class IMapExtensions
     {
-        public static IObservable<LatLng> OnCenter(this IMap map)
-            => map.OnEvent.OfType<CenterChangedEvent>().Select(e => e.Value);
-
-        public static IObservable<LatLng> OnCenter(this IMap map, Func<CenterChangedEvent, bool> filter)
+        public static IObservable<Size> OnResized(this IMap map, Func<ResizedEvent, bool> filter = null)
             => map.OnEvent
-                .OfType<CenterChangedEvent>()
-                .Where(e => filter(e))
+                .Filter(filter)
                 .Select(e => e.Value);
 
-        public static IObservable<int> OnZoom(this IMap map)
+        public static IObservable<LatLng> OnCenter(this IMap map, Func<CenterChangedEvent, bool> filter = null)
             => map.OnEvent
-                .OfType<ZoomChanged>()
+                .Filter(filter)
                 .Select(e => e.Value);
 
-        public static IObservable<int> OnZoom(this IMap map, Func<ZoomChanged, bool> filter)
+        public static IObservable<ZoomLevel> OnZoom(this IMap map, Func<ZoomChanged, bool> filter = null)
             => map.OnEvent
-                .OfType<ZoomChanged>()
-                .Where(e => filter(e))
-                .Select(e => e.Value);
-
-        public static IObservable<LatLng> OnClick(this IMap map)
-            => map.OnEvent
-                .OfType<MapClickEvent>()
+                .Filter(filter)
                 .Select(e => e.Value);
     }
 }

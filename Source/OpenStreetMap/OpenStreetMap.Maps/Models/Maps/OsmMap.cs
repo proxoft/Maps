@@ -11,13 +11,8 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
     {
         private readonly List<OsmMarker> _markers = new();
 
-        public OsmMap(string mapId, IJSInProcessObjectReference jsModule) : base(mapId, jsModule)
+        private OsmMap(string mapId, IJSInProcessObjectReference jsModule) : base(mapId, jsModule)
         {
-        }
-
-        private void Initialize(MapOptions options, ElementReference hostElement)
-        {
-            this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, this.SelfRef });
         }
 
         public override IMarker AddMarker(MarkerOptions options)

@@ -18,7 +18,8 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
 
 export function Remove(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
-    mapWrappers.splice(i, 1);
+    let wrapper = mapWrappers.splice(i, 1);
+    wrapper[0].map.remove();
 }
 
 export function PanTo(mapId, center) {
@@ -140,20 +141,62 @@ function createMapWrapper(mapId, map, netRef) {
         }
     };
 
+
+    //-- mouse events
+    map.on("click", (e) => {
+        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("dblclick", (e) => {
+        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mousedown", (e) => {
+        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseup", (e) => {
+        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseover", (e) => {
+        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mousemove", (e) => {
+        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseout", (e) => {
+        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+    //------------------------
+
+    //--map events------------
+    map.on("resize", (e) => {
+        wrapper.invokeRef("OnResized", e.newSize);
+    });
+
+    map.on("move", () => {
+        let center = map.getCenter();
+        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng } )
+    });
+
     map.on("moveend", () => {
         let center = map.getCenter();
         wrapper.invokeRef("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+    });
+
+    map.on("zoom", () => {
+        let zoom = map.getZoom();
+        wrapper.invokeRef("OnZoomChanging", zoom);
     });
 
     map.on("zoomend", () => {
         let zoom = map.getZoom();
         wrapper.invokeRef("OnZoomChanged", zoom);
     });
-
-    map.on("click", (e) => {
-        let latlng = { latitude: e.latlng.lat, longitude: e.latlng.lng };
-        wrapper.invokeRef("OnMapClicked", latlng);
-    });
+    //------------------------
 
     return wrapper;
 }

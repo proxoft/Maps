@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Proxoft.Maps.Core.Api.Core;
 
 namespace Proxoft.Maps.Core.Api
 {
-    public interface IMap : IDisposable
+    public interface IMap : IApiObject
     {
         ApiStatus Status { get; }
-
-        IObservable<Event> OnEvent { get; }
 
         void SetCenter(LatLng position);
 
