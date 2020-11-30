@@ -8,7 +8,7 @@ using Proxoft.Maps.Core.Api.Maps;
 
 namespace Sample.Maps.Pages
 {
-    public partial class TwoMaps : IDisposable
+    public sealed partial class TwoMaps : IDisposable
     {
         private IMap _map1;
         private IMap _map2;
@@ -52,7 +52,7 @@ namespace Sample.Maps.Pages
                         this.StateHasChanged();
                     });
 
-                _map1.AddMarker(new MarkerOptions { Position = center });
+                _map1.AddMarker(new MarkerOptions { Position = center, TraceJs = true });
 
                 _map2 = await MapFactory.Initialize(new MapOptions
                 {

@@ -20,10 +20,10 @@ namespace Proxoft.Maps.Core.Api
         protected void Push(Event @event)
             => _events.OnNext(@event);
 
-        protected void InvokeVoidJs(string identifier, params object[] args)
+        protected virtual void InvokeVoidJs(string identifier, params object[] args)
             => JsModule.InvokeVoid(identifier, args);
 
-        protected TResult InvokeJs<TResult>(string identifier, params object[] args)
+        protected virtual TResult InvokeJs<TResult>(string identifier, params object[] args)
             => JsModule.Invoke<TResult>(identifier, args);
 
         public void Dispose()

@@ -82,15 +82,16 @@ function createMapOnElement(options, hostElement) {
 export function AddMarker(markerId, options, mapId, netRef) {
     let mapWrapper = findMapWrapper(mapId);
 
-    let marker = L.marker([options.position.latitude, options.position.longitude], { opacity: options.opacity.value });
+    let marker = L.marker([options.position.latitude, options.position.longitude], {
+        draggable: options.draggable,
+        opacity: options.opacity.value
+    });
     mapWrapper.map.addLayer(marker);
 
     let markerWrapper = createMarkerWrapper(markerId, marker, mapWrapper.map, netRef, options.traceJs);
     markerWrappers.push(markerWrapper);
 
-    markerWrapper.log("added to the map");
-
-    SetMarkerDraggable(markerId, options.draggable);
+    markerWrapper.log(`Added to the map ${mapId}`);
 }
 
 export function RemoveMarker(markerId) {
@@ -156,7 +157,7 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
             if (enableLogging) {
                 return;
             }
-            console.log(`[Map ${mapId}]`)
+            console.log(`[Map ${mapId}]`);
             console.log(m);
         }
     };
@@ -164,31 +165,31 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
 
     //-- mouse events
     map.on("click", (e) => {
-        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("dblclick", (e) => {
-        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mousedown", (e) => {
-        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseup", (e) => {
-        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseover", (e) => {
-        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mousemove", (e) => {
-        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseout", (e) => {
-        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
     //------------------------
 
