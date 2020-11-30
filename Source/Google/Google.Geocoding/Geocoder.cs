@@ -106,5 +106,10 @@ namespace Proxoft.Maps.Google.Geocoding
         {
             throw new NotImplementedException();
         }
+
+        public Task<Either<ErrorStatus, Core.Api.LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
