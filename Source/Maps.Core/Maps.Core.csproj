@@ -9,7 +9,7 @@
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
         <PackageIcon>Map.png</PackageIcon>
-        <Version>0.4.1</Version>
+        <Version>0.5.2</Version>
     </PropertyGroup>
 
     <ItemGroup>

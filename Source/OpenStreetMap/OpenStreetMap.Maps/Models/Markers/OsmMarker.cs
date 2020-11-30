@@ -5,8 +5,26 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Markers
 {
     internal class OsmMarker : MarkerBase<OsmMarker>, IMarker
     {
-        public OsmMarker(string markerId, IJSInProcessObjectReference jsModule) : base(markerId, jsModule)
+        private readonly Hooks _hooks;
+
+        public OsmMarker(
+            string markerId,
+            IJSInProcessObjectReference jsModule,
+            Hooks hooks) : base(markerId, jsModule)
         {
+            _hooks = hooks ?? new Hooks();
+        }
+
+        public override void Remove()
+        {
+            base.Remove();
+
+            if (this.IsRemoved)
+            {
+                return;
+            }
+
+            _hooks?.OnRemove(this.MarkerId);
         }
     }
 }

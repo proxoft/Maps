@@ -6,7 +6,6 @@ namespace Proxoft.Maps.Core.Api
     public abstract class MarkerBase<T> : ApiBaseObject<T>, IMarker
         where T : MarkerBase<T>
     {
-        private bool _isRemoved;
         private readonly MarkerJsCallback _jsCallback;
 
         protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(jsModule)
@@ -16,7 +15,8 @@ namespace Proxoft.Maps.Core.Api
             this.MarkerId = markerId;
         }
 
-        protected string MarkerId { get; }
+        public string MarkerId { get; }
+        public bool IsRemoved { get; private set; }
 
         protected DotNetObjectReference<MarkerJsCallback> JsCallback { get; private set; }
 
@@ -24,7 +24,7 @@ namespace Proxoft.Maps.Core.Api
          => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
 
         public void AddToMap(string mapId, MarkerOptions options)
-            => this.InvokeVoidJs("CreateMarker", this.MarkerId, options, mapId, this.JsCallback);
+            => this.InvokeVoidJs("AddMarker", this.MarkerId, options, mapId, this.JsCallback);
 
         public void SetDraggable(bool draggable)
             => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
@@ -35,15 +35,35 @@ namespace Proxoft.Maps.Core.Api
         public void SetPosition(LatLng latLng)
             => this.InvokeVoidJs("SetMarkerPosition", this.MarkerId, latLng);
 
-        public void Remove()
+        public virtual void Remove()
         {
-            if (_isRemoved)
+            if (IsRemoved)
             {
                 return;
             }
 
-            _isRemoved = true;
             this.InvokeVoidJs("RemoveMarker", this.MarkerId);
+            IsRemoved = true;
+        }
+
+        protected override void InvokeVoidJs(string identifier, params object[] args)
+        {
+            if (this.IsRemoved)
+            {
+                throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
+            }
+
+            base.InvokeVoidJs(identifier, args);
+        }
+
+        protected override TResult InvokeJs<TResult>(string identifier, params object[] args)
+        {
+            if (this.IsRemoved)
+            {
+                throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
+            }
+
+            return base.InvokeJs<TResult>(identifier, args);
         }
 
         protected override void Dispose(bool disposing)

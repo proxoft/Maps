@@ -77,11 +77,15 @@
                 Longitude = this.Lng
             };
 
-            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
+            _map = await this.MapFactory.Initialize(
+                new MapOptions { Center = center, Zoom = 7, TraceJs = true },
+                this.MapHost);
+
             _marker = _map.AddMarker(new MarkerOptions() {
                 Position = center,
                 Draggable = _draggable,
-                Opacity = _opacity
+                Opacity = _opacity,
+                TraceJs = true
             });
 
             _marker.OnEvent
@@ -110,6 +114,8 @@
 
     public void Dispose()
     {
+        Console.WriteLine("Disposing");
+
         _marker.Dispose();
         _map.Dispose();
     }

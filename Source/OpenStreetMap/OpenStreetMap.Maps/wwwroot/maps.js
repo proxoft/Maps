@@ -11,7 +11,8 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
 
     let map = createMapOnElement(options, hostElement);
 
-    wrapper = createMapWrapper(mapId, map, netRef);
+    wrapper = createMapWrapper(mapId, map, netRef, options.traceJs);
+    wrapper.log("initialized");
 
     mapWrappers.push(wrapper);
 }
@@ -20,25 +21,30 @@ export function Remove(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
     let wrapper = mapWrappers.splice(i, 1);
     wrapper[0].map.remove();
+    wrapper[0].log("removed");
 }
 
 export function PanTo(mapId, center) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log($`panTo ${center.latitude} ${center.longitude}`);
     wrapper.map.panTo([center.latitude, center.longitude]);
 }
 
 export function ZoomTo(mapId, zoom) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log($`zoomTo ${zoom}`);
     wrapper.map.setZoom(zoom);
 }
 
 export function SetCenter(mapId, center) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log($`set center ${center.latitude} ${center.longitude}`);
     wrapper.map.setView([center.latitude, center.longitude]);
 }
 
 export function FitBounds(mapId, bounds, padding, zoom) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log($`fitBounds SW: ${bounds.southWest.latitude} ${bounds.southWest.longitude} NE: ${bounds.northEast.latitude} ${bounds.northEast.longitude}`);
     wrapper.map.fitBounds(
         [
             [bounds.southWest.latitude, bounds.southWest.longitude],
@@ -73,44 +79,48 @@ function createMapOnElement(options, hostElement) {
 
 //--Markers--------------------------------------
 
-export function CreateMarker(markerId, options, mapId, netRef) {
+export function AddMarker(markerId, options, mapId, netRef) {
     let mapWrapper = findMapWrapper(mapId);
 
-    let marker = L.marker([options.position.latitude, options.position.longitude], { opacity: options.opacity.value });
+    let marker = L.marker([options.position.latitude, options.position.longitude], {
+        draggable: options.draggable,
+        opacity: options.opacity.value
+    });
     mapWrapper.map.addLayer(marker);
 
-    if (options.draggable) {
-        marker.dragging.enable();
-    }
-
-    let markerWrapper = createMarkerWrapper(markerId, marker, mapWrapper.map, netRef);
+    let markerWrapper = createMarkerWrapper(markerId, marker, mapWrapper.map, netRef, options.traceJs);
     markerWrappers.push(markerWrapper);
+
+    markerWrapper.log(`Added to the map ${mapId}`);
 }
 
 export function RemoveMarker(markerId) {
     let i = markerWrappers.findIndex(me => me.markerid = markerId);
-    let wrapper = mapWrappers.splice(i, 1);
-    wrapper.marker.remove();
+    let wrapper = markerWrappers.splice(i, 1);
+    wrapper[0].log("removing from map");
+    wrapper[0].marker.remove();
 }
 
 export function SetMarkerDraggable(markerId, draggable) {
     let wrapper = findMarkerWrapper(markerId);
     if (draggable) {
+        wrapper.log("set dragging enabled");
         wrapper.marker.dragging.enable();
     } else {
+        wrapper.log("set dragging disabled");
         wrapper.marker.dragging.disable();
     }
 }
 
 export function SetMarkerPosition(markerId, position) {
     let wrapper = findMarkerWrapper(markerId);
-
+    wrapper.log(`setting position ${position.latitude} : ${position.longitude}`);
     wrapper.marker.setLatLng([position.latitude, position.longitude]);
 }
 
 export function SetMarkerOpacity(markerId, opacity) {
     let wrapper = findMarkerWrapper(markerId);
-
+    wrapper.log(`setting opacity ${opacity}`);
     wrapper.marker.setOpacity(opacity);
 }
 
@@ -123,7 +133,7 @@ function findMarkerWrapper(markerId) {
 
 //-----------------------------------------------
 
-function createMapWrapper(mapId, map, netRef) {
+function createMapWrapper(mapId, map, netRef, enableLogging) {
     let wrapper = {
         mapId: mapId,
         map: map,    // map instance
@@ -141,37 +151,45 @@ function createMapWrapper(mapId, map, netRef) {
             {
                 console.log(e);
             }
+        },
+
+        log: function (m) {
+            if (enableLogging) {
+                return;
+            }
+            console.log(`[Map ${mapId}]`);
+            console.log(m);
         }
     };
 
 
     //-- mouse events
     map.on("click", (e) => {
-        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("dblclick", (e) => {
-        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mousedown", (e) => {
-        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseup", (e) => {
-        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseover", (e) => {
-        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mousemove", (e) => {
-        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
     map.on("mouseout", (e) => {
-        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
     //------------------------
 
@@ -204,7 +222,7 @@ function createMapWrapper(mapId, map, netRef) {
     return wrapper;
 }
 
-function createMarkerWrapper(markerId, marker, map, netRef) {
+function createMarkerWrapper(markerId, marker, map, netRef, enableLogging) {
 
     let wrapper = {
         markerId: markerId,
@@ -219,6 +237,14 @@ function createMarkerWrapper(markerId, marker, map, netRef) {
             catch (e) {
                 console.log(e);
             }
+        },
+
+        log: function (m) {
+            if (!enableLogging) {
+                return;
+            }
+            console.log("[Marker " + markerId + "]:");
+            console.log(m)
         }
     };
 
