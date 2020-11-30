@@ -44,7 +44,7 @@ export function SetCenter(mapId, center) {
 
 export function FitBounds(mapId, bounds, padding, zoom) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log($`fitBounds SW: ${bounds.southWest.latitude} ${bounds.southWest.longitude} NE: ${bounds.northEast.latitude} ${bounds.northEast.longitude}`);
+    wrapper.log(`fitBounds SW: ${bounds.southWest.latitude} ${bounds.southWest.longitude} NE: ${bounds.northEast.latitude} ${bounds.northEast.longitude}`);
     wrapper.map.fitBounds(
         [
             [bounds.southWest.latitude, bounds.southWest.longitude],
