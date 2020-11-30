@@ -24,7 +24,7 @@ namespace Proxoft.Maps.Core.Api
          => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
 
         public void AddToMap(string mapId, MarkerOptions options)
-            => this.InvokeVoidJs("CreateMarker", this.MarkerId, options, mapId, this.JsCallback);
+            => this.InvokeVoidJs("AddMarker", this.MarkerId, options, mapId, this.JsCallback);
 
         public void SetDraggable(bool draggable)
             => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);

@@ -7,6 +7,8 @@ namespace Proxoft.Maps.Core.Api.Maps
     public abstract class MapBase<T> : ApiBaseObject<T>, IMap
         where T: MapBase<T>
     {
+        private bool _isRemoved;
+
         private readonly MapJsCallback _mapJsCallback;
 
         protected MapBase(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
@@ -39,6 +41,17 @@ namespace Proxoft.Maps.Core.Api.Maps
 
         public abstract IMarker AddMarker(MarkerOptions options);
 
+        public void Remove()
+        {
+            if (_isRemoved)
+            {
+                return;
+            }
+
+            _isRemoved = true;
+            this.InvokeMapJs("Remove");
+        }
+
         protected void Initialize(MapOptions options, ElementReference hostElement)
         {
             this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, this.MapJsCallback });
@@ -49,7 +62,7 @@ namespace Proxoft.Maps.Core.Api.Maps
             if (disposing)
             {
                 _mapJsCallback.Dispose();
-                this.InvokeMapJs("Remove");
+                this.Remove();
             }
 
             base.Dispose(disposing);

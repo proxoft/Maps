@@ -8,7 +8,7 @@ using Proxoft.Maps.Core.Api.Maps;
 
 namespace Sample.Maps.Pages
 {
-    public partial class TwoMaps
+    public partial class TwoMaps : IDisposable
     {
         private IMap _map1;
         private IMap _map2;
@@ -78,6 +78,12 @@ namespace Sample.Maps.Pages
         private void PanToClick()
         {
             _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
+        }
+
+        public void Dispose()
+        {
+            _map1.Dispose();
+            _map2.Dispose();
         }
     }
 }
