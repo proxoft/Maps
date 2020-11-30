@@ -33,12 +33,12 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing
             };
         }
 
-        private static string ToCountry(this Address address)
+        private static string ToCountry(this AddressDetail address)
         {
             return address.country ?? address.state;
         }
 
-        private static string ToCity(this Address address)
+        private static string ToCity(this AddressDetail address)
         {
             return address.village
                 ?? address.town
@@ -46,7 +46,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing
                 ?? address.municipality;
         }
 
-        private static string ToStreetNumber(this Address address)
+        private static string ToStreetNumber(this AddressDetail address)
         {
             return address.house_number
                 ?? address.house_name;

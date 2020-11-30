@@ -12,6 +12,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 {
     public sealed class OsmGeocoder : IGeocoder, IDisposable
     {
+        private readonly OpenStreetMapOptions _options;
         private readonly IOsmResultParser _parser;
         private readonly string _resultParameters;
 
@@ -24,55 +25,57 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 
         public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
         {
+            _options = options;
             _parser = parser;
             _resultParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
         }
 
-        public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(string location)
+        public async Task<Either<ErrorStatus, Address>> Geocode(string location)
         {
             try
             {
                 var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&q={location}");
                 return this.ParseResults(response);
             }
-            catch
+            catch(Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        public async Task<Either<ErrorStatus, LatLng>> Geocode(Core.Geocoding.Address address)
+        public async Task<Either<ErrorStatus, LatLng>> Geocode(Address address)
         {
             try
             {
                 var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&city={address.City}");
                 return ErrorStatus.UnknownError;
             }
-            catch
+            catch(Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        public Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(LatLng latLng)
+        public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
             => this.Geocode(latLng.Latitude, latLng.Longitude);
 
-        public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(decimal latitude, decimal longitude)
+        public async Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
         {
             try
             {
-                var json = await _http.GetStringAsync($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
-                var response = await _http.GetFromJsonAsync<Result>($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
+                var response = await _http.GetFromJsonAsync<Result>(FormattableString.Invariant($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}"));
                 return this.ParseResult(response);
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex);
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        private Either<ErrorStatus, Core.Geocoding.Address> ParseResults(Result[] results)
+        private Either<ErrorStatus, Address> ParseResults(Result[] results)
         {
             try
             {
@@ -84,21 +87,23 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
                 var address = this.ParseResult(results[0]);
                 return address;
             }
-            catch
+            catch(Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        private Either<ErrorStatus, Core.Geocoding.Address> ParseResult(Result result)
+        private Either<ErrorStatus, Address> ParseResult(Result result)
         {
             try
             {
                 var address = _parser.Parse(result);
                 return address;
             }
-            catch
+            catch(Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
@@ -106,6 +111,16 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
         public void Dispose()
         {
             _http.Dispose();
+        }
+
+        private void ConsoleLogException(Exception exception)
+        {
+            if (!_options.ConsoleLogExceptions)
+            {
+                return;
+            }
+
+            Console.WriteLine(exception);
         }
     }
 }
