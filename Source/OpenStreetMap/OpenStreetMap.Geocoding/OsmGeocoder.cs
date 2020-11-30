@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Geocoding;
@@ -12,6 +14,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 {
     public sealed class OsmGeocoder : IGeocoder, IDisposable
     {
+        private readonly OpenStreetMapOptions _options;
         private readonly IOsmResultParser _parser;
         private readonly string _resultParameters;
 
@@ -24,46 +27,37 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 
         public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
         {
+            _options = options;
+            Console.WriteLine($"Logging to console: {_options.ConsoleLogExceptions}");
             _parser = parser;
             _resultParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
         }
 
-        public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(string location)
+        public async Task<Either<ErrorStatus, Address>> Geocode(string location)
         {
             try
             {
                 var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&q={location}");
                 return this.ParseResults(response);
             }
-            catch
+            catch(Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        public async Task<Either<ErrorStatus, LatLng>> Geocode(Core.Geocoding.Address address)
+        public async Task<Either<ErrorStatus, LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
         {
+            var searchParameters = string.Join("&", SearchParameters(city, street, streetNumber, country));
             try
             {
-                var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&city={address.City}");
-                return ErrorStatus.UnknownError;
-            }
-            catch
-            {
-                return ErrorStatus.UnknownError;
-            }
-        }
+                var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&{searchParameters}");
+                var maybe = this.ParseResults(response);
 
-        public Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(LatLng latLng)
-            => this.Geocode(latLng.Latitude, latLng.Longitude);
-
-        public async Task<Either<ErrorStatus, Core.Geocoding.Address>> Geocode(decimal latitude, decimal longitude)
-        {
-            try
-            {
-                var json = await _http.GetStringAsync($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
-                var response = await _http.GetFromJsonAsync<Result>($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
-                return this.ParseResult(response);
+                return maybe
+                    .Map(a => a.LatLng)
+                    .Reduce(error => (Left<ErrorStatus, LatLng>)error);
             }
             catch(Exception ex)
             {
@@ -72,7 +66,29 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
             }
         }
 
-        private Either<ErrorStatus, Core.Geocoding.Address> ParseResults(Result[] results)
+        public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
+            => this.Geocode(latLng.Latitude, latLng.Longitude);
+
+        public async Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
+        {
+            try
+            {
+                var response = await _http.GetFromJsonAsync<Result>(FormattableString.Invariant($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}"));
+                return this.ParseResult(response);
+            }
+            catch(Exception ex)
+            {
+                this.ConsoleLogException(ex);
+                return ErrorStatus.UnknownError;
+            }
+        }
+
+        public void Dispose()
+        {
+            _http.Dispose();
+        }
+
+        private Either<ErrorStatus, Address> ParseResults(Result[] results)
         {
             try
             {
@@ -84,28 +100,50 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
                 var address = this.ParseResult(results[0]);
                 return address;
             }
-            catch
+            catch (Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        private Either<ErrorStatus, Core.Geocoding.Address> ParseResult(Result result)
+        private Either<ErrorStatus, Address> ParseResult(Result result)
         {
             try
             {
                 var address = _parser.Parse(result);
                 return address;
             }
-            catch
+            catch (Exception ex)
             {
+                this.ConsoleLogException(ex);
                 return ErrorStatus.UnknownError;
             }
         }
 
-        public void Dispose()
+        private static IEnumerable<string> SearchParameters(string city, string street, string streetNumber, string country)
         {
-            _http.Dispose();
+            yield return $"city={city}";
+
+            if (!string.IsNullOrWhiteSpace(street) || !string.IsNullOrWhiteSpace(streetNumber))
+            {
+                yield return $"street={streetNumber} {street}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(country))
+            {
+                yield return $"country={country}";
+            }
+        }
+
+        private void ConsoleLogException(Exception exception)
+        {
+            if (!_options.ConsoleLogExceptions)
+            {
+                return;
+            }
+
+            Console.WriteLine(exception);
         }
     }
 }

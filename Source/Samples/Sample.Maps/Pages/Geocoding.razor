@@ -18,19 +18,30 @@
 <div>
     @if (this.Result is Left<ErrorStatus, Address> error)
     {
-        <span> @((ErrorStatus)error)</span>
+    <span> @((ErrorStatus)error)</span>
     }
     else
     {
-        <span>Address</span><br />
-        @Address.Street <br />
-        @Address.StreetNumber<br />
-        @Address.City <br />
-        @Address.Zip <br />
-        @Address.Country <br />
-        <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
+    <span>Address</span><br />
+    @Address.Street  <br />
+    @Address.StreetNumber<br />
+    @Address.City  <br />
+    @Address.Zip  <br />
+    @Address.Country  <br />
+    <span>@Address.LatLng.Latitude</span>  <span>@Address.LatLng.Longitude</span>
     }
 
+</div>
+
+<div>
+    City: <input @bind-value="City" /> <br />
+    Street: <input @bind-value="Street" /> <br />
+    Street number: <input @bind-value="StreetNumber" />
+
+    <button @onclick="async () => await this.OnSearchLatLngClick()">Search</button>
+    <br />
+    Lat: <span>@LatLng.Latitude</span>
+    Lng: <span>@LatLng.Longitude</span>
 </div>
 
 <div class="map-container" @ref="MapHost"></div>
@@ -47,6 +58,11 @@
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
     private string Search { get; set; } = "Banska Bystrica";
+
+    private string City { get; set; }
+    private string Street { get; set; }
+    private string StreetNumber { get; set; }
+    private LatLng LatLng { get; set; } = new();
 
     private Either<ErrorStatus, Address> Result { get; set; } = ErrorStatus.ZeroResults;
 
@@ -92,6 +108,17 @@
             var addr = (Address)right;
             _map.FitBounds(LatLngBounds.FromPosition(addr.LatLng));
         }
+
+        this.StateHasChanged();
+    }
+
+    private async Task OnSearchLatLngClick()
+    {
+        var either = await this.Geocoder.Geocode(this.City, street: this.Street, streetNumber: this.StreetNumber);
+
+        this.LatLng = either
+            .Map(l => l)
+            .Reduce(_ => new LatLng());
 
         this.StateHasChanged();
     }

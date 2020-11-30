@@ -48,7 +48,15 @@ namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders
         IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.Configure(IConfigurationSection section)
         {
             var language = section["Language"];
-            return ((IOpenStreetMapOptionsBuilder)this).Configure(() => new OpenStreetMapOptions { Language = language });
+            _ = bool.TryParse(section["ConsoleLogExceptions"], out var consoleLog);
+
+            return ((IOpenStreetMapOptionsBuilder)this).Configure(
+                () => new OpenStreetMapOptions
+                    {
+                        Language = language,
+                        ConsoleLogExceptions = consoleLog
+                    }
+            );
         }
 
         IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddGeocoder()

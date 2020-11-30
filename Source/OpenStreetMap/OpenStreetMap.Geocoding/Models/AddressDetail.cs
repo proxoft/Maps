@@ -2,7 +2,7 @@
 namespace Proxoft.Maps.OpenStreetMap.Geocoding.Models
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member")]
-    public class Address
+    public class AddressDetail
     {
         public string country { get; set; }
         public string country_code { get; set; }

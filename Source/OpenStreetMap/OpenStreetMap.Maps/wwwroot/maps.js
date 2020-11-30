@@ -96,13 +96,10 @@ export function RemoveMarker(markerId) {
 export function SetMarkerDraggable(markerId, draggable) {
     let wrapper = findMarkerWrapper(markerId);
     if (draggable) {
-        console.log("enable dragging");
         wrapper.marker.dragging.enable();
     } else {
-        console.log("disable dragging");
         wrapper.marker.dragging.disable();
     }
-    
 }
 
 export function SetMarkerPosition(markerId, position) {
