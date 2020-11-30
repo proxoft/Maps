@@ -7,11 +7,13 @@
 <div class="map-container" @ref="MapHost">
 </div>
 
+<button @onclick="ClearLogClick">Clear log</button>
 <div class="map-event-log">
-    @foreach (var l in MapLog)
+    @foreach (var l in MapLog.Reverse<string>())
     {
         <span>@l</span><br />
     }
+    
 </div>
 
 <div>
@@ -28,7 +30,7 @@
 </div>
 
 @code {
-    private bool _draggable = true;
+    private bool _draggable = false;
     private Opacity _opacity = Opacity.Visible;
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
@@ -93,6 +95,11 @@
     private void PositionClick()
     {
         _marker.SetPosition(this.Lat, this.Lng);
+    }
+
+    private void ClearLogClick()
+    {
+        this.MapLog.Clear();
     }
 
     private void AddLog(string logMessage)

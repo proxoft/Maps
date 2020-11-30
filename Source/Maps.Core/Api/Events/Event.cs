@@ -2,7 +2,7 @@
 {
     public abstract class Event
     {
-        protected Event(EventSource source)
+        protected Event(EventSource source = EventSource.Js)
         {
             this.Source = source;
         }

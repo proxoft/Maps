@@ -87,6 +87,12 @@ export function CreateMarker(markerId, options, mapId, netRef) {
     markerWrappers.push(markerWrapper);
 }
 
+export function RemoveMarker(markerId) {
+    let i = markerWrappers.findIndex(me => me.markerid = markerId);
+    let wrapper = mapWrappers.splice(i, 1);
+    wrapper.marker.remove();
+}
+
 export function SetMarkerDraggable(markerId, draggable) {
     let wrapper = findMarkerWrapper(markerId);
     if (draggable) {
@@ -208,17 +214,48 @@ function createMarkerWrapper(markerId, marker, map, netRef) {
         parentMap: map,
         marker: marker, // marker instance
         ref: netRef,    // net object reference
+
+        invokeRef: function (...args) {
+            try {
+                wrapper.ref.invokeMethodAsync(...args);
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
     };
 
-    marker.on("move", () => {
+    marker.on("movestart", (e) => {
         let position = marker.getLatLng();
-        wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
+        wrapper.invokeRef("OnPositionStartChange", { latitude: position.lat, longitude: position.lng });
     });
 
-    //marker.on("moveend", () => {
+    marker.on("move", (e) => {
+        wrapper.invokeRef("OnPositionChanging", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+    });
+
+    marker.on("moveend", (e) => {
+        let position = marker.getLatLng();
+        wrapper.invokeRef("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
+    });
+
+    //marker.on("dragstart"), (e) => {
+    //    // console.log(e);
+    //    // let position = marker.getLatLng();
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
+
+    //marker.on("drag"), (e) => {
+    //    console.log(e);
+    //    // let position = marker.getLatLng();
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
+
+    //marker.on("dragend"), (e) => {
+    //    console.log(e);
     //    let position = marker.getLatLng();
-    //    wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
-    //});
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
 
     return wrapper;
 }
