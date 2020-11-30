@@ -4,21 +4,28 @@
 @using System.Reactive.Linq;
 @using Proxoft.Maps.Core.Api
 
-<div class="map-container" @ref="MapHost">
+<div style="width: 100%; height: 500px;" @ref="MapHost">
 </div>
 
 <div class="map-event-log">
-    @foreach (var l in MapLog)
+    @foreach (var l in MapLog.Reverse<string>())
     {
         <span>@l</span><br />
     }
 </div>
 
 <div>
+    <button @onclick="SetCenterClick">Set Center</button>
+    <span>Lat:</span><input @bind-value="CenterLat" />
+    <span>Lng:</span><input @bind-value="CenterLng" />
+</div>
+
+<div>
     <button @onclick="PanToClick">PanTo</button>
     <span>Lat:</span><input @bind-value="PanLat" />
-    <span>Lng:</span><input @bind-value="PanLng"/>
+    <span>Lng:</span><input @bind-value="PanLng" />
 </div>
+
 <div>
     <button @onclick="ZoomToClick">Zoom</button>
     <span>Zoom:</span><input @bind-value="Zoom" />
@@ -47,6 +54,7 @@
 
             _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
             _map.OnEvent
+                .Where(e => !(e is MouseMoveEvent))
                 .Subscribe(e => this.AddLog(e.Name));
 
         }
@@ -54,7 +62,16 @@
 
     private decimal PanLat { get; set; } = 48.15m;
     private decimal PanLng { get; set; } = 17.6m;
+
+    private decimal CenterLat { get; set; } = 48.15m;
+    private decimal CenterLng { get; set; } = 17.6m;
+
     private int Zoom { get; set; } = 7;
+
+    private void SetCenterClick()
+    {
+        _map.SetCenter(new LatLng { Latitude = CenterLat, Longitude = CenterLng });
+    }
 
     private void PanToClick()
     {
@@ -63,7 +80,7 @@
 
     private void ZoomToClick()
     {
-        _map.ZoomTo(this.Zoom);
+        _map.ZoomTo(new ZoomLevel(this.Zoom));
     }
 
     private void AddLog(string logMessage)

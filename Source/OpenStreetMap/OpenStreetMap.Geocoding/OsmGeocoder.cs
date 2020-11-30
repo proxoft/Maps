@@ -62,7 +62,6 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
             try
             {
                 var json = await _http.GetStringAsync($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
-                Console.WriteLine(json);
                 var response = await _http.GetFromJsonAsync<Result>($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}");
                 return this.ParseResult(response);
             }

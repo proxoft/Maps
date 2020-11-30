@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.Core.Api.Maps;
 
 namespace Sample.Maps.Pages
 {

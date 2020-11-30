@@ -57,6 +57,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
             _map = await this.MapFactory.Initialize(new MapOptions {
@@ -71,7 +72,6 @@
             _map.OnClick()
                 .Select(latLng =>
                 {
-                    Console.WriteLine($"latlng {latLng}");
                     return this.Geocoder.Geocode(latLng.Latitude, latLng.Longitude).ToObservable();
                 })
                 .Concat()
@@ -86,6 +86,13 @@
     private async Task OnSearchClick()
     {
         this.Result = await this.Geocoder.Geocode(this.Search);
+
+        if(this.Result is Right<ErrorStatus, Address> right)
+        {
+            var addr = (Address)right;
+            _map.FitBounds(LatLngBounds.FromPosition(addr.LatLng));
+        }
+
         this.StateHasChanged();
     }
 }

@@ -13,7 +13,7 @@ namespace Proxoft.Maps.Core.Api
             this.JsModule = jsModule;
         }
 
-        public IJSInProcessObjectReference JsModule { get; }
+        protected IJSInProcessObjectReference JsModule { get; }
 
         public IObservable<Event> OnEvent => _events;
 
@@ -23,7 +23,7 @@ namespace Proxoft.Maps.Core.Api
         protected void InvokeVoidJs(string identifier, params object[] args)
             => JsModule.InvokeVoid(identifier, args);
 
-        protected void InvokeJs<TResult>(string identifier, params object[] args)
+        protected TResult InvokeJs<TResult>(string identifier, params object[] args)
             => JsModule.Invoke<TResult>(identifier, args);
 
         public void Dispose()

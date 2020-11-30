@@ -18,7 +18,8 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
 
 export function Remove(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
-    mapWrappers.splice(i, 1);
+    let wrapper = mapWrappers.splice(i, 1);
+    wrapper[0].map.remove();
 }
 
 export function PanTo(mapId, center) {
@@ -29,6 +30,25 @@ export function PanTo(mapId, center) {
 export function ZoomTo(mapId, zoom) {
     let wrapper = findMapWrapper(mapId);
     wrapper.map.setZoom(zoom);
+}
+
+export function SetCenter(mapId, center) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.map.setView([center.latitude, center.longitude]);
+}
+
+export function FitBounds(mapId, bounds, padding, zoom) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.map.fitBounds(
+        [
+            [bounds.southWest.latitude, bounds.southWest.longitude],
+            [bounds.northEast.latitude, bounds.northEast.longitude]
+        ],
+        [
+            [padding.top, padding.left]
+            [padding.bottom, padding.right]
+        ],
+        zoom || null);
 }
 
 function findMapWrapper(mapId) {
@@ -65,6 +85,12 @@ export function CreateMarker(markerId, options, mapId, netRef) {
 
     let markerWrapper = createMarkerWrapper(markerId, marker, mapWrapper.map, netRef);
     markerWrappers.push(markerWrapper);
+}
+
+export function RemoveMarker(markerId) {
+    let i = markerWrappers.findIndex(me => me.markerid = markerId);
+    let wrapper = mapWrappers.splice(i, 1);
+    wrapper.marker.remove();
 }
 
 export function SetMarkerDraggable(markerId, draggable) {
@@ -108,23 +134,75 @@ function createMapWrapper(mapId, map, netRef) {
 
         addMarker: function () {
             return 1;
+        },
+
+        invokeRef: function (...args) {
+            try {
+                wrapper.ref.invokeMethodAsync(...args);
+            }
+            catch(e)
+            {
+                console.log(e);
+            }
         }
     };
 
+
+    //-- mouse events
+    map.on("click", (e) => {
+        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("dblclick", (e) => {
+        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mousedown", (e) => {
+        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseup", (e) => {
+        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseover", (e) => {
+        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mousemove", (e) => {
+        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+
+    map.on("mouseout", (e) => {
+        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lat })
+    });
+    //------------------------
+
+    //--map events------------
+    map.on("resize", (e) => {
+        wrapper.invokeRef("OnResized", e.newSize);
+    });
+
+    map.on("move", () => {
+        let center = map.getCenter();
+        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng } )
+    });
+
     map.on("moveend", () => {
         let center = map.getCenter();
-        wrapper.ref.invokeMethodAsync("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+        wrapper.invokeRef("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+    });
+
+    map.on("zoom", () => {
+        let zoom = map.getZoom();
+        wrapper.invokeRef("OnZoomChanging", zoom);
     });
 
     map.on("zoomend", () => {
         let zoom = map.getZoom();
-        wrapper.ref.invokeMethodAsync("OnZoomChanged", zoom);
+        wrapper.invokeRef("OnZoomChanged", zoom);
     });
-
-    map.on("click", (e) => {
-        let latlng = { latitude: e.latlng.lat, longitude: e.latlng.lng };
-        wrapper.ref.invokeMethodAsync("OnMapClicked", latlng);
-    });
+    //------------------------
 
     return wrapper;
 }
@@ -136,17 +214,48 @@ function createMarkerWrapper(markerId, marker, map, netRef) {
         parentMap: map,
         marker: marker, // marker instance
         ref: netRef,    // net object reference
+
+        invokeRef: function (...args) {
+            try {
+                wrapper.ref.invokeMethodAsync(...args);
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
     };
 
-    marker.on("move", () => {
+    marker.on("movestart", (e) => {
         let position = marker.getLatLng();
-        wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
+        wrapper.invokeRef("OnPositionStartChange", { latitude: position.lat, longitude: position.lng });
     });
 
-    //marker.on("moveend", () => {
+    marker.on("move", (e) => {
+        wrapper.invokeRef("OnPositionChanging", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+    });
+
+    marker.on("moveend", (e) => {
+        let position = marker.getLatLng();
+        wrapper.invokeRef("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
+    });
+
+    //marker.on("dragstart"), (e) => {
+    //    // console.log(e);
+    //    // let position = marker.getLatLng();
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
+
+    //marker.on("drag"), (e) => {
+    //    console.log(e);
+    //    // let position = marker.getLatLng();
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
+
+    //marker.on("dragend"), (e) => {
+    //    console.log(e);
     //    let position = marker.getLatLng();
-    //    wrapper.ref.invokeMethodAsync("OnPositionChanged", { latitude: position.lat, longitude: position.lng });
-    //});
+    //    // wrapper.invokeRef("OnDragStart", { latitude: position.lat, longitude: position.lng });
+    //}
 
     return wrapper;
 }
