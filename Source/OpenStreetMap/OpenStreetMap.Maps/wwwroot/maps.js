@@ -154,7 +154,7 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
         },
 
         log: function (m) {
-            if (enableLogging) {
+            if (!enableLogging) {
                 return;
             }
             console.log(`[Map ${mapId}]`);
