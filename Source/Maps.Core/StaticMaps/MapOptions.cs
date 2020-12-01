@@ -7,6 +7,6 @@ namespace Proxoft.Maps.Core.StaticMaps
         public LatLng Center { get; set; }
         public SizePixel Size { get; set; }
         public ZoomLevel Zoom { get; set; }
-        public IEnumerable<MarkerOptions> Markers { get; set; }
+        public IReadOnlyCollection<MarkerOptions> Markers { get; set; }
     }
 }

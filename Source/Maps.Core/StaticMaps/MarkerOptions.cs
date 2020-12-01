@@ -1,9 +1,11 @@
-﻿namespace Proxoft.Maps.Core.StaticMaps
+﻿using System.Drawing;
+
+namespace Proxoft.Maps.Core.StaticMaps
 {
     public class MarkerOptions
     {
         public LatLng LatLng { get; set; }
-        public char Label { get; set; }
-        public string Color { get; set; }
+        public string Label { get; set; }
+        public Color Color { get; set; }
     }
 }

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Proxoft.Maps.MapBox.Common</RootNamespace>
+        <AssemblyName>Proxoft.Maps.MapBox.Common</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft</Authors>
+        <Company>Proxoft s.r.o.</Company>
+        <Product>Maps</Product>
+        <PackageId>Proxoft.Maps.MapBox.Common</PackageId>
+        <Version>1.0.0</Version>
+        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
+        <PackageIcon>Map.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\Map.png">
+        <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>

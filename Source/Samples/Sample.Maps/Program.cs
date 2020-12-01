@@ -18,6 +18,8 @@ namespace Sample.Maps
 
             // builder.Services.ConfigureGoogleMapsServices(builder.Configuration);
             builder.Services.ConfigureOpenStreetMapsServices(builder.Configuration);
+            builder.Services.ConfigureMapBoxServices(builder.Configuration);
+
             await builder.Build().RunAsync();
         }
 
@@ -33,6 +35,14 @@ namespace Sample.Maps
             services.AddOpenStreetMaps(ServiceLifetime.Scoped)
                 .Configure(configuration)
                 .AddGeocoder()
+                .Register();
+        }
+
+        private static void ConfigureMapBoxServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMapBox(ServiceLifetime.Scoped)
+                .Configure(configuration)
+                .AddStaticMapService()
                 .Register();
         }
     }
