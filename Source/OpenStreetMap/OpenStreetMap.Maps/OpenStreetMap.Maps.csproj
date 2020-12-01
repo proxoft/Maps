@@ -9,7 +9,7 @@
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
         <PackageId>Proxoft.Maps.OpenStreetMap.Maps</PackageId>
-        <Version>0.3.2</Version>
+        <Version>0.3.3</Version>
         <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
         <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
