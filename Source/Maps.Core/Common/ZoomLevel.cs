@@ -1,6 +1,6 @@
 ﻿using Proxoft.Extensions.ValueObjects.ValueObjects;
 
-namespace Proxoft.Maps.Core.Api
+namespace Proxoft.Maps.Core
 {
     public class ZoomLevel : IntValueObject<ZoomLevel>
     {

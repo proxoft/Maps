@@ -18,15 +18,15 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing
             };
         }
 
-        private static Core.Api.LatLng ToLatLng(this Result result)
+        private static Core.LatLng ToLatLng(this Result result)
         {
             if(!decimal.TryParse(result.lat, NumberStyles.Any, CultureInfo.InvariantCulture, out var lat)
                 || !decimal.TryParse(result.lon, NumberStyles.Any, CultureInfo.InvariantCulture, out var lng))
             {
-                return Core.Api.LatLng.None;
+                return Core.LatLng.None;
             }
 
-            return new Core.Api.LatLng
+            return new Core.LatLng
             {
                 Latitude = lat,
                 Longitude = lng

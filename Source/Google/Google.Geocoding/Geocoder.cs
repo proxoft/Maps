@@ -89,7 +89,7 @@ namespace Proxoft.Maps.Google.Geocoding
                 RegisterNumber = registerNumber,
                 StreetNumber = streetNumber,
                 Zip = zip,
-                LatLng = new Core.Api.LatLng
+                LatLng = new Core.LatLng
                 {
                     Latitude = latitude,
                     Longitude = longitude
@@ -97,17 +97,17 @@ namespace Proxoft.Maps.Google.Geocoding
             };
         }
 
-        public Task<Either<ErrorStatus, Core.Api.LatLng>> Geocode(Address address)
+        public Task<Either<ErrorStatus, Core.LatLng>> Geocode(Address address)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Either<ErrorStatus, Address>> Geocode(Core.Api.LatLng latLng)
+        public Task<Either<ErrorStatus, Address>> Geocode(Core.LatLng latLng)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Either<ErrorStatus, Core.Api.LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+        public Task<Either<ErrorStatus, Core.LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
         {
             throw new NotImplementedException();
         }
