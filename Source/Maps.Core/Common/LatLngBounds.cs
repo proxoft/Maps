@@ -1,4 +1,4 @@
-﻿namespace Proxoft.Maps.Core.Api
+﻿namespace Proxoft.Maps.Core
 {
     public record LatLngBounds
     {

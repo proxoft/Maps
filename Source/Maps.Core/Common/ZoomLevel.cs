@@ -1,8 +1,8 @@
 ﻿using Proxoft.Extensions.ValueObjects.ValueObjects;
 
-namespace Proxoft.Maps.Core.Api
+namespace Proxoft.Maps.Core
 {
-    public class ZoomLevel : IntValueObject<ZoomLevel>
+    public class ZoomLevel : DecimalValueObject<ZoomLevel>
     {
         public static readonly ZoomLevel Zero = new (0);
         public static readonly ZoomLevel One = new (1);
@@ -24,7 +24,7 @@ namespace Proxoft.Maps.Core.Api
         public static readonly ZoomLevel Seventeen = new (17);
         public static readonly ZoomLevel Eighteen = new (18);
 
-        public ZoomLevel(int value) : base(value, 0, 18)
+        public ZoomLevel(decimal value) : base(value, 0, 18)
         {
         }
     }

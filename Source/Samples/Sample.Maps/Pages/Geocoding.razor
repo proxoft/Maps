@@ -4,6 +4,7 @@
 @using System.Reactive.Threading.Tasks
 @using System.Reactive.Linq
 @using Proxoft.Extensions.Options
+@using Proxoft.Maps.Core;
 @using Proxoft.Maps.Core.Api;
 @using Proxoft.Maps.Core.Geocoding
 
@@ -18,17 +19,17 @@
 <div>
     @if (this.Result is Left<ErrorStatus, Address> error)
     {
-    <span> @((ErrorStatus)error)</span>
+        <span> @((ErrorStatus)error)</span>
     }
     else
     {
-    <span>Address</span><br />
-    @Address.Street  <br />
-    @Address.StreetNumber<br />
-    @Address.City  <br />
-    @Address.Zip  <br />
-    @Address.Country  <br />
-    <span>@Address.LatLng.Latitude</span>  <span>@Address.LatLng.Longitude</span>
+        <span>Address</span><br />
+        @Address.Street <br />
+        @Address.StreetNumber<br />
+        @Address.City <br />
+        @Address.Zip <br />
+        @Address.Country <br />
+        <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
     }
 
 </div>
@@ -76,7 +77,8 @@
 
         if (firstRender)
         {
-            _map = await this.MapFactory.Initialize(new MapOptions {
+            _map = await this.MapFactory.Initialize(new MapOptions
+            {
                 Center = new LatLng
                 {
                     Latitude = 48.569m,
@@ -103,7 +105,7 @@
     {
         this.Result = await this.Geocoder.Geocode(this.Search);
 
-        if(this.Result is Right<ErrorStatus, Address> right)
+        if (this.Result is Right<ErrorStatus, Address> right)
         {
             var addr = (Address)right;
             _map.FitBounds(LatLngBounds.FromPosition(addr.LatLng));

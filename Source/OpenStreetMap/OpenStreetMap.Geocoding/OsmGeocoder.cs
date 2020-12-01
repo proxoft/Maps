@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Proxoft.Extensions.Options;
+using Proxoft.Maps.Core;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Common;

@@ -2,23 +2,23 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.OpenStreetMap.Common</RootNamespace>
-        <AssemblyName>Proxoft.Maps.OpenStreetMap.Common</AssemblyName>
+        <RootNamespace>Proxoft.Maps.MapBox.Common</RootNamespace>
+        <AssemblyName>Proxoft.Maps.MapBox.Common</AssemblyName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Proxoft</Authors>
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.OpenStreetMap.Common</PackageId>
+        <PackageId>Proxoft.Maps.MapBox.Common</PackageId>
         <Version>1.0.0</Version>
-        <PackageIcon>Map.png</PackageIcon>
         <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
+        <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="..\..\Map.png">
+        <None Include="..\..\Map.png">
         <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
+            <PackagePath></PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>
