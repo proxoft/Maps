@@ -19,28 +19,25 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
+        LatLng center = new() {
+            Latitude = 48.159123000000000m,
+            Longitude = 17.168397500000000m
+        };
+
         Proxoft.Maps.Core.StaticMaps.MapOptions options = new()
         {
-            Center = new LatLng
-            {
-                Latitude = 48.569m,
-                Longitude = 18.569m
-            },
-            Zoom = ZoomLevel.Nine,
+            Center = center,
+            Zoom = ZoomLevel.Thirteen,
             Size = new SizePixel
             {
-                Width = 300,
+                Width = 400,
                 Height = 400
             },
             Markers = new[]
             {
                 new Proxoft.Maps.Core.StaticMaps.MarkerOptions
                 {
-                    LatLng = new LatLng
-                    {
-                        Latitude = 48.569m,
-                        Longitude = 18.569m
-                    },
+                    LatLng = center,
                     Color = System.Drawing.Color.AntiqueWhite,
                     Label = "M"
                 }
