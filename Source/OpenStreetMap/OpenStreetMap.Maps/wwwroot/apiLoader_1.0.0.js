@@ -15,7 +15,7 @@ export function addOpenStreetMapScripts(netObjRef) {
     document.getElementsByTagName('head')[0].appendChild(link);
 
     myScript = document.createElement("script");
-    let src = `https://unpkg.com/leaflet@latest/dist/leaflet-src.js`
+    let src = `https://unpkg.com/leaflet@latest/dist/leaflet.js`
     myScript.setAttribute("src", src);
     // myScript.setAttribute("integrity", "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==")
     // myScript.setAttribute("crossorigin", " ");
