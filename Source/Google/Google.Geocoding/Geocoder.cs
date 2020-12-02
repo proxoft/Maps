@@ -97,7 +97,7 @@ namespace Proxoft.Maps.Google.Geocoding
             };
         }
 
-        public Task<Either<ErrorStatus, Core.LatLng>> Geocode(Address address)
+        public Task<Either<ErrorStatus, Address>> Geocode(Address address)
         {
             throw new NotImplementedException();
         }
@@ -107,7 +107,7 @@ namespace Proxoft.Maps.Google.Geocoding
             throw new NotImplementedException();
         }
 
-        public Task<Either<ErrorStatus, Core.LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+        public Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
         {
             throw new NotImplementedException();
         }
