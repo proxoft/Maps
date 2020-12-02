@@ -119,7 +119,7 @@
         var either = await this.Geocoder.Geocode(this.City, street: this.Street, streetNumber: this.StreetNumber);
 
         this.LatLng = either
-            .Map(l => l)
+            .Map(l => l.LatLng)
             .Reduce(_ => new LatLng());
 
         this.StateHasChanged();

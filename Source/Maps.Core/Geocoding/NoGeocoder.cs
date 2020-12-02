@@ -17,8 +17,8 @@ namespace Proxoft.Maps.Core.Geocoding
         public Task<Either<ErrorStatus, Address>> Geocode(string location)
             => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);
 
-        public Task<Either<ErrorStatus, LatLng>> Geocode(string city, string street = null, string streeNumber = null, string country = null)
-            => Task.FromResult<Either<ErrorStatus, LatLng>>(ErrorStatus.UnknownError);
+        public Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streeNumber = null, string country = null)
+            => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);
 
         public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
             => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);

@@ -48,17 +48,14 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
             }
         }
 
-        public async Task<Either<ErrorStatus, LatLng>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+        public async Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
         {
             var searchParameters = string.Join("&", SearchParameters(city, street, streetNumber, country));
             try
             {
                 var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&{searchParameters}");
                 var maybe = this.ParseResults(response);
-
-                return maybe
-                    .Map(a => a.LatLng)
-                    .Reduce(error => (Left<ErrorStatus, LatLng>)error);
+                return maybe;
             }
             catch(Exception ex)
             {
