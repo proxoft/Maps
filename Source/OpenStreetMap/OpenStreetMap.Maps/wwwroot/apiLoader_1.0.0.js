@@ -1,5 +1,7 @@
 ﻿let loadResult = "none";
 
+console.log("apiLoader_1.0.0.js");
+
 export function addOpenStreetMapScripts(netObjRef) {
     let myScript = null;
     var element = document.getElementById("proxoftOpenStreetMap");
