@@ -1,8 +1,6 @@
-﻿using Proxoft.Maps.Core.Api;
-
-namespace Proxoft.Maps.Core.Geocoding
+﻿namespace Proxoft.Maps.Core.Geocoding
 {
-    public class Address
+    public record Address
     {
         public string Location { get; set; }
 

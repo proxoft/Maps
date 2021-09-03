@@ -1,8 +1,8 @@
-﻿using Proxoft.Extensions.ValueObjects.ValueObjects;
+﻿using System;
 
 namespace Proxoft.Maps.Core
 {
-    public class ZoomLevel : DecimalValueObject<ZoomLevel>
+    public class ZoomLevel: IEquatable<ZoomLevel>
     {
         public static readonly ZoomLevel Zero = new (0);
         public static readonly ZoomLevel One = new (1);
@@ -24,8 +24,70 @@ namespace Proxoft.Maps.Core
         public static readonly ZoomLevel Seventeen = new (17);
         public static readonly ZoomLevel Eighteen = new (18);
 
-        public ZoomLevel(decimal value) : base(value, 0, 18)
+        private readonly decimal _value;
+
+        public ZoomLevel(decimal value)
         {
+            if(_value < 0 || _value > 18)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 18");
+            }
+
+            _value = value;
         }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as ZoomLevel);
+        }
+
+        public bool Equals(ZoomLevel other)
+        {
+            return other is not null && other._value == _value;
+        }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
+
+        public static bool operator ==(ZoomLevel left, ZoomLevel right)
+        {
+            if (left is null && right is null)
+            {
+                return true;
+            }
+
+            if (left is null || right is null)
+            {
+                return false;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ZoomLevel left, ZoomLevel right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator >(ZoomLevel left, ZoomLevel right)
+        {
+            return left._value > right._value;
+        }
+
+        public static bool operator <(ZoomLevel left, ZoomLevel right)
+        {
+            return left._value < right._value;
+        }
+
+        public static implicit operator decimal(ZoomLevel zoomLevel) => zoomLevel._value;
+
+        public static explicit operator ZoomLevel(decimal value) => new ZoomLevel(value);
     }
 }

@@ -19,7 +19,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
 
             _moduleTask = new(() => jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                "import",
-               "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_1.0.0.js").AsTask());
+               "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_1.0.1.js").AsTask());
         }
 
         public string Name => "OpenStreetMaps";

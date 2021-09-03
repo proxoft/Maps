@@ -28,19 +28,19 @@ export function Remove(mapId) {
 
 export function PanTo(mapId, center) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log($`panTo ${center.latitude} ${center.longitude}`);
+    wrapper.log(`panTo ${center.latitude} ${center.longitude}`);
     wrapper.map.panTo([center.latitude, center.longitude]);
 }
 
 export function ZoomTo(mapId, zoom) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log($`zoomTo ${zoom}`);
+    wrapper.log(`zoomTo ${zoom}`);
     wrapper.map.setZoom(zoom);
 }
 
 export function SetCenter(mapId, center) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log($`set center ${center.latitude} ${center.longitude}`);
+    wrapper.log(`set center ${center.latitude} ${center.longitude}`);
     wrapper.map.setView([center.latitude, center.longitude]);
 }
 
@@ -202,7 +202,7 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
 
     map.on("move", () => {
         let center = map.getCenter();
-        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng } )
+        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng })
     });
 
     map.on("moveend", () => {

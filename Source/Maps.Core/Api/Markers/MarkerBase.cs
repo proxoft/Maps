@@ -30,7 +30,7 @@ namespace Proxoft.Maps.Core.Api
             => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
 
         public void SetOpacity(Opacity opacity)
-            => this.InvokeVoidJs("SetMarkerOpacity", this.MarkerId, opacity.Value);
+            => this.InvokeVoidJs("SetMarkerOpacity", this.MarkerId, (decimal)opacity);
 
         public void SetPosition(LatLng latLng)
             => this.InvokeVoidJs("SetMarkerPosition", this.MarkerId, latLng);
