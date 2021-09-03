@@ -37,7 +37,7 @@ namespace Proxoft.Maps.Core.Api.Maps
             => this.FitBounds(bounds, Padding.Zero, null);
 
         public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
-            => this.InvokeMapJs("FitBounds", bounds, padding, (decimal)zoom);
+            => this.InvokeMapJs("FitBounds", bounds, padding, zoom == null ? null : (decimal)zoom);
 
         public abstract IMarker AddMarker(MarkerOptions options);
 
