@@ -202,7 +202,7 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
 
     map.on("move", () => {
         let center = map.getCenter();
-        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng } )
+        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng })
     });
 
     map.on("moveend", () => {
