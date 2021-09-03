@@ -7,29 +7,35 @@
 <div style="width: 100%; height: 500px;" @ref="MapHost">
 </div>
 
-<div class="map-event-log">
-    @foreach (var l in MapLog.Reverse<string>())
-    {
-        <span>@l</span><br />
-    }
+<div>
+    <div style="display: inline-block;">
+        <div>
+            <button @onclick="SetCenterClick">Set Center</button>
+            <span>Lat:</span><input @bind-value="CenterLat" />
+            <span>Lng:</span><input @bind-value="CenterLng" />
+        </div>
+
+        <div>
+            <button @onclick="PanToClick">PanTo</button>
+            <span>Lat:</span><input @bind-value="PanLat" />
+            <span>Lng:</span><input @bind-value="PanLng" />
+        </div>
+
+        <div>
+            <button @onclick="ZoomToClick">Zoom</button>
+            <span>Zoom:</span><input @bind-value="Zoom" />
+        </div>
+    </div>
+
+    <div class="map-event-log">
+        @foreach (var l in MapLog.Reverse<string>())
+        {
+            <span>@l</span><br />
+        }
+    </div>
 </div>
 
-<div>
-    <button @onclick="SetCenterClick">Set Center</button>
-    <span>Lat:</span><input @bind-value="CenterLat" />
-    <span>Lng:</span><input @bind-value="CenterLng" />
-</div>
 
-<div>
-    <button @onclick="PanToClick">PanTo</button>
-    <span>Lat:</span><input @bind-value="PanLat" />
-    <span>Lng:</span><input @bind-value="PanLng" />
-</div>
-
-<div>
-    <button @onclick="ZoomToClick">Zoom</button>
-    <span>Zoom:</span><input @bind-value="Zoom" />
-</div>
 
 @code {
     private IMap _map;
@@ -52,7 +58,7 @@
                 Longitude = 150.644m
             };
 
-            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7 }, this.MapHost);
+            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7, TraceJs = true }, this.MapHost);
             _map.OnEvent
                 .Where(e => !(e is MouseMoveEvent))
                 .Subscribe(e => this.AddLog(e.Name));

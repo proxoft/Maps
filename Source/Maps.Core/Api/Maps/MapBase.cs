@@ -31,13 +31,13 @@ namespace Proxoft.Maps.Core.Api.Maps
             => this.InvokeMapJs("SetCenter", position);
 
         public void ZoomTo(ZoomLevel zoom)
-            => this.InvokeMapJs("ZoomTo", zoom.Value);
+            => this.InvokeMapJs("ZoomTo", (decimal)zoom);
 
         public void FitBounds(LatLngBounds bounds)
             => this.FitBounds(bounds, Padding.Zero, null);
 
         public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
-            => this.InvokeMapJs("FitBounds", bounds, padding, zoom?.Value ?? null);
+            => this.InvokeMapJs("FitBounds", bounds, padding, (decimal)zoom);
 
         public abstract IMarker AddMarker(MarkerOptions options);
 
