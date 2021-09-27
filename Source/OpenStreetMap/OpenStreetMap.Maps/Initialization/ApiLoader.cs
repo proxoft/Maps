@@ -15,7 +15,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
         {
             _netObjRef = DotNetObjectReference.Create(this);
             _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-               "import", "./_content/Proxoft.Maps.OpenStreetMap.Maps/apiLoader_1.0.0.js").AsTask());
+               "import", "./_content/Proxoft.Maps.OpenStreetMap.Maps/apiLoader_v1.js").AsTask());
         }
 
         public async Task<LoadResponse> LoadGoogleScripts()
