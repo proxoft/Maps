@@ -1,4 +1,5 @@
 ﻿@page "/StaticMap"
+@using Proxoft.Extensions.Options
 @using Proxoft.Maps.Core.StaticMaps
 
 <h3>StaticMap</h3>
@@ -7,17 +8,32 @@
     <img src="@ImageSrc"/>
 </div>
 
+@if (!string.IsNullOrWhiteSpace(this.Error))
+{
+    <div>
+        <span>Error: </span>
+        <span>@this.Error</span>
+    </div>
+}
+
+
 @code {
     private const string _imageSrcPrefix = "data:image/jpg;base64";
 
     [Inject]
     public IStaticMapService StaticMapService { get; set; }
 
+    private string Error { get; set; }
     private string ImageSrc { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
 
         LatLng center = new() {
             Latitude = 48.159123000000000m,
@@ -44,8 +60,18 @@
             }
         };
 
-        var imageData = await this.StaticMapService.CreateImage(options);
-        this.ImageSrc = $"data:image/png;base64, {Convert.ToBase64String(imageData)}";
+        var either = await this.StaticMapService.CreateImage(options);
+
+        this.ImageSrc = either
+            .Map(data => {
+                this.Error = string.Empty;
+                return $"data:image/png;base64, {Convert.ToBase64String(data)}";
+            })
+            .Reduce(error =>
+            {
+                this.Error = error;
+                return "";
+            });
 
         this.StateHasChanged();
     }

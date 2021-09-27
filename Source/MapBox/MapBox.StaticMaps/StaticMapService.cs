@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.StaticMaps;
 using Proxoft.Maps.MapBox.Common;
 using Proxoft.Maps.MapBox.StaticMaps.Helpers;
@@ -21,7 +22,7 @@ namespace Proxoft.Maps.MapBox.StaticMaps
             _accessToken = $"access_token={options.AccessToken}";
         }
 
-        public async Task<byte[]> CreateImage(MapOptions options)
+        public async Task<Either<string, byte[]>> CreateImage(MapOptions options)
         {
             try
             {
@@ -31,15 +32,15 @@ namespace Proxoft.Maps.MapBox.StaticMaps
                 var response = await _httpClient.GetAsync($"streets-v11/static/{markerParams}{mapParams}?{_accessToken}");
                 if (!response.IsSuccessStatusCode)
                 {
-                    return Array.Empty<byte>();
+                    return response.StatusCode.ToString();
                 }
 
                 var content = await response.Content.ReadAsByteArrayAsync();
                 return content;
             }
-            catch
+            catch(Exception ex)
             {
-                return Array.Empty<byte>();
+                return ex.Message;
             }
         }
 
