@@ -10,7 +10,7 @@
         <Product>Maps</Product>
         <PackageIcon>Map.png</PackageIcon>
         <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <Version>1.2.0</Version>
+        <Version>1.3.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
