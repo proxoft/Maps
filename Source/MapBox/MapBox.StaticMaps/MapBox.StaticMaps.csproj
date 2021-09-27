@@ -9,7 +9,7 @@
         <Company>Proxoft s.r.o.</Company>
         <Product>Maps</Product>
         <PackageId>Proxoft.Maps.MapBox.StaticMaps</PackageId>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
         <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
