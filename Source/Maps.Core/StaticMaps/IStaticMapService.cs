@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Proxoft.Extensions.Options;
 
 namespace Proxoft.Maps.Core.StaticMaps
 {
     public interface IStaticMapService
     {
-        Task<byte[]> CreateImage(MapOptions options);
+        Task<Either<string, byte[]>> CreateImage(MapOptions options);
     }
 }
