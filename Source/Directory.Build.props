@@ -1,0 +1,18 @@
+﻿<Project>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Proxoft s.r.o.</Authors>
+        <Copyright>www.proxoft.sk</Copyright>
+        <Product>Proxoft Maps</Product>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/proxoft/Maps</RepositoryUrl>
+        <PackageTags>Maps; Maps Components</PackageTags>
+    </PropertyGroup>
+</Project>
