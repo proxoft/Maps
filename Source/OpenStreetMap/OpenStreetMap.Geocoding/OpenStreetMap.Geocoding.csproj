@@ -15,7 +15,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\Core\Core.csproj" />
     <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
   </ItemGroup>
 

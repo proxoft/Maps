@@ -18,7 +18,6 @@
     <ProjectReference Include="..\..\MapBox\MapBox.Common\MapBox.Common.csproj" />
     <ProjectReference Include="..\..\MapBox\MapBox.Hosting\MapBox.Hosting.csproj" />
     <ProjectReference Include="..\..\MapBox\MapBox.StaticMaps\MapBox.StaticMaps.csproj" />
-    <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
     <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.Hosting\OpenStreetMap.Hosting.csproj" />
     <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj" />
   </ItemGroup>

@@ -23,14 +23,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Include="..\..\Map.png">
         <Pack>True</Pack>
         <PackagePath></PackagePath>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\Core\Core.csproj" />
+      <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
     </ItemGroup>
 
 </Project>
