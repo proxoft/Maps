@@ -1,7 +1,3 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <Version>1.1.1</Version>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 </Project>

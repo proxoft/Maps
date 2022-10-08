@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{3585860D-7919-4FCC-BC90-D489CA53FB4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Google", "Google", "{2485CB7C-028D-423E-8FF3-122C43B3BE42}"
+	ProjectSection(SolutionItems) = preProject
+		Google\Directory.Build.props = Google\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Geocoding", "Google\Google.Geocoding\Google.Geocoding.csproj", "{C547323F-82F3-4E5C-AAEF-73112F79E75D}"
 EndProject
@@ -16,6 +19,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Google\Google.Maps\Google.Maps.csproj", "{E87664AF-7F22-48F9-8E2C-5782DDBB30F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenStreetMap", "OpenStreetMap", "{A532A588-7A32-4FD8-BB57-7D37BBE617BC}"
+	ProjectSection(SolutionItems) = preProject
+		OpenStreetMap\Directory.Build.props = OpenStreetMap\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Maps", "OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj", "{608E7743-20FD-4353-A471-C03D4F6CE65D}"
 EndProject
@@ -26,6 +32,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Common", "OpenStreetMap\OpenStreetMap.Common\OpenStreetMap.Common.csproj", "{0B7677C0-1E06-4D52-A264-052FB983992E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MapBox", "MapBox", "{FBB438EA-9BE4-45F8-AC0B-511D40B1308C}"
+	ProjectSection(SolutionItems) = preProject
+		MapBox\Directory.Build.props = MapBox\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapBox.Common", "MapBox\MapBox.Common\MapBox.Common.csproj", "{FB14594D-A4AD-4275-87D6-F34A25D6FA85}"
 EndProject

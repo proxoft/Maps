@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Version>1.1.2</Version>
-    </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Core\Core.csproj" />
     <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
