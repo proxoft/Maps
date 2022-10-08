@@ -37,7 +37,7 @@
     private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
 
     [Inject]
-    public IMapFactory MapFactory { get; set; }
+    public IMapFactory MapFactory { get; set; } = null!;
 
     ElementReference MapHost { get; set; }
 

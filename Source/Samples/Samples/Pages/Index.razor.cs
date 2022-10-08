@@ -7,14 +7,14 @@ using Proxoft.Maps.Core;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Proxoft.Maps.Sample.Maps.Pages
+namespace Proxoft.Maps.Samples.Pages
 {
     public sealed partial class Index : IDisposable
     {
-        private IMap _map1;
+        private IMap _map1 = NoMap.Instance;
 
         [Inject]
-        public IMapFactory MapFactory { get; set; }
+        public IMapFactory MapFactory { get; set; } = null!;
 
         ElementReference MapHost { get; set; }
 

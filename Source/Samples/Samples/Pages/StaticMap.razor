@@ -21,10 +21,10 @@
     private const string _imageSrcPrefix = "data:image/jpg;base64";
 
     [Inject]
-    public IStaticMapService StaticMapService { get; set; }
+    public IStaticMapService StaticMapService { get; set; } = null!;
 
-    private string Error { get; set; }
-    private string ImageSrc { get; set; }
+    private string Error { get; set; } = "";
+    private string ImageSrc { get; set; } = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

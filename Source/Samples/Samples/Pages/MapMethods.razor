@@ -38,10 +38,10 @@
 
 
 @code {
-    private IMap _map;
+    private IMap _map = NoMap.Instance;
 
     [Inject]
-    public IMapFactory MapFactory { get; set; }
+    public IMapFactory MapFactory { get; set; } = null!;
 
     ElementReference MapHost { get; set; }
 

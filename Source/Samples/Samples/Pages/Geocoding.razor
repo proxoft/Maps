@@ -49,10 +49,10 @@
 
 @code {
     [Inject]
-    IGeocoder Geocoder { get; set; }
+    IGeocoder Geocoder { get; set; } = null!;
 
     [Inject]
-    IMapFactory MapFactory { get; set; }
+    IMapFactory MapFactory { get; set; } = null!;
 
     private ElementReference MapHost { get; set; }
 
@@ -60,9 +60,9 @@
 
     private string Search { get; set; } = "Banska Bystrica";
 
-    private string City { get; set; }
-    private string Street { get; set; }
-    private string StreetNumber { get; set; }
+    private string City { get; set; } = "";
+    private string Street { get; set; } = "";
+    private string StreetNumber { get; set; } = "";
     private LatLng LatLng { get; set; } = new();
 
     private Either<ErrorStatus, Address> Result { get; set; } = ErrorStatus.ZeroResults;

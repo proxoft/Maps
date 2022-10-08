@@ -7,15 +7,15 @@ using Proxoft.Maps.Core;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Proxoft.Maps.Sample.Maps.Pages
+namespace Proxoft.Maps.Samples.Pages
 {
     public sealed partial class TwoMaps : IDisposable
     {
-        private IMap _map1;
-        private IMap _map2;
+        private IMap _map1 = NoMap.Instance;
+        private IMap _map2 = NoMap.Instance;
 
         [Inject]
-        public IMapFactory MapFactory { get; set; }
+        public IMapFactory MapFactory { get; set; } = null!;
 
         ElementReference Map1Host { get; set; }
 
@@ -24,6 +24,7 @@ namespace Proxoft.Maps.Sample.Maps.Pages
         public string Provider => this.MapFactory.Name;
 
         private List<string> Map1Log { get; set; } = new();
+
         private List<string> Map2Log { get; set; } = new();
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
