@@ -1,17 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.OpenStreetMap.Maps</RootNamespace>
-        <AssemblyName>Proxoft.Maps.OpenStreetMap.Maps</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.OpenStreetMap.Maps</PackageId>
         <Version>1.1.2</Version>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,13 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.10" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\..\Map.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
     </ItemGroup>
 
     <ItemGroup>

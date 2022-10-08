@@ -2,10 +2,15 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
 
+        <AssemblyName>Proxoft.Maps.$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>Proxoft.Maps.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Proxoft.Maps.$(MSBuildProjectName)</PackageId>
+
         <Authors>Proxoft s.r.o.</Authors>
         <Copyright>www.proxoft.sk</Copyright>
         <Product>Proxoft Maps</Product>
@@ -14,5 +19,13 @@
         <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
         <RepositoryUrl>https://github.com/proxoft/Maps</RepositoryUrl>
         <PackageTags>Maps; Maps Components</PackageTags>
+        <PackageIcon>Map.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\Map.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
 </Project>

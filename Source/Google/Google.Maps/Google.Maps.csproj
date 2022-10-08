@@ -1,16 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.Google.Maps</RootNamespace>
-        <AssemblyName>Proxoft.Maps.Google.Maps</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.Google.Maps</PackageId>
-    </PropertyGroup>
-  
     <ItemGroup>
         <SupportedPlatform Include="browser" />
     </ItemGroup>

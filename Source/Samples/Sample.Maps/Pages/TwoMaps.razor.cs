@@ -7,7 +7,7 @@ using Proxoft.Maps.Core;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Sample.Maps.Pages
+namespace Proxoft.Maps.Sample.Maps.Pages
 {
     public sealed partial class TwoMaps : IDisposable
     {
