@@ -1,6 +1,6 @@
 ﻿let loadResult = "none";
 
-console.log("apiLoader_1.0.0.js");
+console.log("osm apiLoader_1.0.0.js loaded");
 
 export function addOpenStreetMapScripts(netObjRef) {
     let myScript = null;
