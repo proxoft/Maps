@@ -1,4 +1,5 @@
-﻿using Proxoft.Maps.MapBox.Hosting.Builders;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Proxoft.Maps.MapBox.Hosting.Builders;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

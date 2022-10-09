@@ -1,6 +1,6 @@
 ﻿@page "/StaticMap"
 @using Proxoft.Extensions.Options
-@using Proxoft.Maps.Core.StaticMaps
+@using Proxoft.Maps.Core.Abstractions.StaticMaps
 
 <h3>StaticMap</h3>
 
@@ -40,7 +40,7 @@
             Longitude = 17.168397500000000m
         };
 
-        Proxoft.Maps.Core.StaticMaps.MapOptions options = new()
+        Proxoft.Maps.Core.Abstractions.StaticMaps.MapOptions options = new()
         {
             Center = center,
             Zoom = ZoomLevel.Thirteen,
@@ -51,7 +51,7 @@
             },
             Markers = new[]
             {
-                new Proxoft.Maps.Core.StaticMaps.MarkerOptions
+                new Proxoft.Maps.Core.Abstractions.StaticMaps.MarkerOptions
                 {
                     LatLng = center,
                     Color = System.Drawing.Color.AntiqueWhite,

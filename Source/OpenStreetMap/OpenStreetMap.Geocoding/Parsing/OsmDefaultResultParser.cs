@@ -5,7 +5,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding
 {
     public class OsmDefaultResultParser : IOsmResultParser
     {
-        public Core.Geocoding.Address Parse(Result result)
+        public Core.Abstractions.Geocoding.Address Parse(Result result)
             => result.ToAddress();
     }
 }

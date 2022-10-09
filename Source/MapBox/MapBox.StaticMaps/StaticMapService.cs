@@ -2,51 +2,50 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Proxoft.Extensions.Options;
-using Proxoft.Maps.Core.StaticMaps;
+using Proxoft.Maps.Core.Abstractions.StaticMaps;
 using Proxoft.Maps.MapBox.Common;
 using Proxoft.Maps.MapBox.StaticMaps.Helpers;
 
-namespace Proxoft.Maps.MapBox.StaticMaps
+namespace Proxoft.Maps.MapBox.StaticMaps;
+
+public sealed class StaticMapService : IStaticMapService, IDisposable
 {
-    public sealed class StaticMapService : IStaticMapService, IDisposable
+    private readonly string _accessToken;
+
+    private readonly HttpClient _httpClient = new ()
     {
-        private readonly string _accessToken;
+        BaseAddress = new Uri("https://api.mapbox.com/styles/v1/mapbox/")
+    };
 
-        private readonly HttpClient _httpClient = new ()
-        {
-            BaseAddress = new Uri("https://api.mapbox.com/styles/v1/mapbox/")
-        };
+    public StaticMapService(MapBoxOptions options)
+    {
+        _accessToken = $"access_token={options.AccessToken}";
+    }
 
-        public StaticMapService(MapBoxOptions options)
+    public async Task<Either<string, byte[]>> CreateImage(MapOptions options)
+    {
+        try
         {
-            _accessToken = $"access_token={options.AccessToken}";
-        }
+            var markerParams = options.Markers.ToQueryParameter();
+            var mapParams = options.ToQueryParameter();
 
-        public async Task<Either<string, byte[]>> CreateImage(MapOptions options)
-        {
-            try
+            var response = await _httpClient.GetAsync($"streets-v11/static/{markerParams}{mapParams}?{_accessToken}");
+            if (!response.IsSuccessStatusCode)
             {
-                var markerParams = options.Markers.ToQueryParameter();
-                var mapParams = options.ToQueryParameter();
-
-                var response = await _httpClient.GetAsync($"streets-v11/static/{markerParams}{mapParams}?{_accessToken}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    return response.StatusCode.ToString();
-                }
-
-                var content = await response.Content.ReadAsByteArrayAsync();
-                return content;
+                return response.StatusCode.ToString();
             }
-            catch(Exception ex)
-            {
-                return ex.Message;
-            }
+
+            var content = await response.Content.ReadAsByteArrayAsync();
+            return content;
         }
-
-        public void Dispose()
+        catch(Exception ex)
         {
-            _httpClient.Dispose();
+            return ex.Message;
         }
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
     }
 }

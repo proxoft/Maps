@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Shared\Core\Core.csproj" />
+      <ProjectReference Include="..\..\Core\Core.Abstractions\Core.Abstractions.csproj" />
       <ProjectReference Include="..\MapBox.Common\MapBox.Common.csproj" />
     </ItemGroup>
 

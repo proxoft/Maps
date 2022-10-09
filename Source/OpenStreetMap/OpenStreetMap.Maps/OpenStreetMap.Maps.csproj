@@ -5,11 +5,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Shared\Core\Core.csproj" />
+      <ProjectReference Include="..\..\Core\Core.Api\Core.Api.csproj" />
       <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
     </ItemGroup>
 

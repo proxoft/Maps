@@ -1,9 +1,8 @@
 ﻿using Proxoft.Maps.OpenStreetMap.Geocoding.Models;
 
-namespace Proxoft.Maps.OpenStreetMap.Geocoding
+namespace Proxoft.Maps.OpenStreetMap.Geocoding;
+
+public interface IOsmResultParser
 {
-    public interface IOsmResultParser
-    {
-        Core.Geocoding.Address Parse(Result result);
-    }
+    Core.Abstractions.Geocoding.Address Parse(Result result);
 }

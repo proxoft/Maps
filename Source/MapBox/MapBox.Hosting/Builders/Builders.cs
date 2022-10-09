@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Proxoft.Maps.Core.StaticMaps;
+using Proxoft.Maps.Core.Abstractions.StaticMaps;
 using Proxoft.Maps.MapBox.Common;
 using Proxoft.Maps.MapBox.StaticMaps;
 

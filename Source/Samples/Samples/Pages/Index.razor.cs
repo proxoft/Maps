@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Proxoft.Maps.Core;
+using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 
