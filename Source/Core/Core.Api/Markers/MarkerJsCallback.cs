@@ -4,7 +4,7 @@ using Proxoft.Maps.Core.Api.Core;
 
 namespace Proxoft.Maps.Core.Api.Markers;
 
-public class MarkerJsCallback : ApiObjectJsCallback
+internal class MarkerJsCallback : ApiObjectJsCallback<MarkerJsCallback>
 {
     public MarkerJsCallback(Action<Event> onEvent) : base(onEvent)
     {

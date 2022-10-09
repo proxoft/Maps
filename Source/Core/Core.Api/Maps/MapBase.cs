@@ -4,8 +4,7 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Maps;
 
-public abstract class MapBase<T> : ApiBaseObject<T>, IMap
-    where T: MapBase<T>
+public abstract class MapBase : ApiBaseObject, IMap
 {
     private bool _isRemoved;
 
@@ -14,15 +13,13 @@ public abstract class MapBase<T> : ApiBaseObject<T>, IMap
     protected MapBase(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
     {
         this.MapId = mapId;
+
         _mapJsCallback = new MapJsCallback(this.Push);
-        this.MapJsCallback = DotNetObjectReference.Create(_mapJsCallback);
     }
 
     public ApiStatus Status => ApiStatus.Available;
 
     protected string MapId { get; }
-
-    protected DotNetObjectReference<MapJsCallback> MapJsCallback { get; private set; }
 
     public void PanTo(LatLng center)
         => this.InvokeMapJs("PanTo", center);
@@ -54,7 +51,7 @@ public abstract class MapBase<T> : ApiBaseObject<T>, IMap
 
     protected void Initialize(MapOptions options, ElementReference hostElement)
     {
-        this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, this.MapJsCallback });
+        this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, _mapJsCallback.DotNetRef });
     }
 
     protected override void Dispose(bool disposing)

@@ -3,28 +3,26 @@ using Proxoft.Maps.Core.Api.Markers;
 
 namespace Proxoft.Maps.Core.Api
 {
-    public abstract class MarkerBase<T> : ApiBaseObject<T>, IMarker
-        where T : MarkerBase<T>
+    public abstract class MarkerBase : ApiBaseObject, IMarker
     {
         private readonly MarkerJsCallback _jsCallback;
 
         protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(jsModule)
         {
             _jsCallback = new MarkerJsCallback(this.Push);
-            this.JsCallback = DotNetObjectReference.Create(_jsCallback);
+
             this.MarkerId = markerId;
         }
 
         public string MarkerId { get; }
-        public bool IsRemoved { get; private set; }
 
-        protected DotNetObjectReference<MarkerJsCallback> JsCallback { get; private set; }
+        public bool IsRemoved { get; private set; }
 
         public void SetPosition(decimal latitude, decimal longitude)
          => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
 
         public void AddToMap(string mapId, MarkerOptions options)
-            => this.InvokeVoidJs("AddMarker", this.MarkerId, options, mapId, this.JsCallback);
+            => this.InvokeVoidJs("AddMarker", this.MarkerId, options, mapId, _jsCallback.DotNetRef);
 
         public void SetDraggable(bool draggable)
             => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
@@ -71,6 +69,8 @@ namespace Proxoft.Maps.Core.Api
             if (disposing)
             {
                 this.Remove();
+
+                _jsCallback.Dispose();
             }
 
             base.Dispose(disposing);

@@ -3,7 +3,8 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Core;
 
-public abstract class ApiObjectJsCallback : IDisposable
+internal abstract class ApiObjectJsCallback<T> : IDisposable
+    where T : ApiObjectJsCallback<T>
 {
     private bool _disposed;
     private readonly Action<Event> _onEvent;
@@ -11,7 +12,10 @@ public abstract class ApiObjectJsCallback : IDisposable
     protected ApiObjectJsCallback(Action<Event> onEvent)
     {
         _onEvent = onEvent;
+        this.DotNetRef = DotNetObjectReference.Create((T)this);
     }
+
+    public DotNetObjectReference<T> DotNetRef { get; }
 
     [JSInvokable]
     public void OnMouseClick(LatLng latLng)
@@ -61,5 +65,9 @@ public abstract class ApiObjectJsCallback : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
+        if (disposing)
+        {
+            this.DotNetRef.Dispose();
+        }
     }
 }

@@ -5,7 +5,7 @@ using Proxoft.Maps.Core.Api.Core;
 
 namespace Proxoft.Maps.Core.Api.Maps;
 
-public sealed class MapJsCallback : ApiObjectJsCallback
+internal sealed class MapJsCallback : ApiObjectJsCallback<MapJsCallback>
 {
     public MapJsCallback(Action<Event> onEvent) : base(onEvent)
     {
