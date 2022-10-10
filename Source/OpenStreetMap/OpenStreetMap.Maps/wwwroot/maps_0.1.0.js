@@ -250,6 +250,36 @@ function createMarkerWrapper(markerId, marker, map, netRef, enableLogging) {
         }
     };
 
+    //-- mouse events
+    marker.on("click", (e) => {
+        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("dblclick", (e) => {
+        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("mousedown", (e) => {
+        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("mouseup", (e) => {
+        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("mouseover", (e) => {
+        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("mousemove", (e) => {
+        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+
+    marker.on("mouseout", (e) => {
+        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
+    });
+    //------------------------
+
     marker.on("movestart", (e) => {
         let position = marker.getLatLng();
         wrapper.invokeRef("OnPositionStartChange", { latitude: position.lat, longitude: position.lng });
