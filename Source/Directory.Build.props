@@ -5,6 +5,9 @@
         <AssemblyName>Proxoft.Maps.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>Proxoft.Maps.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 
+        <BaseOutputPath>..\..\_Output\$(MSBuildProjectName)\bin\</BaseOutputPath>
+        <!--<BaseIntermediateOutputPath>..\..\_Output\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>-->
+
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 

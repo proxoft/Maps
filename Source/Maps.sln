@@ -43,6 +43,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapBox.Hosting", "MapBox\MapBox.Hosting\MapBox.Hosting.csproj", "{D1770F78-60FD-4919-9E35-8EB87916456E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8006596D-2EE9-47DB-980E-B64313D43930}"
+	ProjectSection(SolutionItems) = preProject
+		Core\Directory.Build.props = Core\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{5C72C803-6432-4720-BF4D-2F33E25EAE71}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples", "Samples\Samples\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Abstractions", "Core\Core.Abstractions\Core.Abstractions.csproj", "{7497DD73-90CC-4F05-B788-0101EAE175A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Api", "Core\Core.Api\Core.Api.csproj", "{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Api", "Core\Core.Api\Core.Api.csproj", "{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
