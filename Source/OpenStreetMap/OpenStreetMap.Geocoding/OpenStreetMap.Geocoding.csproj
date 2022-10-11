@@ -1,29 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.OpenStreetMap.Geocoding</RootNamespace>
-        <AssemblyName>Proxoft.Maps.OpenStreetMap.Geocoding</AssemblyName>
-        <PackageId>Proxoft.Maps.OpenStreetMap.Geocoding</PackageId>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageIcon>Map.png</PackageIcon>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <Version>1.1.2</Version>
-    </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Abstractions\Core.Abstractions.csproj" />
     <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\Map.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>

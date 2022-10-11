@@ -19,14 +19,14 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
 
             _moduleTask = new(() => jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                "import",
-               "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_v1.js").AsTask());
+               "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.1.0.js").AsTask());
         }
 
         public string Name => "OpenStreetMaps";
 
         public async Task<IMap> Initialize(MapOptions options, ElementReference hostElement)
         {
-            var status = await _api.LoadGoogleScripts();
+            var status = await _api.LoadMapScripts();
             if (status != LoadResponse.Loaded)
             {
                 return NoMap.Instance;

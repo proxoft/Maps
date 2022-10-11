@@ -1,31 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.OpenStreetMap.Hosting</RootNamespace>
-        <AssemblyName>Proxoft.Maps.OpenStreetMap.Hosting</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.OpenStreetMap.Hosting</PackageId>
-        <Version>1.1.1</Version>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <PackageIcon>Map.png</PackageIcon>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+      <ProjectReference Include="..\..\Core\Core.Api\Core.Api.csproj" />
       <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
       <ProjectReference Include="..\OpenStreetMap.Geocoding\OpenStreetMap.Geocoding.csproj" />
       <ProjectReference Include="..\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\..\Map.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
     </ItemGroup>
 
     <ItemGroup>

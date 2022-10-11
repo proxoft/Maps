@@ -1,28 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.MapBox.StaticMaps</RootNamespace>
-        <AssemblyName>Proxoft.Maps.MapBox.StaticMaps</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.MapBox.StaticMaps</PackageId>
-        <Version>1.1.1</Version>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <PackageIcon>Map.png</PackageIcon>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <None Include="..\..\Map.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
+      <ProjectReference Include="..\..\Core\Core.Abstractions\Core.Abstractions.csproj" />
       <ProjectReference Include="..\MapBox.Common\MapBox.Common.csproj" />
     </ItemGroup>
 

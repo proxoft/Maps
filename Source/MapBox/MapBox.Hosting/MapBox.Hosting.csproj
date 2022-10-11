@@ -1,29 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.MapBox.Hosting</RootNamespace>
-        <AssemblyName>Proxoft.Maps.MapBox.Hosting</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.MapBox.Hosting</PackageId>
-        <Version>1.0.0</Version>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <PackageIcon>Map.png</PackageIcon>
-    </PropertyGroup>
-
     <ItemGroup>
-        <None Include="..\..\Map.png">
-        <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>

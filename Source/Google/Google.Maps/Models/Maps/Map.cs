@@ -2,7 +2,6 @@
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core;
-using Proxoft.Maps.Core.Api;
 
 namespace Proxoft.Maps.Google.Maps.Models.Maps
 {

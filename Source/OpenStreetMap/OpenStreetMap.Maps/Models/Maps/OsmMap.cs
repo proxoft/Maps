@@ -7,7 +7,7 @@ using Proxoft.Maps.OpenStreetMap.Maps.Models.Markers;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
 {
-    internal class OsmMap : MapBase<OsmMap>
+    internal class OsmMap : MapBase
     {
         private readonly List<OsmMarker> _markers = new();
         private readonly Hooks _markerHooks;

@@ -3,7 +3,7 @@ using Proxoft.Maps.Core.Api;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Markers
 {
-    internal class OsmMarker : MarkerBase<OsmMarker>, IMarker
+    internal class OsmMarker : MarkerBase, IMarker
     {
         private readonly Hooks _hooks;
 

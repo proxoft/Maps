@@ -1,0 +1,1 @@
+﻿global using Proxoft.Maps.Core.Abstractions.Models;

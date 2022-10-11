@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30709.64
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32916.344
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maps.Core", "Maps.Core\Maps.Core.csproj", "{E535C1B9-315E-445F-BEE1-791AAD81ECF7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{3585860D-7919-4FCC-BC90-D489CA53FB4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Google", "Google", "{2485CB7C-028D-423E-8FF3-122C43B3BE42}"
+	ProjectSection(SolutionItems) = preProject
+		Google\Directory.Build.props = Google\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Geocoding", "Google\Google.Geocoding\Google.Geocoding.csproj", "{C547323F-82F3-4E5C-AAEF-73112F79E75D}"
 EndProject
@@ -18,6 +19,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Google\Google.Maps\Google.Maps.csproj", "{E87664AF-7F22-48F9-8E2C-5782DDBB30F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenStreetMap", "OpenStreetMap", "{A532A588-7A32-4FD8-BB57-7D37BBE617BC}"
+	ProjectSection(SolutionItems) = preProject
+		OpenStreetMap\Directory.Build.props = OpenStreetMap\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Maps", "OpenStreetMap\OpenStreetMap.Maps\OpenStreetMap.Maps.csproj", "{608E7743-20FD-4353-A471-C03D4F6CE65D}"
 EndProject
@@ -27,15 +31,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Geocoding", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenStreetMap.Common", "OpenStreetMap\OpenStreetMap.Common\OpenStreetMap.Common.csproj", "{0B7677C0-1E06-4D52-A264-052FB983992E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Maps", "Samples\Sample.Maps\Sample.Maps.csproj", "{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MapBox", "MapBox", "{FBB438EA-9BE4-45F8-AC0B-511D40B1308C}"
+	ProjectSection(SolutionItems) = preProject
+		MapBox\Directory.Build.props = MapBox\Directory.Build.props
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapBox.Common", "MapBox\MapBox.Common\MapBox.Common.csproj", "{FB14594D-A4AD-4275-87D6-F34A25D6FA85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapBox.Common", "MapBox\MapBox.Common\MapBox.Common.csproj", "{FB14594D-A4AD-4275-87D6-F34A25D6FA85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapBox.StaticMaps", "MapBox\MapBox.StaticMaps\MapBox.StaticMaps.csproj", "{4B25A4C0-284F-44F3-A054-C18FCAFD589C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapBox.StaticMaps", "MapBox\MapBox.StaticMaps\MapBox.StaticMaps.csproj", "{4B25A4C0-284F-44F3-A054-C18FCAFD589C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapBox.Hosting", "MapBox\MapBox.Hosting\MapBox.Hosting.csproj", "{D1770F78-60FD-4919-9E35-8EB87916456E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapBox.Hosting", "MapBox\MapBox.Hosting\MapBox.Hosting.csproj", "{D1770F78-60FD-4919-9E35-8EB87916456E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8006596D-2EE9-47DB-980E-B64313D43930}"
+	ProjectSection(SolutionItems) = preProject
+		Core\Directory.Build.props = Core\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{5C72C803-6432-4720-BF4D-2F33E25EAE71}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Map.png = Map.png
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples", "Samples\Samples\Samples.csproj", "{E34BC244-0DB7-4E7D-97DD-243D6F2C9988}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Abstractions", "Core\Core.Abstractions\Core.Abstractions.csproj", "{7497DD73-90CC-4F05-B788-0101EAE175A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Api", "Core\Core.Api\Core.Api.csproj", "{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +65,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E535C1B9-315E-445F-BEE1-791AAD81ECF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E535C1B9-315E-445F-BEE1-791AAD81ECF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E535C1B9-315E-445F-BEE1-791AAD81ECF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E535C1B9-315E-445F-BEE1-791AAD81ECF7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C547323F-82F3-4E5C-AAEF-73112F79E75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C547323F-82F3-4E5C-AAEF-73112F79E75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C547323F-82F3-4E5C-AAEF-73112F79E75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,10 +97,6 @@ Global
 		{0B7677C0-1E06-4D52-A264-052FB983992E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B7677C0-1E06-4D52-A264-052FB983992E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B7677C0-1E06-4D52-A264-052FB983992E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB14594D-A4AD-4275-87D6-F34A25D6FA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB14594D-A4AD-4275-87D6-F34A25D6FA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB14594D-A4AD-4275-87D6-F34A25D6FA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,6 +109,18 @@ Global
 		{D1770F78-60FD-4919-9E35-8EB87916456E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1770F78-60FD-4919-9E35-8EB87916456E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1770F78-60FD-4919-9E35-8EB87916456E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E34BC244-0DB7-4E7D-97DD-243D6F2C9988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E34BC244-0DB7-4E7D-97DD-243D6F2C9988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E34BC244-0DB7-4E7D-97DD-243D6F2C9988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E34BC244-0DB7-4E7D-97DD-243D6F2C9988}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7497DD73-90CC-4F05-B788-0101EAE175A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7497DD73-90CC-4F05-B788-0101EAE175A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7497DD73-90CC-4F05-B788-0101EAE175A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7497DD73-90CC-4F05-B788-0101EAE175A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,10 +134,12 @@ Global
 		{0C4939A7-DD61-49B9-8BD7-90AD38AC1683} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
 		{5F15503D-EFC5-4EDC-AFF5-73F5F29BD7F7} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
 		{0B7677C0-1E06-4D52-A264-052FB983992E} = {A532A588-7A32-4FD8-BB57-7D37BBE617BC}
-		{54F98A7E-BEBF-4FC1-ACC3-56F2B173F461} = {3585860D-7919-4FCC-BC90-D489CA53FB4A}
 		{FB14594D-A4AD-4275-87D6-F34A25D6FA85} = {FBB438EA-9BE4-45F8-AC0B-511D40B1308C}
 		{4B25A4C0-284F-44F3-A054-C18FCAFD589C} = {FBB438EA-9BE4-45F8-AC0B-511D40B1308C}
 		{D1770F78-60FD-4919-9E35-8EB87916456E} = {FBB438EA-9BE4-45F8-AC0B-511D40B1308C}
+		{E34BC244-0DB7-4E7D-97DD-243D6F2C9988} = {3585860D-7919-4FCC-BC90-D489CA53FB4A}
+		{7497DD73-90CC-4F05-B788-0101EAE175A2} = {8006596D-2EE9-47DB-980E-B64313D43930}
+		{1B4BD823-D6BB-48E5-BB82-E99F565A8B4B} = {8006596D-2EE9-47DB-980E-B64313D43930}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07F377B1-0785-4E61-B913-1C549725EA55}

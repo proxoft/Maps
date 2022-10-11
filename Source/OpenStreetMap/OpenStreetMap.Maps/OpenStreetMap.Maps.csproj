@@ -1,36 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Proxoft.Maps.OpenStreetMap.Maps</RootNamespace>
-        <AssemblyName>Proxoft.Maps.OpenStreetMap.Maps</AssemblyName>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Proxoft</Authors>
-        <Company>Proxoft s.r.o.</Company>
-        <Product>Maps</Product>
-        <PackageId>Proxoft.Maps.OpenStreetMap.Maps</PackageId>
-        <Version>1.1.2</Version>
-        <PackageProjectUrl>https://github.com/proxoft/Maps</PackageProjectUrl>
-        <PackageIcon>Map.png</PackageIcon>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <ItemGroup>
         <SupportedPlatform Include="browser" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Maps.Core\Maps.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\..\Map.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
+      <ProjectReference Include="..\..\Core\Core.Api\Core.Api.csproj" />
+      <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
     </ItemGroup>
 
 </Project>
