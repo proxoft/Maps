@@ -271,10 +271,6 @@ function createMarkerWrapper(markerId, marker, map, netRef, enableLogging) {
         wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
 
-    marker.on("mousemove", (e) => {
-        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
     marker.on("mouseout", (e) => {
         wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
     });
