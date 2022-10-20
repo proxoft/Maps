@@ -24,7 +24,7 @@ export function AddMarker(markerId, options, iconOptions, mapId, netRef) {
 }
 
 export function RemoveMarker(markerId) {
-    let i = markerWrappers.findIndex(me => me.markerid = markerId);
+    let i = findMarkerWrapperIndex(markerId);
     let wrapper = markerWrappers.splice(i, 1);
     wrapper[0].log("removing from map");
     wrapper[0].marker.remove();
@@ -76,10 +76,15 @@ function setIcon(marker, iconOptions) {
 }
 
 function findMarkerWrapper(markerId) {
-    let i = markerWrappers.findIndex(me => me.markerId === markerId);
+    let i = findMarkerWrapperIndex(markerId);
     return i === -1
         ? null
         : markerWrappers[i];
+}
+
+function findMarkerWrapperIndex(markerId) {
+    let i = markerWrappers.findIndex(me => me.markerId === markerId);
+    return i;
 }
 
 function createMarkerWrapper(markerId, marker, map, netRef, enableLogging) {
