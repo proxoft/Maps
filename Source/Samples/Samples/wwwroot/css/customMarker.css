@@ -1,0 +1,13 @@
+﻿.custom-marker {
+    background-color: transparent;
+    border-radius: 50%;
+    border: solid 2px red;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.marker-span {
+    position: absolute;
+    border: solid 2px red;
+    transform: translate(0, -100%);
+}

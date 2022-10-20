@@ -11,27 +11,35 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
     {
         private readonly List<OsmMarker> _markers = new();
         private readonly Hooks _markerHooks;
+        private readonly OsmModules _modules;
 
-        private OsmMap(string mapId, IJSInProcessObjectReference jsModule) : base(mapId, jsModule)
+        private OsmMap(
+            string mapId,
+            OsmModules modules) : base(mapId, modules.Map)
         {
             _markerHooks = new()
             {
                 OnRemove = this.OnMarkerRemove
             };
+            _modules = modules;
         }
 
         public override IMarker AddMarker(MarkerOptions options)
         {
-            OsmMarker marker = new (System.Guid.NewGuid().ToString(), this.JsModule, _markerHooks);
+            OsmMarker marker = new (System.Guid.NewGuid().ToString(), _modules.Marker, _markerHooks);
 
             _markers.Add(marker);
             marker.AddToMap(this.MapId, options);
             return marker;
         }
 
-        public static OsmMap Create(string mapId, MapOptions options, ElementReference hostElement, IJSInProcessObjectReference jsModule)
+        public static OsmMap Create(
+            string mapId,
+            MapOptions options,
+            ElementReference hostElement,
+            OsmModules modules)
         {
-            var map = new OsmMap(mapId, jsModule);
+            var map = new OsmMap(mapId, modules);
             map.Initialize(options, hostElement);
             return map;
         }
