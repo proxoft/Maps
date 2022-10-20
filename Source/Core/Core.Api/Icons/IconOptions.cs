@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Proxoft.Maps.Core.Abstractions.Common;
 
 namespace Proxoft.Maps.Core.Api;
 
@@ -7,7 +6,7 @@ public abstract class IconOptions
 {
     public string Discriminator => this.GetType().Name;
 
-    public Size Size { get; set; } 
+    public Size Size { get; set; }
 
     public Point IconAnchor { get; set; }
 

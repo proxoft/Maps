@@ -1,4 +1,4 @@
-﻿namespace Proxoft.Maps.Core.Abstractions.Common;
+﻿namespace Proxoft.Maps.Core.Abstractions.StaticMaps;
 
 public record SizePixel
 {

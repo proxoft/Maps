@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Proxoft.Maps.Core.Abstractions.Common;
 using Proxoft.Maps.Core.Abstractions.Models;
 
 namespace Proxoft.Maps.Core.Abstractions.StaticMaps;

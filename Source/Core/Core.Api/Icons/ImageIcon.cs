@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Proxoft.Maps.Core.Abstractions.Common;
 using Proxoft.Maps.Core.Abstractions.StaticMaps;
 
 namespace Proxoft.Maps.Core.Api.Icons;
