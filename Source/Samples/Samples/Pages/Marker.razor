@@ -2,7 +2,10 @@
 @implements IDisposable
 
 @using System.Reactive.Linq;
+@using Proxoft.Maps.Core.Abstractions.Common;
 @using Proxoft.Maps.Core.Api
+@using Proxoft.Maps.Core.Api.Icons;
+@using System.Drawing;
 
 <div class="map-container" @ref="MapHost">
 </div>
@@ -22,11 +25,11 @@
     <span>Lng:</span><input @bind-value="Lng" />
 </div>
 <div>
-    Draggable <input type="checkbox" @bind-value="Draggable" />
+    Draggable <input type="checkbox" @bind="Draggable" />
 </div>
 
 <div>
-    Visible <input type="checkbox" @bind-value="Visible" />
+    Visible <input type="checkbox" @bind="Visible" />
 </div>
 
 @code {
@@ -35,6 +38,7 @@
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
     private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
+    private IMarker _customMarker = Proxoft.Maps.Core.Api.NoMarker.Instance;
 
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
@@ -49,6 +53,7 @@
         {
             _draggable = value;
             _marker.SetDraggable(value);
+            _customMarker.SetDraggable(value);
         }
     }
 
@@ -58,7 +63,9 @@
         set
         {
             _opacity = Opacity.From(value);
+
             _marker.SetOpacity(_opacity);
+            _customMarker.SetOpacity(_opacity);
         }
     }
 
@@ -88,11 +95,36 @@
                 TraceJs = true
             });
 
+            _customMarker = _map.AddMarker(new MarkerOptions()
+                {
+                    Position = new LatLng
+                    {
+                        Latitude = center.Latitude + 1,
+                        Longitude = center.Longitude + 1
+                    },
+                    Draggable = _draggable,
+                    Opacity = _opacity,
+                    Icon = new HtmlIcon()
+                    {
+                        Size = new Size(),
+                        IconAnchor = new Point(),
+                        ClassName = "custom-marker",
+                        Html = "<span class=\"marker-span\">x</span>"
+                    },
+                    TraceJs = true
+            });
+
             _marker.OnEvent
-                .Subscribe(e => this.AddLog(e.Name));
+                .Subscribe(e => this.AddLog($"{e.Name} [m1]"));
+
+            _customMarker.OnEvent
+                .Subscribe(e => this.AddLog($"{e.Name} [m2]"));
 
             _map.OnClick()
-                .Subscribe(latlng => _marker.SetPosition(latlng));
+                .Subscribe(latlng => {
+                    _customMarker.SetPosition(latlng);
+                    _marker.SetPosition(latlng);
+                });
         }
     }
 

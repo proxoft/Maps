@@ -1,4 +1,6 @@
 ﻿using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Abstractions.Models;
+using Proxoft.Maps.Core.Api.Icons;
 using Proxoft.Maps.Core.Api.Markers;
 
 namespace Proxoft.Maps.Core.Api
@@ -22,7 +24,10 @@ namespace Proxoft.Maps.Core.Api
          => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
 
         public void AddToMap(string mapId, MarkerOptions options)
-            => this.InvokeVoidJs("AddMarker", this.MarkerId, options, mapId, _jsCallback.DotNetRef);
+        {
+            this.InvokeVoidJs("AddMarker", this.MarkerId, options, options.Icon, mapId, _jsCallback.DotNetRef);
+            // this.SetIcon(options.Icon);
+        }
 
         public void SetDraggable(bool draggable)
             => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
@@ -32,6 +37,19 @@ namespace Proxoft.Maps.Core.Api
 
         public void SetPosition(LatLng latLng)
             => this.InvokeVoidJs("SetMarkerPosition", this.MarkerId, latLng);
+
+        public void SetIcon(IconOptions icon)
+        {
+            switch (icon)
+            {
+                case ImageIcon imageIcon:
+                    this.InvokeVoidJs("SetMarkerImageIcon", this.MarkerId, imageIcon);
+                    break;
+                case HtmlIcon htmlIcon:
+                    this.InvokeVoidJs("SetMarkerHtmlIcon", this.MarkerId, htmlIcon);
+                    break;
+            }
+        }
 
         public virtual void Remove()
         {

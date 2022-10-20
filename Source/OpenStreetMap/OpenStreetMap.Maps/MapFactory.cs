@@ -10,16 +10,14 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
 {
     public class MapFactory : IMapFactory
     {
-        private readonly Lazy<Task<IJSInProcessObjectReference>> _moduleTask;
+        // private readonly Lazy<Task<IJSInProcessObjectReference>> _moduleTask;
         private readonly ApiLoader _api;
+        private readonly IJSRuntime _jsRuntime;
 
         public MapFactory(IJSRuntime jsRuntime)
         {
             _api = new ApiLoader(jsRuntime);
-
-            _moduleTask = new(() => jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-               "import",
-               "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.1.0.js").AsTask());
+            _jsRuntime = jsRuntime;
         }
 
         public string Name => "OpenStreetMaps";
@@ -33,8 +31,17 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
             }
 
             var mapId = Guid.NewGuid().ToString();
-            var module = await _moduleTask.Value;
-            var map = OsmMap.Create(mapId, options, hostElement, module);
+
+            OsmModules modules = await OsmModules.Load(_jsRuntime);
+            //var module = await _jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+            //   "import",
+            //   "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.2.0.js");
+
+            //var markerModule = await _jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+            //   "import",
+            //   "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.2.0.js");
+
+            var map = OsmMap.Create(mapId, options, hostElement, modules);
             return map;
         }
     }

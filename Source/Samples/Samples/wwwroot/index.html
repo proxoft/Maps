@@ -7,6 +7,7 @@
     <title>Samples</title>
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
+    <link href="css/customMarker.css" rel="stylesheet" />
     <link href="Proxoft.Maps.Samples.styles.css" rel="stylesheet" />
 </head>
 
@@ -18,6 +19,12 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
+    <script type="text/javascript">
+        caches.delete("blazor-resources-/").then(function (e) {
+            console.log("'blazor-resources-/' cache deleted");
+        });
+    </script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
