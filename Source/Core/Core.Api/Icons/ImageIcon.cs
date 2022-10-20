@@ -12,6 +12,7 @@ public class ImageIcon : IconOptions
         this.PopupAnchor = new(1, -34);
 
     }
+
     public string Url { get; set; } = "";
 
     public string RetinaUrl { get; set; } = "";

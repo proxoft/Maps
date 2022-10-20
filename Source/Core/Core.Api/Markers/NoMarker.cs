@@ -1,32 +1,35 @@
 ﻿using System;
 using System.Reactive.Linq;
 
-namespace Proxoft.Maps.Core.Api
+namespace Proxoft.Maps.Core.Api;
+
+public sealed class NoMarker : IMarker
 {
-    public sealed class NoMarker : IMarker
+    public static readonly NoMarker Instance = new();
+
+    public IObservable<Event> OnEvent => Observable.Never<Event>();
+
+    public void Dispose()
     {
-        public static readonly NoMarker Instance = new();
+    }
 
-        public IObservable<Event> OnEvent => Observable.Never<Event>();
+    public void SetDraggable(bool draggable)
+    {
+    }
 
-        public void Dispose()
-        {
-        }
+    public void SetIcon(IconOptions icon)
+    {
+    }
 
-        public void SetDraggable(bool draggable)
-        {
-        }
+    public void SetOpacity(Opacity opacity)
+    {
+    }
 
-        public void SetOpacity(Opacity opacity)
-        {
-        }
+    public void SetPosition(LatLng latLng)
+    {
+    }
 
-        public void SetPosition(LatLng latLng)
-        {
-        }
-
-        public void SetPosition(decimal latitude, decimal longitude)
-        {
-        }
+    public void SetPosition(decimal latitude, decimal longitude)
+    {
     }
 }

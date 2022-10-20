@@ -53,33 +53,15 @@ export function SetMarkerOpacity(markerId, opacity) {
     wrapper.marker.setOpacity(opacity);
 }
 
-export function SetMarkerImageIcon(markerId, icon) {
-    console.log("SetMarkerImageIcon");
-}
-
-export function SetMarkerHtmlIcon(markerId, icon) {
-    console.log("SetMarkerHtmlIcon: " + markerId);
-    console.log(icon);
-
+export function SetMarkerIcon(markerId, iconOptions) {
     let wrapper = findMarkerWrapper(markerId);
-    let i = L.divIcon({
-        html: icon.html,
-        className: icon.className,
-    });
-
-    if (!icon.size.isZero) {
-        console.log("icon size not zero");
-        i.options.iconSize = [icon.size.width, icon.size.height]
-    }
-
-    wrapper.marker.setIcon(i);
+    wrapper.log("changing icon");
+    wrapper.log(iconOptions);
+    setIcon(wrapper.marker, iconOptions);
 }
 
 function setIcon(marker, iconOptions) {
-    console.log(iconOptions);
-
     let i = marker.getIcon();
-    console.log(i);
 
     switch (iconOptions.discriminator) {
         case "HtmlIcon":
@@ -90,7 +72,6 @@ function setIcon(marker, iconOptions) {
             break;
     }
 
-    console.log(i);
     marker.setIcon(i);
 }
 

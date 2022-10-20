@@ -3,95 +3,85 @@ using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.Core.Api.Icons;
 using Proxoft.Maps.Core.Api.Markers;
 
-namespace Proxoft.Maps.Core.Api
+namespace Proxoft.Maps.Core.Api;
+
+public abstract class MarkerBase : ApiBaseObject, IMarker
 {
-    public abstract class MarkerBase : ApiBaseObject, IMarker
+    private readonly MarkerJsCallback _jsCallback;
+
+    protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(jsModule)
     {
-        private readonly MarkerJsCallback _jsCallback;
+        _jsCallback = new MarkerJsCallback(this.Push);
 
-        protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(jsModule)
+        this.MarkerId = markerId;
+    }
+
+    public string MarkerId { get; }
+
+    public bool IsRemoved { get; private set; }
+
+    public void SetPosition(decimal latitude, decimal longitude)
+     => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
+
+    public void AddToMap(string mapId, MarkerOptions options)
+    {
+        this.InvokeVoidJs("AddMarker", this.MarkerId, options, options.Icon, mapId, _jsCallback.DotNetRef);
+    }
+
+    public void SetDraggable(bool draggable)
+        => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
+
+    public void SetOpacity(Opacity opacity)
+        => this.InvokeVoidJs("SetMarkerOpacity", this.MarkerId, (decimal)opacity);
+
+    public void SetPosition(LatLng latLng)
+        => this.InvokeVoidJs("SetMarkerPosition", this.MarkerId, latLng);
+
+    public void SetIcon(IconOptions icon)
+    {
+        this.InvokeVoidJs("SetMarkerIcon", this.MarkerId, icon);
+    }
+
+    public virtual void Remove()
+    {
+        if (IsRemoved)
         {
-            _jsCallback = new MarkerJsCallback(this.Push);
-
-            this.MarkerId = markerId;
+            return;
         }
 
-        public string MarkerId { get; }
+        this.InvokeVoidJs("RemoveMarker", this.MarkerId);
+        IsRemoved = true;
+    }
 
-        public bool IsRemoved { get; private set; }
-
-        public void SetPosition(decimal latitude, decimal longitude)
-         => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
-
-        public void AddToMap(string mapId, MarkerOptions options)
+    protected override void InvokeVoidJs(string identifier, params object[] args)
+    {
+        if (this.IsRemoved)
         {
-            this.InvokeVoidJs("AddMarker", this.MarkerId, options, options.Icon, mapId, _jsCallback.DotNetRef);
-            // this.SetIcon(options.Icon);
+            throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
         }
 
-        public void SetDraggable(bool draggable)
-            => this.InvokeVoidJs("SetMarkerDraggable", this.MarkerId, draggable);
+        base.InvokeVoidJs(identifier, args);
+    }
 
-        public void SetOpacity(Opacity opacity)
-            => this.InvokeVoidJs("SetMarkerOpacity", this.MarkerId, (decimal)opacity);
-
-        public void SetPosition(LatLng latLng)
-            => this.InvokeVoidJs("SetMarkerPosition", this.MarkerId, latLng);
-
-        public void SetIcon(IconOptions icon)
+    protected override TResult InvokeJs<TResult>(string identifier, params object[] args)
+    {
+        if (this.IsRemoved)
         {
-            switch (icon)
-            {
-                case ImageIcon imageIcon:
-                    this.InvokeVoidJs("SetMarkerImageIcon", this.MarkerId, imageIcon);
-                    break;
-                case HtmlIcon htmlIcon:
-                    this.InvokeVoidJs("SetMarkerHtmlIcon", this.MarkerId, htmlIcon);
-                    break;
-            }
+            throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
         }
 
-        public virtual void Remove()
-        {
-            if (IsRemoved)
-            {
-                return;
-            }
+        return base.InvokeJs<TResult>(identifier, args);
+    }
 
-            this.InvokeVoidJs("RemoveMarker", this.MarkerId);
-            IsRemoved = true;
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            this.Remove();
+
+            _jsCallback.Dispose();
         }
 
-        protected override void InvokeVoidJs(string identifier, params object[] args)
-        {
-            if (this.IsRemoved)
-            {
-                throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
-            }
-
-            base.InvokeVoidJs(identifier, args);
-        }
-
-        protected override TResult InvokeJs<TResult>(string identifier, params object[] args)
-        {
-            if (this.IsRemoved)
-            {
-                throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
-            }
-
-            return base.InvokeJs<TResult>(identifier, args);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.Remove();
-
-                _jsCallback.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
+        base.Dispose(disposing);
     }
 }

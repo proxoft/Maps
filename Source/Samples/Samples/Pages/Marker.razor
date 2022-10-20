@@ -2,7 +2,6 @@
 @implements IDisposable
 
 @using System.Reactive.Linq;
-@using Proxoft.Maps.Core.Abstractions.Common;
 @using Proxoft.Maps.Core.Api
 @using Proxoft.Maps.Core.Api.Icons;
 @using System.Drawing;
@@ -32,13 +31,26 @@
     Visible <input type="checkbox" @bind="Visible" />
 </div>
 
+<div>
+    Use html marker <input type="checkbox" @bind="UseHtml" />
+</div>
+
 @code {
     private bool _draggable = false;
+    private bool _useHtml = true;
     private Opacity _opacity = Opacity.Visible;
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
     private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
     private IMarker _customMarker = Proxoft.Maps.Core.Api.NoMarker.Instance;
+
+    private HtmlIcon _htmlIcon = new HtmlIcon()
+        {
+            Size = new Size(),
+            IconAnchor = new Point(),
+            ClassName = "custom-marker",
+            Html = "<span class=\"marker-span\">x</span>"
+        };
 
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
@@ -66,6 +78,20 @@
 
             _marker.SetOpacity(_opacity);
             _customMarker.SetOpacity(_opacity);
+        }
+    }
+
+    private bool UseHtml
+    {
+        get => _useHtml;
+        set
+        {
+            _useHtml = value;
+            IconOptions io = _useHtml
+                ? _htmlIcon
+                : new ImageIcon();
+
+            _customMarker.SetIcon(io);
         }
     }
 
