@@ -83,5 +83,15 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         {
             throw new NotImplementedException();
         }
+
+        public LatLngBounds GetBounds()
+        {
+            throw new NotImplementedException();
+        }
+
+        public LatLng GetCenter()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

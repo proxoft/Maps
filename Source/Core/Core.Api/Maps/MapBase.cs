@@ -27,6 +27,12 @@ public abstract class MapBase : ApiBaseObject, IMap
     public void SetCenter(LatLng position)
         => this.InvokeMapJs("SetCenter", position);
 
+    public LatLng GetCenter()
+    {
+        LatLng center = this.InvokeMapJs<LatLng>("GetCenter");
+        return center;
+    }
+
     public void ZoomTo(ZoomLevel zoom)
         => this.InvokeMapJs("ZoomTo", (decimal)zoom);
 
@@ -35,6 +41,12 @@ public abstract class MapBase : ApiBaseObject, IMap
 
     public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
         => this.InvokeMapJs("FitBounds", bounds, padding, zoom == null ? null : (decimal)zoom);
+
+    public LatLngBounds GetBounds()
+    {
+        LatLng[] corners = this.InvokeMapJs<LatLng[]>("GetBounds");
+        return LatLngBounds.FromCorners(corners[0], corners[1]);
+    }
 
     public abstract IMarker AddMarker(MarkerOptions options);
 
@@ -67,4 +79,9 @@ public abstract class MapBase : ApiBaseObject, IMap
 
     protected void InvokeMapJs(string method, params object[] args)
         => this.InvokeVoidJs(method, new object[] { this.MapId }.Concat(args).ToArray());
+
+    protected TResult InvokeMapJs<TResult>(string method, params object[] args)
+        => this.InvokeJs<TResult>(method, new object[] { this.MapId }.Concat(args).ToArray());
+
+    
 }

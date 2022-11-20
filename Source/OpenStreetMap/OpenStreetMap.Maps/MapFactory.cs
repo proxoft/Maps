@@ -10,7 +10,6 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
 {
     public class MapFactory : IMapFactory
     {
-        // private readonly Lazy<Task<IJSInProcessObjectReference>> _moduleTask;
         private readonly ApiLoader _api;
         private readonly IJSRuntime _jsRuntime;
 
@@ -33,14 +32,6 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
             var mapId = Guid.NewGuid().ToString();
 
             OsmModules modules = await OsmModules.Load(_jsRuntime);
-            //var module = await _jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-            //   "import",
-            //   "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.2.0.js");
-
-            //var markerModule = await _jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-            //   "import",
-            //   "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.2.0.js");
-
             var map = OsmMap.Create(mapId, options, hostElement, modules);
             return map;
         }

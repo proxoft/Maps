@@ -1,6 +1,6 @@
 ﻿var mapWrappers = [];
 
-console.log("osm maps_0.2.0.js loaded");
+console.log("osm maps_0.4.0.js loaded");
 
 //--Maps-----------------------------------------
 export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
@@ -43,6 +43,14 @@ export function SetCenter(mapId, center) {
     wrapper.map.setView([center.latitude, center.longitude]);
 }
 
+export function GetCenter(mapId) {
+    let wrapper = findMapWrapper(mapId);
+    let center = wrapper.map.getCenter();
+    wrapper.log(`get center ${center.lat} ${center.lng}`);
+    return { latitude: center.lat, longitude: center.lng };
+;
+}
+
 export function FitBounds(mapId, bounds, padding, zoom) {
     let wrapper = findMapWrapper(mapId);
     wrapper.log(`fitBounds SW: ${bounds.southWest.latitude} ${bounds.southWest.longitude} NE: ${bounds.northEast.latitude} ${bounds.northEast.longitude}`);
@@ -56,6 +64,23 @@ export function FitBounds(mapId, bounds, padding, zoom) {
             [padding.bottom, padding.right]
         ],
         zoom || null);
+}
+
+export function GetBounds(mapId) {
+    let wrapper = findMapWrapper(mapId);
+    let bounds = wrapper.map.getBounds();
+    wrapper.log(`getBounds sw: ${bounds.getSouth()} ${bounds.getWest()}, ne: ${bounds.getNorth()} ${bounds.getEast()}`);
+
+    return [
+        {
+            latitude: bounds.getSouth(),
+            longitude: bounds.getWest()
+        },
+        {
+            latitude: bounds.getNorth(),
+            longitude: bounds.getEast()
+        }
+    ];
 }
 
 export function findMapWrapper(mapId) {

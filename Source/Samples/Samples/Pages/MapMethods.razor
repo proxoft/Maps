@@ -25,6 +25,17 @@
             <button @onclick="ZoomToClick">Zoom</button>
             <span>Zoom:</span><input @bind-value="Zoom" />
         </div>
+        <div>
+            <button @onclick="GetCenterClick">Get Center</button>
+            <span>Center:</span>
+            <span>ne: @this.Center.Latitude @this.Center.Longitude</span>
+        </div>
+        <div>
+            <button @onclick="GetBoundsClick">Get Bounds</button>
+            <span>Bounds:</span>
+            <span>ne: @this.Bounds.NorthEast().Latitude @this.Bounds.NorthEast().Longitude</span>
+            <span>sw: @this.Bounds.SouthWest().Latitude @this.Bounds.SouthWest().Longitude</span>
+        </div>
     </div>
 
     <div class="map-event-log">
@@ -74,9 +85,19 @@
 
     private int Zoom { get; set; } = 7;
 
+    private LatLngBounds Bounds { get; set; } = LatLngBounds.Empty;
+    private LatLng Center { get; set; } = LatLng.None;
+
     private void SetCenterClick()
     {
         _map.SetCenter(new LatLng { Latitude = CenterLat, Longitude = CenterLng });
+    }
+
+    private void GetCenterClick()
+    {
+        System.Console.WriteLine("getting center");
+        this.Center = _map.GetCenter();
+        this.StateHasChanged();
     }
 
     private void PanToClick()
@@ -86,7 +107,13 @@
 
     private void ZoomToClick()
     {
-        _map.ZoomTo(new ZoomLevel(this.Zoom));
+        _map.ZoomTo(new ZoomLevel(this.Zoom)); 
+    }
+
+    private void GetBoundsClick()
+    {
+        this.Bounds = _map.GetBounds();
+        this.StateHasChanged();
     }
 
     private void AddLog(string logMessage)
