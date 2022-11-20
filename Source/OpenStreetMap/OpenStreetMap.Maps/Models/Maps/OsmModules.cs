@@ -22,11 +22,11 @@ internal class OsmModules
     {
         var map = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.2.0.js");
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.4.0.js");
 
         var marker = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.3.0.js");
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.4.0.js");
 
         await Task.WhenAll(map.AsTask(), marker.AsTask());
 

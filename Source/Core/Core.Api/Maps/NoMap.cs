@@ -30,6 +30,11 @@ public sealed class NoMap : IMap
     {
     }
 
+    public LatLngBounds GetBounds()
+    {
+        return LatLngBounds.Empty;
+    }
+
     public void PanTo(LatLng center)
     {
     }
@@ -37,6 +42,12 @@ public sealed class NoMap : IMap
     public void SetCenter(LatLng position)
     {
     }
+
+    public LatLng GetCenter()
+    {
+        return LatLng.None;
+    }
+
 
     public void ZoomTo(ZoomLevel zoom)
     {

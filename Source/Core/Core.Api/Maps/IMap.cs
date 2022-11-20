@@ -8,6 +8,8 @@ public interface IMap : IApiObject
 
     void SetCenter(LatLng position);
 
+    LatLng GetCenter();
+
     void PanTo(LatLng position);
 
     void ZoomTo(ZoomLevel zoom);
@@ -15,5 +17,8 @@ public interface IMap : IApiObject
     IMarker AddMarker(MarkerOptions options);
 
     void FitBounds(LatLngBounds bounds);
+
     void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom);
+
+    LatLngBounds GetBounds();
 }
