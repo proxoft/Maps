@@ -35,7 +35,7 @@ public record LatLngBounds
             East = Math.Max(corner1.Longitude, corner2.Longitude),
             West = Math.Min(corner1.Longitude, corner2.Longitude),
             North = Math.Min(corner1.Latitude, corner2.Latitude),
-            South = Math.Min(corner1.Latitude, corner2.Latitude)
+            South = Math.Max(corner1.Latitude, corner2.Latitude)
         };
     }
 }
