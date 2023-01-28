@@ -20,7 +20,7 @@ internal class OpenStreetMapBuilder :
     private readonly ServiceLifetime _serviceLifetime;
 
     private readonly List<ServiceDescriptor> _serviceDescriptors = new();
-    private ServiceDescriptor _optionsDescriptor = new ServiceDescriptor(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
+    private ServiceDescriptor _optionsDescriptor = new(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
 
     public OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
     {
