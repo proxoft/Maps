@@ -11,5 +11,5 @@ public class HtmlIcon : IconOptions
         this.PopupAnchor = new(1, -34);
     }
 
-    public string Html { get; set; }
+    public string Html { get; set; } = "";
 }

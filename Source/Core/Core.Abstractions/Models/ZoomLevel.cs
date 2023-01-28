@@ -4,6 +4,7 @@ namespace Proxoft.Maps.Core.Abstractions.Models;
 
 public class ZoomLevel: IEquatable<ZoomLevel>
 {
+    public static readonly ZoomLevel Default = new(-1);
     public static readonly ZoomLevel Zero = new (0);
     public static readonly ZoomLevel One = new (1);
     public static readonly ZoomLevel Two = new (2);
@@ -28,7 +29,7 @@ public class ZoomLevel: IEquatable<ZoomLevel>
 
     public ZoomLevel(decimal value)
     {
-        if(_value < 0 || _value > 18)
+        if(_value != -1 && _value < 0 || _value > 18)
         {
             throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 18");
         }
@@ -36,12 +37,12 @@ public class ZoomLevel: IEquatable<ZoomLevel>
         _value = value;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return this.Equals(obj as ZoomLevel);
     }
 
-    public bool Equals(ZoomLevel other)
+    public bool Equals(ZoomLevel? other)
     {
         return other is not null && other._value == _value;
     }
@@ -88,5 +89,5 @@ public class ZoomLevel: IEquatable<ZoomLevel>
 
     public static implicit operator decimal(ZoomLevel zoomLevel) => zoomLevel._value;
 
-    public static explicit operator ZoomLevel(decimal value) => new ZoomLevel(value);
+    public static explicit operator ZoomLevel(decimal value) => new(value);
 }

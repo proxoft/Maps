@@ -12,10 +12,14 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
     {
         private readonly ApiLoader _api;
         private readonly IJSRuntime _jsRuntime;
+        private IIdFactory _idFactory;
 
-        public MapFactory(IJSRuntime jsRuntime)
+        public MapFactory(
+            IIdFactory idFactory,
+            IJSRuntime jsRuntime)
         {
             _api = new ApiLoader(jsRuntime);
+            _idFactory = idFactory;
             _jsRuntime = jsRuntime;
         }
 
@@ -29,10 +33,8 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
                 return NoMap.Instance;
             }
 
-            var mapId = Guid.NewGuid().ToString();
-
             OsmModules modules = await OsmModules.Load(_jsRuntime);
-            var map = OsmMap.Create(mapId, options, hostElement, modules);
+            var map = OsmMap.Create(_idFactory, options, hostElement, modules);
             return map;
         }
     }

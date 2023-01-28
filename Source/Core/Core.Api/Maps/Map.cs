@@ -1,16 +1,19 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Api.Shapes;
 
 namespace Proxoft.Maps.Core.Api.Maps;
 
-public abstract class MapBase : ApiBaseObject, IMap
+public abstract class Map : ApiObject, IMap
 {
     private bool _isRemoved;
 
     private readonly MapJsCallback _mapJsCallback;
 
-    protected MapBase(string mapId, IJSInProcessObjectReference jsModule) : base(jsModule)
+    protected Map(
+        string mapId,
+        IJSInProcessObjectReference jsModule) : base(mapId, jsModule)
     {
         this.MapId = mapId;
 
@@ -37,10 +40,10 @@ public abstract class MapBase : ApiBaseObject, IMap
         => this.InvokeMapJs("ZoomTo", (decimal)zoom);
 
     public void FitBounds(LatLngBounds bounds)
-        => this.FitBounds(bounds, Padding.Zero, null);
+        => this.FitBounds(bounds, Padding.Zero, ZoomLevel.Default);
 
     public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
-        => this.InvokeMapJs("FitBounds", bounds, padding, zoom == null ? null : (decimal)zoom);
+        => this.InvokeMapJs("FitBounds", bounds, padding, zoom == ZoomLevel.Default ? null : (decimal)zoom);
 
     public LatLngBounds GetBounds()
     {
@@ -49,6 +52,8 @@ public abstract class MapBase : ApiBaseObject, IMap
     }
 
     public abstract IMarker AddMarker(MarkerOptions options);
+
+    public abstract IPolygon AddPolygon(PolygonOptions options);
 
     public void Remove()
     {
@@ -77,11 +82,9 @@ public abstract class MapBase : ApiBaseObject, IMap
         base.Dispose(disposing);
     }
 
-    protected void InvokeMapJs(string method, params object[] args)
-        => this.InvokeVoidJs(method, new object[] { this.MapId }.Concat(args).ToArray());
+    protected void InvokeMapJs(string method, params object?[] args)
+        => this.InvokeVoidJs(method, new object?[] { this.MapId }.Concat(args).ToArray());
 
-    protected TResult InvokeMapJs<TResult>(string method, params object[] args)
-        => this.InvokeJs<TResult>(method, new object[] { this.MapId }.Concat(args).ToArray());
-
-    
+    protected TResult InvokeMapJs<TResult>(string method, params object?[] args)
+        => this.InvokeJs<TResult>(method, new object?[] { this.MapId }.Concat(args).ToArray());
 }

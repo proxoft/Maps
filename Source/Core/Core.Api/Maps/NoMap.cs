@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using Proxoft.Maps.Core.Api.Shapes;
 
 namespace Proxoft.Maps.Core.Api;
 
@@ -15,8 +16,13 @@ public sealed class NoMap : IMap
 
     public ApiStatus Status => ApiStatus.NotAvailable;
 
+    public string Id => "none-map";
+
     public IMarker AddMarker(MarkerOptions options)
         => NoMarker.Instance;
+
+    public IPolygon AddPolygon(PolygonOptions options)
+        => NoPolygon.Instance;
 
     public void Dispose()
     {
@@ -47,7 +53,6 @@ public sealed class NoMap : IMap
     {
         return LatLng.None;
     }
-
 
     public void ZoomTo(ZoomLevel zoom)
     {

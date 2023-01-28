@@ -4,14 +4,19 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api;
 
-public abstract class ApiBaseObject : IDisposable
+public abstract class ApiObject : IDisposable
 {
     private readonly Subject<Event> _events = new();
 
-    protected ApiBaseObject(IJSInProcessObjectReference jsModule)
+    protected ApiObject(
+        string id,
+        IJSInProcessObjectReference jsModule)
     {
+        this.Id = id;
         this.JsModule = jsModule;
     }
+
+    public string Id { get; }
 
     protected IJSInProcessObjectReference JsModule { get; }
 
@@ -20,10 +25,10 @@ public abstract class ApiBaseObject : IDisposable
     protected void Push(Event @event)
         => _events.OnNext(@event);
 
-    protected virtual void InvokeVoidJs(string identifier, params object[] args)
+    protected virtual void InvokeVoidJs(string identifier, params object?[] args)
         => JsModule.InvokeVoid(identifier, args);
 
-    protected virtual TResult InvokeJs<TResult>(string identifier, params object[] args)
+    protected virtual TResult InvokeJs<TResult>(string identifier, params object?[] args)
         => JsModule.Invoke<TResult>(identifier, args);
 
     public void Dispose()

@@ -12,5 +12,5 @@ public abstract class IconOptions
 
     public Point PopupAnchor { get; set; }
 
-    public string ClassName { get; set; }
+    public string? ClassName { get; set; }
 }

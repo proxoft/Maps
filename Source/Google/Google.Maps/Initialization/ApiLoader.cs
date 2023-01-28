@@ -8,17 +8,15 @@ namespace Proxoft.Maps.Google.Maps.Initialization
     internal class ApiLoader : IAsyncDisposable
     {
         private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
-       
 
         private readonly DotNetObjectReference<ApiLoader> _netObjRef;
-        private TaskCompletionSource<LoadResponse> _taskCompletionSource;
+        private TaskCompletionSource<LoadResponse>? _taskCompletionSource;
 
         public ApiLoader(IJSRuntime jsRuntime)
         {
             _netObjRef = DotNetObjectReference.Create(this);
             _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
                "import", "./_content/Proxoft.Maps.Google.Maps/apiLoader.js").AsTask());
-
         }
 
         public async Task<LoadResponse> LoadGoogleScripts(GoogleApiConfiguration configuration)
@@ -42,7 +40,7 @@ namespace Proxoft.Maps.Google.Maps.Initialization
                 apiStatus = LoadResponse.FatalError;
             }
 
-            _taskCompletionSource.SetResult(apiStatus);
+            _taskCompletionSource?.SetResult(apiStatus);
         }
 
         public async ValueTask DisposeAsync()

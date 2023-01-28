@@ -2,6 +2,7 @@
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core;
+using Proxoft.Maps.Core.Api.Shapes;
 
 namespace Proxoft.Maps.Google.Maps.Models.Maps
 {
@@ -20,6 +21,8 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         public IObservable<Event> OnEvent => throw new NotImplementedException();
 
         public ApiStatus Status => ApiStatus.Available;
+
+        public string Id => "g-map";
 
         [JSInvokable]
         public void OnCenterChanged(LatLng latLng)
@@ -90,6 +93,11 @@ namespace Proxoft.Maps.Google.Maps.Models.Maps
         }
 
         public LatLng GetCenter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPolygon AddPolygon(PolygonOptions options)
         {
             throw new NotImplementedException();
         }

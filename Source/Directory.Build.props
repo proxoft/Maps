@@ -8,6 +8,8 @@
         <BaseOutputPath>..\..\_Output\$(MSBuildProjectName)\bin\</BaseOutputPath>
         <!--<BaseIntermediateOutputPath>..\..\_Output\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>-->
 
+        <Nullable>enable</Nullable>
+        
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 

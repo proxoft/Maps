@@ -5,11 +5,11 @@ using Proxoft.Maps.Core.Api.Markers;
 
 namespace Proxoft.Maps.Core.Api;
 
-public abstract class MarkerBase : ApiBaseObject, IMarker
+public abstract class MarkerBase : ApiObject, IMarker
 {
     private readonly MarkerJsCallback _jsCallback;
 
-    protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(jsModule)
+    protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(markerId, jsModule)
     {
         _jsCallback = new MarkerJsCallback(this.Push);
 
@@ -53,7 +53,7 @@ public abstract class MarkerBase : ApiBaseObject, IMarker
         IsRemoved = true;
     }
 
-    protected override void InvokeVoidJs(string identifier, params object[] args)
+    protected override void InvokeVoidJs(string identifier, params object?[] args)
     {
         if (this.IsRemoved)
         {
@@ -63,7 +63,7 @@ public abstract class MarkerBase : ApiBaseObject, IMarker
         base.InvokeVoidJs(identifier, args);
     }
 
-    protected override TResult InvokeJs<TResult>(string identifier, params object[] args)
+    protected override TResult InvokeJs<TResult>(string identifier, params object?[] args)
     {
         if (this.IsRemoved)
         {

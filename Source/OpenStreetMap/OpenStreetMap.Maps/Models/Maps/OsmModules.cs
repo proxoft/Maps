@@ -7,29 +7,35 @@ internal class OsmModules
 {
     private OsmModules(
         IJSInProcessObjectReference map,
-        IJSInProcessObjectReference marker
+        IJSInProcessObjectReference marker,
+        IJSInProcessObjectReference polygons
         )
     {
         this.Map = map;
         this.Marker = marker;
+        this.Polygons = polygons;
     }
 
     public IJSInProcessObjectReference Map { get; }
 
     public IJSInProcessObjectReference Marker { get; }
 
+    public IJSInProcessObjectReference Polygons { get; }
+
     public static async Task<OsmModules> Load(IJSRuntime jsRuntime)
     {
-        var map = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+        var map = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
                 "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.4.0.js");
 
-        var marker = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+        var marker = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
                 "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.4.0.js");
 
-        await Task.WhenAll(map.AsTask(), marker.AsTask());
+        var polygons = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                "import",
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_0.4.0.js");
 
-        return new OsmModules(map.Result, marker.Result);
+        return new OsmModules(map, marker, polygons);
     }
 }

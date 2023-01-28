@@ -9,6 +9,8 @@ public sealed class NoMarker : IMarker
 
     public IObservable<Event> OnEvent => Observable.Never<Event>();
 
+    public string Id => "none-marker";
+
     public void Dispose()
     {
     }
