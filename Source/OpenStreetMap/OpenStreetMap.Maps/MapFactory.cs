@@ -12,7 +12,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
     {
         private readonly ApiLoader _api;
         private readonly IJSRuntime _jsRuntime;
-        private IIdFactory _idFactory;
+        private readonly IIdFactory _idFactory;
 
         public MapFactory(
             IIdFactory idFactory,

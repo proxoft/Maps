@@ -26,15 +26,15 @@ internal class OsmModules
     {
         var map = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.4.0.js");
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.5.0.js");
 
         var marker = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.4.0.js");
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.5.0.js");
 
         var polygons = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_0.4.0.js");
+                "./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_0.5.0.js");
 
         return new OsmModules(map, marker, polygons);
     }
