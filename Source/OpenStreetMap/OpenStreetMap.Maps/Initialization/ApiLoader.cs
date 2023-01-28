@@ -9,7 +9,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
         private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
 
         private readonly DotNetObjectReference<ApiLoader> _netObjRef;
-        private TaskCompletionSource<LoadResponse> _taskCompletionSource;
+        private TaskCompletionSource<LoadResponse>? _taskCompletionSource;
 
         public ApiLoader(IJSRuntime jsRuntime)
         {
@@ -37,7 +37,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
                 apiStatus = LoadResponse.FatalError;
             }
 
-            _taskCompletionSource.SetResult(apiStatus);
+            _taskCompletionSource?.SetResult(apiStatus);
         }
 
         public async ValueTask DisposeAsync()

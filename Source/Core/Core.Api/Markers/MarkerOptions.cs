@@ -4,7 +4,7 @@ namespace Proxoft.Maps.Core.Api;
 
 public class MarkerOptions
 {
-    public LatLng Position { get; set; }
+    public LatLng Position { get; set; } = LatLng.None;
 
     public bool Draggable { get; set; } = true;
 

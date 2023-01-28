@@ -7,6 +7,7 @@ using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Maps;
+using Microsoft.Extensions.Options;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 
@@ -19,7 +20,7 @@ internal class OpenStreetMapBuilder :
     private readonly ServiceLifetime _serviceLifetime;
 
     private readonly List<ServiceDescriptor> _serviceDescriptors = new();
-    private ServiceDescriptor _optionsDescriptor;
+    private ServiceDescriptor _optionsDescriptor = new ServiceDescriptor(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
 
     public OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
     {
@@ -83,6 +84,7 @@ internal class OpenStreetMapBuilder :
             _services.Add(sd);
         }
 
+        _services.Add(new ServiceDescriptor(typeof(IIdFactory), typeof(IdFactory), _serviceLifetime));
         _services.Add(new ServiceDescriptor(typeof(IMapFactory), typeof(MapFactory), _serviceLifetime));
     }
 }
