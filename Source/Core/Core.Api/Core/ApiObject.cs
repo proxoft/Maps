@@ -8,7 +8,7 @@ namespace Proxoft.Maps.Core.Api;
 public abstract class ApiObject : IApiObject
 {
     private readonly Subject<Event> _events = new();
-    private readonly Action<string> _onRemove;
+    private Action<string> _onRemove;
     private bool _isRemoved;
 
     protected ApiObject(
@@ -24,6 +24,12 @@ public abstract class ApiObject : IApiObject
     public string Id { get; }
 
     protected IJSInProcessObjectReference JsModule { get; }
+
+    internal Action<string> OnRemove
+    {
+        get => _onRemove;
+        set => _onRemove = value;
+    }
 
     public IObservable<Event> OnEvent => _events;
 
@@ -53,6 +59,7 @@ public abstract class ApiObject : IApiObject
     {
         this.InvokePureJs(identifier, new object?[] { this.Id }.Concat(args).ToArray());
     }
+
     protected TResult InvokeJs<TResult>(string identifier, params object?[] args)
     {
         return this.InvokePureJs<TResult>(identifier, new object?[] { this.Id }.Concat(args).ToArray());

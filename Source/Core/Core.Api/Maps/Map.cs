@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Shapes;
@@ -8,19 +9,21 @@ namespace Proxoft.Maps.Core.Api.Maps;
 public abstract class Map : ApiObject, IMap
 {
     private readonly MapJsCallback _mapJsCallback;
+    private readonly IMapObjectsFactory _mapObjectsFactory;
+
+    private readonly List<Marker> _markers = new();
+    private readonly List<Polygon> _polygons = new();
 
     protected Map(
         string mapId,
+        IMapObjectsFactory mapObjectsFactory,
         IJSInProcessObjectReference jsModule) : base(mapId, _ => { }, jsModule)
     {
-        this.MapId = mapId;
-
+        _mapObjectsFactory = mapObjectsFactory;
         _mapJsCallback = new MapJsCallback(this.Push);
     }
 
     public ApiStatus Status => ApiStatus.Available;
-
-    protected string MapId { get; }
 
     public void PanTo(LatLng center)
         => this.InvokeVoidJs("PanTo", center);
@@ -49,24 +52,40 @@ public abstract class Map : ApiObject, IMap
         return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
-    public abstract IMarker AddMarker(MarkerOptions options);
-
-    public abstract IPolygon AddPolygon(PolygonOptions options);
-
-    protected override void ExecuteRemove()
+    public IMarker AddMarker(MarkerOptions options)
     {
-        this.InvokeVoidJs("Remove");
+        Marker marker = _mapObjectsFactory.CreateMarker(this.OnMarkerRemove);
+        _markers.Add(marker);
+        marker.AddToMap(this.Id, options);
+
+        return marker;
     }
 
-    protected void Initialize(MapOptions options, ElementReference hostElement)
+    public IPolygon AddPolygon(PolygonOptions options)
+    {
+        Polygon polygon = _mapObjectsFactory.CreatePolygon(this.OnPolygonRemove);
+        _polygons.Add(polygon);
+        polygon.AddToMap(this.Id, options);
+        return polygon;
+    }
+
+    public void Initialize(MapOptions options, ElementReference hostElement)
     {
         this.InvokeVoidJs("InitializeMapOnElement", new object[] { options, hostElement, _mapJsCallback.DotNetRef });
+    }
+
+    protected override sealed void ExecuteRemove()
+    {
+        this.InvokeVoidJs("Remove");
     }
 
     protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
+            _markers.DisposeAll();
+            _polygons.DisposeAll();
+
             _mapJsCallback.Dispose();
             this.Remove();
         }
@@ -74,9 +93,15 @@ public abstract class Map : ApiObject, IMap
         base.Dispose(disposing);
     }
 
-    //protected void InvokeMapJs(string method, params object?[] args)
-    //    => this.InvokeVoidJs(method, new object?[] { this.MapId }.Concat(args).ToArray());
+    private void OnMarkerRemove(string markerId)
+    {
+        var i = _markers.FindIndex(m => m.Id == markerId);
+        _markers.RemoveAt(i);
+    }
 
-    //protected TResult InvokeMapJs<TResult>(string method, params object?[] args)
-    //    => this.InvokeJs<TResult>(method, new object?[] { this.MapId }.Concat(args).ToArray());
+    private void OnPolygonRemove(string polygonId)
+    {
+        var i = _polygons.FindIndex(p => p.Id == polygonId);
+        _polygons.RemoveAt(i);
+    }
 }

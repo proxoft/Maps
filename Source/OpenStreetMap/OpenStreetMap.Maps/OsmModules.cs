@@ -8,19 +8,19 @@ internal class OsmModules
     private OsmModules(
         IJSInProcessObjectReference map,
         IJSInProcessObjectReference marker,
-        IJSInProcessObjectReference polygons
+        IJSInProcessObjectReference polygon
         )
     {
         Map = map;
         Marker = marker;
-        Polygons = polygons;
+        Polygon = polygon;
     }
 
     public IJSInProcessObjectReference Map { get; }
 
     public IJSInProcessObjectReference Marker { get; }
 
-    public IJSInProcessObjectReference Polygons { get; }
+    public IJSInProcessObjectReference Polygon { get; }
 
     public static async Task<OsmModules> Load(IJSRuntime jsRuntime)
     {

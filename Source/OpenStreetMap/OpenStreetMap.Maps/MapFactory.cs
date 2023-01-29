@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.Core.Api.Maps;
 using Proxoft.Maps.OpenStreetMap.Maps.Initialization;
+using Proxoft.Maps.OpenStreetMap.Maps.Models;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Maps;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps
@@ -34,7 +36,8 @@ namespace Proxoft.Maps.OpenStreetMap.Maps
             }
 
             OsmModules modules = await OsmModules.Load(_jsRuntime);
-            var map = OsmMap.Create(_idFactory, options, hostElement, modules);
+            OsmMapObjectsFactory mapObjectsFactory = new(_idFactory, modules);
+            Map map = mapObjectsFactory.CreateMap(options, hostElement);
             return map;
         }
     }
