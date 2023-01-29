@@ -38,7 +38,10 @@ public abstract class ApiObject : IApiObject
     protected abstract void ExecuteRemove();
 
     protected void Push(Event @event)
-        => _events.OnNext(@event);
+    {
+        @event.SourceId = this.Id;
+        _events.OnNext(@event);
+    }
 
     protected virtual void InvokeVoidJs(string identifier, params object?[] args)
         => JsModule.InvokeVoid(identifier, args);

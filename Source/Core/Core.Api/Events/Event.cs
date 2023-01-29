@@ -7,4 +7,6 @@ public abstract class Event
     }
 
     public string Name => this.GetType().Name;
+
+    public string SourceId { get; internal set; } = "";
 }
