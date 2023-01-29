@@ -18,12 +18,12 @@ public class Opacity
         _value = value;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return this.Equals(obj as Opacity);
     }
 
-    public bool Equals(Opacity other)
+    public bool Equals(Opacity? other)
     {
         return other is not null && other._value == _value;
     }
@@ -70,7 +70,7 @@ public class Opacity
 
     public static implicit operator decimal(Opacity opacity) => opacity._value;
 
-    public static explicit operator Opacity(decimal value) => new Opacity(value);
+    public static explicit operator Opacity(decimal value) => new(value);
 
     public static explicit operator Opacity(bool value) => From(value);
 

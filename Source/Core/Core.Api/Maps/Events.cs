@@ -2,12 +2,12 @@
 
 namespace Proxoft.Maps.Core.Api.Maps;
 
-public class LoadedEvent : Event
-{
-    public LoadedEvent() : base(EventSource.Js)
-    {
-    }
-}
+//public class LoadedEvent : Event
+//{
+//    public LoadedEvent()
+//    {
+//    }
+//}
 
 public class ResizedEvent : Event<Size>
 {

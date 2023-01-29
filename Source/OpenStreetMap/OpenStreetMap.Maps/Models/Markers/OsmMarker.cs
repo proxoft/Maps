@@ -15,16 +15,9 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Markers
             _hooks = hooks ?? new Hooks();
         }
 
-        public override void Remove()
+        protected override void ExecuteRemove()
         {
-            base.Remove();
-
-            if (this.IsRemoved)
-            {
-                return;
-            }
-
-            _hooks?.OnRemove(this.MarkerId);
+            _hooks?.OnRemove(this.Id);
         }
     }
 }

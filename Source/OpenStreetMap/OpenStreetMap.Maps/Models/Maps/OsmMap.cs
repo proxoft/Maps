@@ -83,7 +83,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
 
         private void OnMarkerRemove(string markerId)
         {
-            var i = _markers.FindIndex(m => m.MarkerId == markerId);
+            var i = _markers.FindIndex(m => m.Id == markerId);
             _markers.RemoveAt(i);
         }
 

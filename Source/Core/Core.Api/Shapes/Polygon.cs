@@ -17,8 +17,6 @@ public abstract class Polygon : ApiObject, IPolygon
         _onRemoved = onRemoved;
     }
 
-    public bool IsRemoved { get; private set; }
-
     public LatLngBounds GetBounds()
     {
         return new LatLngBounds();
@@ -38,15 +36,9 @@ public abstract class Polygon : ApiObject, IPolygon
         this.InvokeVoidJs("AddPolygon", this.Id, options, mapId, _jsCallback.DotNetRef);
     }
 
-    public void Remove()
+    protected override void ExecuteRemove()
     {
-        if (IsRemoved)
-        {
-            return;
-        }
-
         this.InvokeVoidJs("RemovePolygon", this.Id);
-        IsRemoved = true;
         _onRemoved(this.Id);
     }
 }

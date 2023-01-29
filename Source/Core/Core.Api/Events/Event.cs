@@ -2,12 +2,9 @@
 
 public abstract class Event
 {
-    protected Event(EventSource source = EventSource.Js)
+    protected Event()
     {
-        this.Source = source;
     }
 
     public string Name => this.GetType().Name;
-
-    public EventSource Source { get; }
 }

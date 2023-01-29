@@ -11,7 +11,13 @@ public sealed class NoMarker : IMarker
 
     public string Id => "none-marker";
 
+    public bool IsRemoved => false;
+
     public void Dispose()
+    {
+    }
+
+    public void Remove()
     {
     }
 

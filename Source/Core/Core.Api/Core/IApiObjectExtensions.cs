@@ -6,7 +6,7 @@ namespace Proxoft.Maps.Core.Api;
 
 public static class IApiObjectExtensions
 {
-    public static IObservable<LatLng> OnClick(this IApiObject apiObject, Func<MouseClickEvent, bool> filter = null)
+    public static IObservable<LatLng> OnClick(this IApiObject apiObject, Func<MouseClickEvent, bool>? filter = null)
         => apiObject.OnEvent
             .Filter(filter)
             .Select(e => e.Value);

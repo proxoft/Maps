@@ -4,8 +4,9 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api;
 
-public abstract class ApiObject : IDisposable
+public abstract class ApiObject : IApiObject
 {
+    private bool _isRemoved;
     private readonly Subject<Event> _events = new();
 
     protected ApiObject(
@@ -21,6 +22,20 @@ public abstract class ApiObject : IDisposable
     protected IJSInProcessObjectReference JsModule { get; }
 
     public IObservable<Event> OnEvent => _events;
+
+    public bool IsRemoved => _isRemoved;
+
+    public void Remove()
+    {
+        if (_isRemoved)
+        {
+            return;
+        }
+
+        _isRemoved = true;
+    }
+
+    protected abstract void ExecuteRemove();
 
     protected void Push(Event @event)
         => _events.OnNext(@event);

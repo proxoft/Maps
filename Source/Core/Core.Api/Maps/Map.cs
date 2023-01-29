@@ -7,8 +7,6 @@ namespace Proxoft.Maps.Core.Api.Maps;
 
 public abstract class Map : ApiObject, IMap
 {
-    private bool _isRemoved;
-
     private readonly MapJsCallback _mapJsCallback;
 
     protected Map(
@@ -55,14 +53,8 @@ public abstract class Map : ApiObject, IMap
 
     public abstract IPolygon AddPolygon(PolygonOptions options);
 
-    public void Remove()
+    protected override void ExecuteRemove()
     {
-        if (_isRemoved)
-        {
-            return;
-        }
-
-        _isRemoved = true;
         this.InvokeMapJs("Remove");
     }
 
