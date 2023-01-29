@@ -31,11 +31,11 @@ public abstract class Polygon : ApiObject, IPolygon
 
     public void AddToMap(string mapId, PolygonOptions options)
     {
-        this.InvokeVoidJs("AddPolygon", this.Id, options, mapId, _jsCallback.DotNetRef);
+        this.InvokeVoidJs("AddPolygon", options, mapId, _jsCallback.DotNetRef);
     }
 
     protected sealed override void ExecuteRemove()
     {
-        this.InvokeVoidJs("RemovePolygon", this.Id);
+        this.InvokeVoidJs("RemovePolygon");
     }
 }

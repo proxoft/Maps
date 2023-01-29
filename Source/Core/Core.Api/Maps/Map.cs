@@ -23,29 +23,29 @@ public abstract class Map : ApiObject, IMap
     protected string MapId { get; }
 
     public void PanTo(LatLng center)
-        => this.InvokeMapJs("PanTo", center);
+        => this.InvokeVoidJs("PanTo", center);
 
     public void SetCenter(LatLng position)
-        => this.InvokeMapJs("SetCenter", position);
+        => this.InvokeVoidJs("SetCenter", position);
 
     public LatLng GetCenter()
     {
-        LatLng center = this.InvokeMapJs<LatLng>("GetCenter");
+        LatLng center = this.InvokeJs<LatLng>("GetCenter");
         return center;
     }
 
     public void ZoomTo(ZoomLevel zoom)
-        => this.InvokeMapJs("ZoomTo", (decimal)zoom);
+        => this.InvokeVoidJs("ZoomTo", (decimal)zoom);
 
     public void FitBounds(LatLngBounds bounds)
         => this.FitBounds(bounds, Padding.Zero, ZoomLevel.Default);
 
     public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
-        => this.InvokeMapJs("FitBounds", bounds, padding, zoom == ZoomLevel.Default ? null : (decimal)zoom);
+        => this.InvokeVoidJs("FitBounds", bounds, padding, zoom == ZoomLevel.Default ? null : (decimal)zoom);
 
     public LatLngBounds GetBounds()
     {
-        LatLng[] corners = this.InvokeMapJs<LatLng[]>("GetBounds");
+        LatLng[] corners = this.InvokeJs<LatLng[]>("GetBounds");
         return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
@@ -55,12 +55,12 @@ public abstract class Map : ApiObject, IMap
 
     protected override void ExecuteRemove()
     {
-        this.InvokeMapJs("Remove");
+        this.InvokeVoidJs("Remove");
     }
 
     protected void Initialize(MapOptions options, ElementReference hostElement)
     {
-        this.InvokeVoidJs("InitializeMapOnElement", new object[] { this.MapId, options, hostElement, _mapJsCallback.DotNetRef });
+        this.InvokeVoidJs("InitializeMapOnElement", new object[] { options, hostElement, _mapJsCallback.DotNetRef });
     }
 
     protected override void Dispose(bool disposing)
@@ -74,9 +74,9 @@ public abstract class Map : ApiObject, IMap
         base.Dispose(disposing);
     }
 
-    protected void InvokeMapJs(string method, params object?[] args)
-        => this.InvokeVoidJs(method, new object?[] { this.MapId }.Concat(args).ToArray());
+    //protected void InvokeMapJs(string method, params object?[] args)
+    //    => this.InvokeVoidJs(method, new object?[] { this.MapId }.Concat(args).ToArray());
 
-    protected TResult InvokeMapJs<TResult>(string method, params object?[] args)
-        => this.InvokeJs<TResult>(method, new object?[] { this.MapId }.Concat(args).ToArray());
+    //protected TResult InvokeMapJs<TResult>(string method, params object?[] args)
+    //    => this.InvokeJs<TResult>(method, new object?[] { this.MapId }.Concat(args).ToArray());
 }

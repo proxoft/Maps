@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
 
@@ -50,6 +51,15 @@ public abstract class ApiObject : IApiObject
 
     protected void InvokeVoidJs(string identifier, params object?[] args)
     {
+        this.InvokePureJs(identifier, new object?[] { this.Id }.Concat(args).ToArray());
+    }
+    protected TResult InvokeJs<TResult>(string identifier, params object?[] args)
+    {
+        return this.InvokePureJs<TResult>(identifier, new object?[] { this.Id }.Concat(args).ToArray());
+    }
+
+    protected void InvokePureJs(string identifier, params object?[] args)
+    {
         if (this.IsRemoved)
         {
             throw new System.Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
@@ -58,7 +68,7 @@ public abstract class ApiObject : IApiObject
         this.JsModule.InvokeVoid(identifier, args);
     }
 
-    protected TResult InvokeJs<TResult>(string identifier, params object?[] args)
+    protected TResult InvokePureJs<TResult>(string identifier, params object?[] args)
     {
         if (this.IsRemoved)
         {

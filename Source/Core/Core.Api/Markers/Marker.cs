@@ -19,30 +19,30 @@ public abstract class Marker : ApiObject, IMarker
     }
 
     public void SetPosition(decimal latitude, decimal longitude)
-     => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
+        => this.SetPosition(new LatLng { Latitude = latitude, Longitude = longitude });
 
     public void AddToMap(string mapId, MarkerOptions options)
     {
-        this.InvokeVoidJs("AddMarker", this.Id, options, options.Icon, mapId, _jsCallback.DotNetRef);
+        this.InvokeVoidJs("AddMarker", options, options.Icon, mapId, _jsCallback.DotNetRef);
     }
 
     public void SetDraggable(bool draggable)
-        => this.InvokeVoidJs("SetMarkerDraggable", this.Id, draggable);
+        => this.InvokeVoidJs("SetMarkerDraggable", draggable);
 
     public void SetOpacity(Opacity opacity)
-        => this.InvokeVoidJs("SetMarkerOpacity", this.Id, (decimal)opacity);
+        => this.InvokeVoidJs("SetMarkerOpacity", (decimal)opacity);
 
     public void SetPosition(LatLng latLng)
-        => this.InvokeVoidJs("SetMarkerPosition", this.Id, latLng);
+        => this.InvokeVoidJs("SetMarkerPosition", latLng);
 
     public void SetIcon(IconOptions icon)
     {
-        this.InvokeVoidJs("SetMarkerIcon", this.Id, icon);
+        this.InvokeVoidJs("SetMarkerIcon", icon);
     }
 
     protected override sealed void ExecuteRemove()
     {
-        this.InvokeVoidJs("RemoveMarker", this.Id);
+        this.InvokeVoidJs("RemoveMarker");
     }
 
     protected override void Dispose(bool disposing)
