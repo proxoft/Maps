@@ -1,15 +1,19 @@
-﻿using Microsoft.JSInterop;
+﻿using System;
+using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.Core.Api.Icons;
 using Proxoft.Maps.Core.Api.Markers;
 
 namespace Proxoft.Maps.Core.Api;
 
-public abstract class MarkerBase : ApiObject, IMarker
+public abstract class Marker : ApiObject, IMarker
 {
     private readonly MarkerJsCallback _jsCallback;
 
-    protected MarkerBase(string markerId, IJSInProcessObjectReference jsModule) : base(markerId, jsModule)
+    protected Marker(
+        string markerId,
+        Action<string> onRemove,
+        IJSInProcessObjectReference jsModule) : base(markerId, onRemove, jsModule)
     {
         _jsCallback = new MarkerJsCallback(this.Push);
     }
@@ -36,29 +40,9 @@ public abstract class MarkerBase : ApiObject, IMarker
         this.InvokeVoidJs("SetMarkerIcon", this.Id, icon);
     }
 
-    protected override void ExecuteRemove()
+    protected override sealed void ExecuteRemove()
     {
         this.InvokeVoidJs("RemoveMarker", this.Id);
-    }
-
-    protected override void InvokeVoidJs(string identifier, params object?[] args)
-    {
-        if (this.IsRemoved)
-        {
-            throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
-        }
-
-        base.InvokeVoidJs(identifier, args);
-    }
-
-    protected override TResult InvokeJs<TResult>(string identifier, params object?[] args)
-    {
-        if (this.IsRemoved)
-        {
-            throw new System.Exception("Marker has been removed from the map. Do not use it anymore. If necessary create new marker");
-        }
-
-        return base.InvokeJs<TResult>(identifier, args);
     }
 
     protected override void Dispose(bool disposing)

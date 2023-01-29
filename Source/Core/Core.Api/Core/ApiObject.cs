@@ -6,14 +6,17 @@ namespace Proxoft.Maps.Core.Api;
 
 public abstract class ApiObject : IApiObject
 {
-    private bool _isRemoved;
     private readonly Subject<Event> _events = new();
+    private readonly Action<string> _onRemove;
+    private bool _isRemoved;
 
     protected ApiObject(
         string id,
+        Action<string> onRemove,
         IJSInProcessObjectReference jsModule)
     {
         this.Id = id;
+        _onRemove = onRemove;
         this.JsModule = jsModule;
     }
 
@@ -32,6 +35,8 @@ public abstract class ApiObject : IApiObject
             return;
         }
 
+        _onRemove(this.Id);
+        this.ExecuteRemove();
         _isRemoved = true;
     }
 
@@ -43,11 +48,25 @@ public abstract class ApiObject : IApiObject
         _events.OnNext(@event);
     }
 
-    protected virtual void InvokeVoidJs(string identifier, params object?[] args)
-        => JsModule.InvokeVoid(identifier, args);
+    protected void InvokeVoidJs(string identifier, params object?[] args)
+    {
+        if (this.IsRemoved)
+        {
+            throw new System.Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
+        }
 
-    protected virtual TResult InvokeJs<TResult>(string identifier, params object?[] args)
-        => JsModule.Invoke<TResult>(identifier, args);
+        this.JsModule.InvokeVoid(identifier, args);
+    }
+
+    protected TResult InvokeJs<TResult>(string identifier, params object?[] args)
+    {
+        if (this.IsRemoved)
+        {
+            throw new System.Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
+        }
+
+        return this.JsModule.Invoke<TResult>(identifier, args);
+    }
 
     public void Dispose()
     {
@@ -59,6 +78,9 @@ public abstract class ApiObject : IApiObject
     {
         if (disposing)
         {
+            Console.WriteLine($"Disposing {this.Id}");
+
+            this.Remove();
             _events.Dispose();
         }
     }

@@ -3,10 +3,26 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Core;
 
-internal abstract class ApiObjectJsCallback<T> : IDisposable
+internal abstract class ApiObjectJsCallback : IDisposable
+{
+    protected bool Disposed { get; private set; }
+
+    public void Dispose()
+    {
+        this.Dispose(true);
+        Disposed = true;
+
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+    }
+}
+
+internal abstract class ApiObjectJsCallback<T> : ApiObjectJsCallback
     where T : ApiObjectJsCallback<T>
 {
-    private bool _disposed;
     private readonly Action<Event> _onEvent;
 
     protected ApiObjectJsCallback(Action<Event> onEvent)
@@ -45,17 +61,9 @@ internal abstract class ApiObjectJsCallback<T> : IDisposable
     public void OnMouseLeave(LatLng latLng)
         => this.Push(new MouseLeaveEvent(latLng));
 
-    public void Dispose()
-    {
-        this.Dispose(true);
-        _disposed = true;
-
-        GC.SuppressFinalize(this);
-    }
-
     protected void Push(Event @event)
     {
-        if (_disposed)
+        if (this.Disposed)
         {
             return;
         }
@@ -63,11 +71,13 @@ internal abstract class ApiObjectJsCallback<T> : IDisposable
         _onEvent(@event);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
             this.DotNetRef.Dispose();
         }
+
+        base.Dispose(disposing);
     }
 }

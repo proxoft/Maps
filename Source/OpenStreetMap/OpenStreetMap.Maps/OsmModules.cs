@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps;
+namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 internal class OsmModules
 {
@@ -11,9 +11,9 @@ internal class OsmModules
         IJSInProcessObjectReference polygons
         )
     {
-        this.Map = map;
-        this.Marker = marker;
-        this.Polygons = polygons;
+        Map = map;
+        Marker = marker;
+        Polygons = polygons;
     }
 
     public IJSInProcessObjectReference Map { get; }

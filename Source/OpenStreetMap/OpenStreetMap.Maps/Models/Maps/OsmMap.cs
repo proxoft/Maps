@@ -13,8 +13,6 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
     internal class OsmMap : Map
     {
         private readonly List<OsmMarker> _markers = new();
-        private readonly Hooks _markerHooks;
-
         private readonly List<OsmPolygon> _polygons = new();
 
         private readonly IIdFactory _idFactory;
@@ -25,17 +23,13 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
             IIdFactory idFactory,
             OsmModules modules) : base(mapId, modules.Map)
         {
-            _markerHooks = new()
-            {
-                OnRemove = this.OnMarkerRemove
-            };
             _idFactory = idFactory;
             _modules = modules;
         }
 
         public override IMarker AddMarker(MarkerOptions options)
         {
-            OsmMarker marker = new (_idFactory.NextMarkerId(), _modules.Marker, _markerHooks);
+            OsmMarker marker = new (_idFactory.NextMarkerId(), this.OnMarkerRemove, _modules.Marker);
 
             _markers.Add(marker);
             marker.AddToMap(this.MapId, options);
@@ -44,7 +38,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
 
         public override IPolygon AddPolygon(PolygonOptions options)
         {
-            OsmPolygon polygon = new(_idFactory.NextPolygonId(), _modules.Polygons, this.OnPolygonRemoved);
+            OsmPolygon polygon = new(_idFactory.NextPolygonId(), this.OnPolygonRemove, _modules.Polygons);
             _polygons.Add(polygon);
 
             polygon.AddToMap(this.MapId, options);
@@ -68,14 +62,10 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
         {
             if (disposing)
             {
-                _markerHooks.OnRemove = _ => { };
-
-                foreach(var m in _markers)
+                foreach(var m in _markers.ToList())
                 {
                     m.Dispose();
                 }
-
-                _markers.Clear();
             }
 
             base.Dispose(disposing);
@@ -87,7 +77,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Models.Maps
             _markers.RemoveAt(i);
         }
 
-        private void OnPolygonRemoved(string polygonId)
+        private void OnPolygonRemove(string polygonId)
         {
             var i = _polygons.FindIndex(p => p.Id == polygonId);
             _polygons.RemoveAt(i);

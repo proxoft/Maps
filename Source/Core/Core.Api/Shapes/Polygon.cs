@@ -6,15 +6,13 @@ namespace Proxoft.Maps.Core.Api.Shapes;
 public abstract class Polygon : ApiObject, IPolygon
 {
     private readonly PolygonJsCallback _jsCallback;
-    private readonly Action<string> _onRemoved;
 
     protected Polygon(
         string id,
-        IJSInProcessObjectReference jsModule,
-        Action<string> onRemoved) : base(id, jsModule)
+        Action<string> onRemove,
+        IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
     {
         _jsCallback = new PolygonJsCallback(this.Push);
-        _onRemoved = onRemoved;
     }
 
     public LatLngBounds GetBounds()
@@ -36,9 +34,8 @@ public abstract class Polygon : ApiObject, IPolygon
         this.InvokeVoidJs("AddPolygon", this.Id, options, mapId, _jsCallback.DotNetRef);
     }
 
-    protected override void ExecuteRemove()
+    protected sealed override void ExecuteRemove()
     {
         this.InvokeVoidJs("RemovePolygon", this.Id);
-        _onRemoved(this.Id);
     }
 }

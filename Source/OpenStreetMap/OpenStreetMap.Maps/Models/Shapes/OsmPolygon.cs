@@ -12,8 +12,9 @@ internal class OsmPolygon : Polygon
 {
     public OsmPolygon(
         string id,
-        IJSInProcessObjectReference jsModule,
-        Action<string> onRemoved) : base(id, jsModule, onRemoved)
+        Action<string> onRemove,
+        IJSInProcessObjectReference jsModule
+        ) : base(id, onRemove, jsModule)
     {
     }
 }

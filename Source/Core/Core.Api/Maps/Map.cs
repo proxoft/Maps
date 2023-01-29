@@ -11,7 +11,7 @@ public abstract class Map : ApiObject, IMap
 
     protected Map(
         string mapId,
-        IJSInProcessObjectReference jsModule) : base(mapId, jsModule)
+        IJSInProcessObjectReference jsModule) : base(mapId, _ => { }, jsModule)
     {
         this.MapId = mapId;
 
