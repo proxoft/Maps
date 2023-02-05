@@ -46,7 +46,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         }
     }
 
-    public async Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+    public async Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streetNumber = null, string? country = null)
     {
         var searchParameters = string.Join("&", SearchParameters(city, street, streetNumber, country));
         try
@@ -117,7 +117,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         }
     }
 
-    private static IEnumerable<string> SearchParameters(string city, string street, string streetNumber, string country)
+    private static IEnumerable<string> SearchParameters(string city, string? street, string? streetNumber, string? country)
     {
         yield return $"city={city}";
 

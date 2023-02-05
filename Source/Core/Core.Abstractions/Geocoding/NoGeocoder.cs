@@ -17,7 +17,7 @@ public class NoGeocoder : IGeocoder
     public Task<Either<ErrorStatus, Address>> Geocode(string location)
         => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);
 
-    public Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streeNumber = null, string country = null)
+    public Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streeNumber = null, string? country = null)
         => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);
 
     public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
