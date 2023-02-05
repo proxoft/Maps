@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Abstractions.Models;
 
 namespace Proxoft.Maps.Core.Api.Shapes;
 
@@ -17,16 +18,24 @@ public abstract class Polygon : ApiObject, IPolygon
 
     public LatLngBounds GetBounds()
     {
-        return new LatLngBounds();
+        LatLng[] corners = this.InvokeJs<LatLng[]>("GetBounds");
+        return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
     public PolygonLatLng GetLatLngs()
     {
-        return new PolygonLatLng();
+        PolygonLatLng latLngs = this.InvokeJs<PolygonLatLng>("GetLatLngs");
+        return latLngs;
     }
 
     public void SetLatLng(PolygonLatLng latLngs)
     {
+        this.InvokeVoidJs("SetLatLng", latLngs);
+    }
+
+    public void SetStyle(Style style)
+    {
+        this.InvokeVoidJs("setStyle", style);
     }
 
     public void AddToMap(string mapId, PolygonOptions options)

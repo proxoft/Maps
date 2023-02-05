@@ -40,4 +40,8 @@ public sealed class NoPolygon : IPolygon
     public void SetLatLng(PolygonLatLng latLngs)
     {
     }
+
+    public void SetStyle(Style style)
+    {
+    }
 }

@@ -6,14 +6,11 @@ var polygonWrappers = [];
 
 // --exports----------------------------------
 export function AddPolygon(polygonId, options, mapId, netRef) {
-    console.log(options);
-
     let mapWrapper = findMapWrapper(mapId);
     let outerCoords = options.latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
     let holesCoords = options.latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
 
     let coords = [outerCoords].concat(holesCoords);
-    console.log(coords);
     let polygon = L.polygon(coords, options.style);
 
     polygon.addTo(mapWrapper.map);
@@ -22,6 +19,79 @@ export function AddPolygon(polygonId, options, mapId, netRef) {
     polygonWrappers.push(polygonWrapper);
 
     polygonWrapper.log(`Added to the map ${mapId}`);
+}
+
+export function RemovePolygon(polygonId) {
+    let i = findPolygonWrapperIndex(polygonId);
+    let wrapper = polygonWrappers.splice(i, 1);
+    wrapper[0].log("removing from map");
+    wrapper[0].polygon.remove();
+}
+
+export function SetLatLngs(polygonId, latLngs) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log(`SetLatLngs ${latLngs}`);
+
+    let outerCoords = options.latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
+    let holesCoords = options.latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
+
+    let coords = [outerCoords].concat(holesCoords);
+    polygonWrapper.polygon.setLatLngs(coords);
+}
+
+export function GetLatLngs(polygonId) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log("GetLatLngs");
+
+    let latLngs = polygonWrapper.polygon.getLatLngs();
+
+    if (latLngs.length == 0) {
+        return {
+            outerRing: [],
+            holes: []
+        };
+    }
+
+    let outerRing = latLngs[0]
+        .map(latlng => latLngToObject(latlng));
+
+    let holes = latLngs
+        .slice(1)
+        .map(h =>
+            h.map(latlng => latLngToObject(latlng))
+        );
+
+    return {
+        outerRing: outerRing,
+        holes: holes
+    };
+}
+
+export function GetBounds(polygonId) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log("getBounds");
+
+    let bounds = polygonWrapper.polygon.getBounds();
+
+    return [
+        {
+            latitude: bounds.getSouth(),
+            longitude: bounds.getWest()
+        },
+        {
+            latitude: bounds.getNorth(),
+            longitude: bounds.getEast()
+        }
+    ];
+}
+
+export function setStyle(polygonId, style) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log("setStyle");
+    console.log(style);
+
+    polygonWrapper.polygon.setStyle(style);
+    polygonWrapper.polygon.redraw();
 }
 
 // -- private
@@ -77,4 +147,23 @@ function createPolygonWrapper(polygonId, polygon, map, netRef, enableLogging) {
     });
 
     return wrapper;
+}
+
+function findPolygonWrapper(polygonId) {
+    let i = findPolygonWrapperIndex(polygonId);
+    return i === -1
+        ? null
+        : polygonWrappers[i];
+}
+
+function findPolygonWrapperIndex(polygonId) {
+    let i = polygonWrappers.findIndex(me => me.polygonId === polygonId);
+    return i;
+}
+
+function latLngToObject(latlng) {
+    return {
+        latitude: latlng.lat,
+        longitude: latlng.lng
+    };
 }

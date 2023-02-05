@@ -13,4 +13,6 @@ public interface IPolygon : IApiObject
     public PolygonLatLng GetLatLngs();
 
     public void SetLatLng(PolygonLatLng latLngs);
+
+    public void SetStyle(Style style);
 }
