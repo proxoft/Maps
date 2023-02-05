@@ -1,4 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Xml.Schema;
 using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps;
@@ -22,20 +27,39 @@ internal class OsmModules
 
     public IJSInProcessObjectReference Polygon { get; }
 
-    public static async Task<OsmModules> Load(IJSRuntime jsRuntime)
+    public static IObservable<OsmModules> Load(IJSRuntime jsRuntime)
     {
-        var map = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_0.5.0.js");
+        string v = GetJsVersion();
 
-        var marker = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+        var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_0.5.0.js");
+                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
+            .AsTask()
+            .ToObservable();
 
-        var polygons = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+        var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                 "import",
-                "./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_0.5.0.js");
+                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
+            .AsTask()
+            .ToObservable();
 
-        return new OsmModules(map, marker, polygons);
+        var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                "import",
+                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
+            .AsTask()
+            .ToObservable();
+
+        return Observable
+            .Zip(mapS, markerS, polygonsS, (map, marker, polygon) =>
+        {
+            return new OsmModules(map, marker, polygon);
+        });
+    }
+
+    private static string GetJsVersion()
+    {
+        string v = typeof(OsmModules).Assembly.GetName().Version?.ToString() ?? "0.0.0.0";
+        int i = v.LastIndexOf('.');
+        return v[..i];
     }
 }

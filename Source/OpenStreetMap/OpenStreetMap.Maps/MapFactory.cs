@@ -31,20 +31,6 @@ public class MapFactory : IMapFactory
 
     public string Name => "OpenStreetMaps";
 
-    //public async Task<IMap> Initialize(MapOptions options, ElementReference hostElement)
-    //{
-    //    var status = await _api.LoadMapScripts();
-    //    if (status != LoadResponse.Loaded)
-    //    {
-    //        return NoMap.Instance;
-    //    }
-
-    //    OsmModules modules = await OsmModules.Load(_jsRuntime);
-    //    OsmMapObjectsFactory mapObjectsFactory = new(_idFactory, modules);
-    //    Map map = mapObjectsFactory.CreateMap(options, hostElement);
-    //    return map;
-    //}
-
     public IObservable<IMap> Initialize(MapOptions options, ElementReference hostElement)
     {
         return _api.LoadMapScripts()
@@ -56,14 +42,11 @@ public class MapFactory : IMapFactory
                     : Observable.Return<IMap>(NoMap.Instance);
             })
             .Switch();
-
-        // throw new NotImplementedException();
     }
 
     private IObservable<IMap> CreateMap(MapOptions options, ElementReference hostElement)
     {
         return OsmModules.Load(_jsRuntime)
-            .ToObservable()
             .Select(modules => {
                 OsmMapObjectsFactory mapObjectsFactory = new(_idFactory, modules);
                 Map map = mapObjectsFactory.CreateMap(options, hostElement);
