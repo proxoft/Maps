@@ -1,7 +1,7 @@
 ﻿using System;
 using Proxoft.Maps.Core.Api.Shapes;
 
-namespace Proxoft.Maps.Core.Api.Maps;
+namespace Proxoft.Maps.Core.Api.Factories;
 
 public interface IMapObjectsFactory
 {

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Google.Common;
 using Proxoft.Maps.Google.Maps;
 
@@ -12,7 +13,7 @@ namespace Google.Maps.Hosting.Builders
         private readonly IServiceCollection _services;
         private readonly ServiceLifetime _serviceLifetime;
 
-        private ServiceDescriptor _configurationDescriptor;
+        private ServiceDescriptor _configurationDescriptor = null!;
 
         public MapsBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
         {

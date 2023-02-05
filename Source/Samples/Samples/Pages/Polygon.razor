@@ -1,4 +1,5 @@
 ﻿@page "/Polygon"
+
 @using Proxoft.Maps.Core.Api.Shapes;
 @using System.Reactive.Linq;
 @using System.Text.Json.Serialization;
@@ -48,75 +49,24 @@
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (firstRender)
+        if (!firstRender)
         {
-            _map = await this.MapFactory.Initialize(
-                new MapOptions
-                    {
-                        Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
-                        Zoom = 12,
-                        TraceJs = true
-                    },
-                this.MapHost);
-
-            PolygonOptions options = new()
-            {
-                LatLngs = new()
-                {
-                    OuterRing = new[]
-                    {
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
-                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
-    },
-                    Holes = new LatLng[][]
-                    {
-                        new[]
-                        {
-                            new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
-                            new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
-                            new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
-                        }
-                    }
-                },
-                TraceJs = true
-            };
-
-            _polygon = _map.AddPolygon(options);
-            _polygon.OnEvent
-                .Subscribe(e => this.AddLog($"{_polygon.Id} {e.Name}"));
-
-            _polygon.OnEvent
-               .OfType<MouseClickEvent>()
-               .Subscribe(_ => this.OnPolygonClick(_polygon));
-
-            PolygonOptions options2 = new()
-            {
-                LatLngs = new()
-                {
-                    OuterRing = new[]
-                    {
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.10m },
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.15m },
-                        new LatLng { Latitude = 51.45m,  Longitude = -0.15m },
-                        new LatLng { Latitude = 51.45m,  Longitude = -0.06m },
-                }
-                },
-                Style =new()
-                {
-                    ClassName = "custom-polygon"
-                },
-                TraceJs = true
-            };
-
-            _polygon2 = _map.AddPolygon(options2);
-            _polygon2.OnEvent
-                .Subscribe(e => this.AddLog($"{_polygon2.Id} {e.Name}"));
-
-            _polygon2.OnEvent
-                .OfType<MouseClickEvent>()
-                .Subscribe(_ => this.OnPolygonClick(_polygon2));
+            return;
         }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Subscribe(map =>
+            {
+                _map = map;
+                CreatePolygons();
+            });
     }
 
     private void AddLog(string logMessage)
@@ -163,5 +113,66 @@
         string json = JsonSerializer.Serialize(latlngs);
         Console.WriteLine(json);
         Console.WriteLine($"==================== {polygon.Id} ====");
+    }
+
+    private void CreatePolygons()
+    {
+        PolygonOptions options = new()
+            {
+                LatLngs = new()
+                {
+                    OuterRing = new[]
+                    {
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+    },
+                    Holes = new LatLng[][]
+                    {
+                        new[]
+                        {
+                            new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+                            new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+                            new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+                        }
+                    }
+                },
+                TraceJs = true
+            };
+
+        _polygon = _map.AddPolygon(options);
+        _polygon.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon.Id} {e.Name}"));
+
+        _polygon.OnEvent
+           .OfType<MouseClickEvent>()
+           .Subscribe(_ => this.OnPolygonClick(_polygon));
+
+        PolygonOptions options2 = new()
+            {
+                LatLngs = new()
+                {
+                    OuterRing = new[]
+                {
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.10m },
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.15m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.15m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.06m },
+        }
+                },
+                Style = new()
+                {
+                    ClassName = "custom-polygon"
+                },
+                TraceJs = true
+            };
+
+        _polygon2 = _map.AddPolygon(options2);
+        _polygon2.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon2.Id} {e.Name}"));
+
+        _polygon2.OnEvent
+            .OfType<MouseClickEvent>()
+            .Subscribe(_ => this.OnPolygonClick(_polygon2));
     }
 }

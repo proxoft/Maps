@@ -9,6 +9,7 @@ using Proxoft.Maps.OpenStreetMap.Maps.Models.Markers;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Shapes;
 using Proxoft.Extensions.Options;
 using Microsoft.AspNetCore.Components;
+using Proxoft.Maps.Core.Api.Factories;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models;
 
