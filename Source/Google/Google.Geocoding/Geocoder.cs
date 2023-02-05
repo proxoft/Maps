@@ -55,7 +55,11 @@ public class GoogleGeocoder : IGeocoder
 
     private Either<ErrorStatus, Address> Parse(string jsonResult)
     {
-        var geocodeResponse = JsonSerializer.Deserialize<GeocoderResponse>(jsonResult, options: _options);
+        GeocoderResponse? geocodeResponse = JsonSerializer.Deserialize<GeocoderResponse>(jsonResult, options: _options);
+        if(geocodeResponse is null)
+        {
+            return ErrorStatus.UnknownError;
+        }
 
         return geocodeResponse.status switch
         {
@@ -107,7 +111,7 @@ public class GoogleGeocoder : IGeocoder
         throw new NotImplementedException();
     }
 
-    public Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streetNumber = null, string country = null)
+    public Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streetNumber = null, string? country = null)
     {
         throw new NotImplementedException();
     }

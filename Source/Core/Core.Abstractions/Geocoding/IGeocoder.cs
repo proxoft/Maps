@@ -10,7 +10,7 @@ public interface IGeocoder
 
     Task<Either<ErrorStatus, Address>> Geocode(string location);
 
-    Task<Either<ErrorStatus, Address>> Geocode(string city, string street = null, string streetNumber = null, string country = null);
+    Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streetNumber = null, string? country = null);
 
     Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng);
 
