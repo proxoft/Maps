@@ -17,6 +17,8 @@ public sealed class NoPolygon : IPolygon
 
     public string Id => "none-polygon";
 
+    public bool IsRemoved => false;
+
     public void Dispose()
     {
     }
@@ -31,7 +33,15 @@ public sealed class NoPolygon : IPolygon
         return PolygonLatLng.Empty;
     }
 
+    public void Remove()
+    {
+    }
+
     public void SetLatLng(PolygonLatLng latLngs)
+    {
+    }
+
+    public void SetStyle(Style style)
     {
     }
 }

@@ -1,52 +1,50 @@
 ﻿using System;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Abstractions.Models;
 
 namespace Proxoft.Maps.Core.Api.Shapes;
 
 public abstract class Polygon : ApiObject, IPolygon
 {
     private readonly PolygonJsCallback _jsCallback;
-    private readonly Action<string> _onRemoved;
 
     protected Polygon(
         string id,
-        IJSInProcessObjectReference jsModule,
-        Action<string> onRemoved) : base(id, jsModule)
+        Action<string> onRemove,
+        IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
     {
         _jsCallback = new PolygonJsCallback(this.Push);
-        _onRemoved = onRemoved;
     }
-
-    public bool IsRemoved { get; private set; }
 
     public LatLngBounds GetBounds()
     {
-        return new LatLngBounds();
+        LatLng[] corners = this.InvokeJs<LatLng[]>("GetBounds");
+        return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
     public PolygonLatLng GetLatLngs()
     {
-        return new PolygonLatLng();
+        PolygonLatLng latLngs = this.InvokeJs<PolygonLatLng>("GetLatLngs");
+        return latLngs;
     }
 
     public void SetLatLng(PolygonLatLng latLngs)
     {
+        this.InvokeVoidJs("SetLatLng", latLngs);
+    }
+
+    public void SetStyle(Style style)
+    {
+        this.InvokeVoidJs("setStyle", style);
     }
 
     public void AddToMap(string mapId, PolygonOptions options)
     {
-        this.InvokeVoidJs("AddPolygon", this.Id, options, mapId, _jsCallback.DotNetRef);
+        this.InvokeVoidJs("AddPolygon", options, mapId, _jsCallback.DotNetRef);
     }
 
-    public void Remove()
+    protected sealed override void ExecuteRemove()
     {
-        if (IsRemoved)
-        {
-            return;
-        }
-
-        this.InvokeVoidJs("RemovePolygon", this.Id);
-        IsRemoved = true;
-        _onRemoved(this.Id);
+        this.InvokeVoidJs("RemovePolygon");
     }
 }

@@ -141,10 +141,10 @@
             });
 
             _marker.OnEvent
-                .Subscribe(e => this.AddLog($"{e.Name} [m1]"));
+                .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}]"));
 
             _customMarker.OnEvent
-                .Subscribe(e => this.AddLog($"{e.Name} [m2]"));
+                .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}]"));
 
             _map.OnClick()
                 .Subscribe(latlng => {

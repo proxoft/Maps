@@ -18,6 +18,8 @@ public sealed class NoMap : IMap
 
     public string Id => "none-map";
 
+    public bool IsRemoved => false;
+
     public IMarker AddMarker(MarkerOptions options)
         => NoMarker.Instance;
 
@@ -56,5 +58,10 @@ public sealed class NoMap : IMap
 
     public void ZoomTo(ZoomLevel zoom)
     {
+    }
+
+    public void Remove()
+    {
+        throw new NotImplementedException();
     }
 }

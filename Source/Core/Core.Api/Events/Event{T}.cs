@@ -2,7 +2,7 @@
 
 public abstract class Event<T> : Event
 {
-    protected Event(T value, EventSource source = EventSource.Js) : base(source)
+    protected Event(T value)
     {
         this.Value = value;
     }

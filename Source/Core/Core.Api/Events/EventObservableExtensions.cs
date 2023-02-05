@@ -5,18 +5,13 @@ namespace Proxoft.Maps.Core.Api;
 
 internal static class EventObservableExtensions
 {
-    public static IObservable<F> Filter<F>(this IObservable<Event> source, Func<F, bool> filter = null)
-        where F : Event
+    public static IObservable<TEvent> Filter<TEvent>(this IObservable<Event> source, Func<TEvent, bool>? filter)
+        where TEvent : Event
     {
-        return source
-            .OfType<F>()
-            .WhereEx(filter);
-    }
+        IObservable<TEvent> s = source.OfType<TEvent>();
 
-    private static IObservable<E> WhereEx<E>(this IObservable<E> source, Func<E, bool> filter)
-    {
-        return filter == null
-            ? source
-            : source.Where(e => filter(e));
+        return filter is null
+            ? s
+            : s.Where(filter);
     }
 }

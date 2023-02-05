@@ -1,17 +1,34 @@
 ﻿@page "/Polygon"
-@using Proxoft.Maps.Core.Api.Shapes;
 
-<div class="map-container" @ref="MapHost">
+@using Proxoft.Maps.Core.Api.Shapes;
+@using System.Reactive.Linq;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+
+<div>
+    <div class="map-container" @ref="MapHost">
+    </div>
 </div>
 
-<button @onclick="ClearLogClick">Clear log</button>
-<div class="map-event-log">
-    @foreach (var l in MapLog.Reverse<string>())
-    {
-        <span>@l</span>
+<div>
+    <button @onclick=@(() => this.RemovePolygon(_polygon))>Remove polygon 1</button>
+    <button @onclick=@(() => this.RemovePolygon(_polygon2))>Remove polygon 2</button>
+    <button @onclick=@(() => this.ChangeColor())>Change color of polygon 2</button>
+</div>
 
-        <br />
-    }
+<br/>
+
+<div>
+    <button @onclick="ClearLogClick">Clear log</button>
+    <br/>
+    <div class="map-event-log">
+        @foreach (var l in MapLog.Reverse<string>())
+        {
+            <span>@l</span>
+
+            <br />
+        }
+    </div>
 </div>
 
 @code {
@@ -26,22 +43,81 @@
 
     private ElementReference MapHost { get; set; }
 
+    private string PolygonInfo { get; set; } = "";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if (firstRender)
+        if (!firstRender)
         {
-            _map = await this.MapFactory.Initialize(
-                new MapOptions
-                    {
-                        Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
-                        Zoom = 12,
-                        TraceJs = true
-                    },
-                this.MapHost);
+            return;
+        }
 
-            PolygonOptions options = new()
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Subscribe(map =>
+            {
+                _map = map;
+                CreatePolygons();
+            });
+    }
+
+    private void AddLog(string logMessage)
+    {
+        this.MapLog.Add(logMessage);
+        this.StateHasChanged();
+    }
+
+    private void RemovePolygon(IPolygon polygon)
+    {
+        if (polygon.IsRemoved)
+        {
+            return;
+        }
+
+        polygon.Remove();
+    }
+
+    private void ChangeColor()
+    {
+        Style style = new()
+        {
+            FillColor = "red"
+        };
+
+        _polygon.SetStyle(style);
+        _polygon2.SetStyle(style);
+    }
+
+    private void ClearLogClick()
+    {
+        this.MapLog.Clear();
+    }
+
+    private void OnPolygonClick(IPolygon polygon)
+    {
+        Console.WriteLine($"getting info about {polygon.Id}");
+
+        LatLngBounds bounds = polygon.GetBounds();
+        PolygonLatLng latlngs = polygon.GetLatLngs();
+
+        Console.WriteLine(bounds);
+
+        string json = JsonSerializer.Serialize(latlngs);
+        Console.WriteLine(json);
+        Console.WriteLine($"==================== {polygon.Id} ====");
+    }
+
+    private void CreatePolygons()
+    {
+        PolygonOptions options = new()
             {
                 LatLngs = new()
                 {
@@ -50,7 +126,7 @@
                         new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
                         new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
                         new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
-                },
+    },
                     Holes = new LatLng[][]
                     {
                         new[]
@@ -64,43 +140,39 @@
                 TraceJs = true
             };
 
-            _polygon = _map.AddPolygon(options);
-            _polygon.OnEvent
-                .Subscribe(e => this.AddLog($"{_polygon.Id} {e.Name}"));
+        _polygon = _map.AddPolygon(options);
+        _polygon.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon.Id} {e.Name}"));
 
-            PolygonOptions options2 = new()
+        _polygon.OnEvent
+           .OfType<MouseClickEvent>()
+           .Subscribe(_ => this.OnPolygonClick(_polygon));
+
+        PolygonOptions options2 = new()
             {
                 LatLngs = new()
                 {
                     OuterRing = new[]
-                    {
+                {
                         new LatLng { Latitude = 51.51m,  Longitude = -0.10m },
                         new LatLng { Latitude = 51.51m,  Longitude = -0.15m },
                         new LatLng { Latitude = 51.45m,  Longitude = -0.15m },
                         new LatLng { Latitude = 51.45m,  Longitude = -0.06m },
-                }
+        }
                 },
-                Style =new()
+                Style = new()
                 {
                     ClassName = "custom-polygon"
                 },
                 TraceJs = true
             };
 
-            _polygon2 = _map.AddPolygon(options2);
-            _polygon2.OnEvent
-                .Subscribe(e => this.AddLog($"{_polygon2.Id} {e.Name}"));
-        }
-    }
+        _polygon2 = _map.AddPolygon(options2);
+        _polygon2.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon2.Id} {e.Name}"));
 
-    private void AddLog(string logMessage)
-    {
-        this.MapLog.Add(logMessage);
-        this.StateHasChanged();
-    }
-
-    private void ClearLogClick()
-    {
-        this.MapLog.Clear();
+        _polygon2.OnEvent
+            .OfType<MouseClickEvent>()
+            .Subscribe(_ => this.OnPolygonClick(_polygon2));
     }
 }

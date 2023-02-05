@@ -5,87 +5,87 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Proxoft.Maps.Samples.Pages
+namespace Proxoft.Maps.Samples.Pages;
+
+public sealed partial class TwoMaps : IDisposable
 {
-    public sealed partial class TwoMaps : IDisposable
+    private IMap _map1 = NoMap.Instance;
+    private IMap _map2 = NoMap.Instance;
+
+    [Inject]
+    public IMapFactory MapFactory { get; set; } = null!;
+
+    ElementReference Map1Host { get; set; }
+
+    ElementReference Map2Host { get; set; }
+
+    public string Provider => this.MapFactory.Name;
+
+    private List<string> Map1Log { get; set; } = new();
+
+    private List<string> Map2Log { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        private IMap _map1 = NoMap.Instance;
-        private IMap _map2 = NoMap.Instance;
+        await base.OnAfterRenderAsync(firstRender);
 
-        [Inject]
-        public IMapFactory MapFactory { get; set; } = null!;
-
-        ElementReference Map1Host { get; set; }
-
-        ElementReference Map2Host { get; set; }
-
-        public string Provider => this.MapFactory.Name;
-
-        private List<string> Map1Log { get; set; } = new();
-
-        private List<string> Map2Log { get; set; } = new();
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        if (firstRender)
         {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender)
+            LatLng center = new()
             {
-                LatLng center = new()
-                {
-                    Latitude = -34.397m,
-                    Longitude = 150.644m
-                };
+                Latitude = -34.397m,
+                Longitude = 150.644m
+            };
 
-                _map1 = await MapFactory.Initialize(new MapOptions
+            _map1 = await MapFactory.Initialize(new MapOptions
+            {
+                Center = center,
+                Zoom = 10
+            },
+            this.Map1Host);
+
+            _map1.OnCenter()
+                .Throttle(TimeSpan.FromMilliseconds(200))
+                .Subscribe(ll =>
                 {
-                    Center = center,
-                    Zoom = 10
+                    this.Map1Log.Add("center changed");
+                    this.StateHasChanged();
+                });
+
+            _map1.AddMarker(new MarkerOptions { Position = center, TraceJs = true });
+
+            _map2 = await MapFactory.Initialize(new MapOptions
+            {
+                Center = new LatLng
+                {
+                    Latitude = 19.397m,
+                    Longitude = 87.644m
                 },
-                this.Map1Host);
+                Zoom = 7
+            },
+            this.Map2Host);
 
-                _map1.OnCenter()
-                    .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Subscribe(ll =>
-                    {
-                        this.Map1Log.Add("center changed");
-                        this.StateHasChanged();
-                    });
-
-                _map1.AddMarker(new MarkerOptions { Position = center, TraceJs = true });
-
-                _map2 = await MapFactory.Initialize(new MapOptions
+            _map2.OnCenter()
+                .Throttle(TimeSpan.FromMilliseconds(200))
+                .Subscribe(ll =>
                 {
-                    Center = new LatLng
-                    {
-                        Latitude = 19.397m,
-                        Longitude = 87.644m
-                    },
-                    Zoom = 7
-                },
-                this.Map2Host);
-
-                _map2.OnCenter()
-                    .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Subscribe(ll =>
-                    {
-                        this.Map2Log.Add("center changed");
-                        this.StateHasChanged();
-                    });
-            }
+                    this.Map2Log.Add("center changed");
+                    this.StateHasChanged();
+                });
         }
+    }
 
-        private void PanToClick()
-        {
-            _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
-        }
+    private void PanToClick()
+    {
+        _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
+    }
 
-        public void Dispose()
-        {
-            _map1.Dispose();
-            _map2.Dispose();
-        }
+    public void Dispose()
+    {
+        _map1.Dispose();
+        _map2.Dispose();
     }
 }

@@ -4,102 +4,108 @@ using Microsoft.JSInterop;
 using Proxoft.Maps.Core;
 using Proxoft.Maps.Core.Api.Shapes;
 
-namespace Proxoft.Maps.Google.Maps.Models.Maps
+namespace Proxoft.Maps.Google.Maps.Models.Maps;
+
+internal class GoogleMap: IMap
 {
-    internal class GoogleMap: IMap
+    private readonly string _elementId;
+    private readonly IJSInProcessObjectReference _jsRuntime;
+    private readonly DotNetObjectReference<GoogleMap> _ref;
+
+    private readonly Subject<LatLng> _onCenter = new ();
+
+    public IObservable<LatLng> OnCenter => _onCenter;
+
+    public IObservable<int> OnZoom => throw new NotImplementedException();
+
+    public IObservable<Event> OnEvent => throw new NotImplementedException();
+
+    public ApiStatus Status => ApiStatus.Available;
+
+    public string Id => "g-map";
+
+    public bool IsRemoved => throw new NotImplementedException();
+
+    [JSInvokable]
+    public void OnCenterChanged(LatLng latLng)
+        => _onCenter.OnNext(latLng);
+
+    private GoogleMap(string elementId, IJSInProcessObjectReference jsRuntime)
     {
-        private readonly string _elementId;
-        private readonly IJSInProcessObjectReference _jsRuntime;
-        private readonly DotNetObjectReference<GoogleMap> _ref;
+        _elementId = elementId;
+        _jsRuntime = jsRuntime;
+        _ref = DotNetObjectReference.Create(this);
+    }
 
-        private readonly Subject<LatLng> _onCenter = new ();
+    private void Initialize(MapOptions options)
+    {
+        _jsRuntime.InvokeVoid("InitializeMap", new object[] { _elementId, options, _ref });
+    }
 
-        public IObservable<LatLng> OnCenter => _onCenter;
+    public static GoogleMap Create(string elementId, MapOptions options, IJSInProcessObjectReference jsRuntime)
+    {
+        var map = new GoogleMap(elementId, jsRuntime);
+        map.Initialize(options);
+        return map;
+    }
 
-        public IObservable<int> OnZoom => throw new NotImplementedException();
+    public void Dispose()
+    {
+        _onCenter.Dispose();
+    }
 
-        public IObservable<Event> OnEvent => throw new NotImplementedException();
+    public void PanTo(LatLng center)
+    {
+        throw new NotImplementedException();
+    }
 
-        public ApiStatus Status => ApiStatus.Available;
+    public IMarker AddMarker(MarkerOptions options)
+    {
+        throw new NotImplementedException();
+    }
 
-        public string Id => "g-map";
+    public void ZoomTo(int zoom)
+    {
+        throw new NotImplementedException();
+    }
 
-        [JSInvokable]
-        public void OnCenterChanged(LatLng latLng)
-            => _onCenter.OnNext(latLng);
+    public void SetCenter(LatLng position)
+    {
+        throw new NotImplementedException();
+    }
 
-        private GoogleMap(string elementId, IJSInProcessObjectReference jsRuntime)
-        {
-            _elementId = elementId;
-            _jsRuntime = jsRuntime;
-            _ref = DotNetObjectReference.Create(this);
-        }
+    public void ZoomTo(ZoomLevel zoom)
+    {
+        throw new NotImplementedException();
+    }
 
-        private void Initialize(MapOptions options)
-        {
-            _jsRuntime.InvokeVoid("InitializeMap", new object[] { _elementId, options, _ref });
-        }
+    public void FitBounds(LatLngBounds bounds)
+    {
+        throw new NotImplementedException();
+    }
 
-        public static GoogleMap Create(string elementId, MapOptions options, IJSInProcessObjectReference jsRuntime)
-        {
-            var map = new GoogleMap(elementId, jsRuntime);
-            map.Initialize(options);
-            return map;
-        }
+    public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void Dispose()
-        {
-            _onCenter.Dispose();
-        }
+    public LatLngBounds GetBounds()
+    {
+        throw new NotImplementedException();
+    }
 
-        public void PanTo(LatLng center)
-        {
-            throw new NotImplementedException();
-        }
+    public LatLng GetCenter()
+    {
+        throw new NotImplementedException();
+    }
 
-        public IMarker AddMarker(MarkerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+    public IPolygon AddPolygon(PolygonOptions options)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void ZoomTo(int zoom)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCenter(LatLng position)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ZoomTo(ZoomLevel zoom)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FitBounds(LatLngBounds bounds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LatLngBounds GetBounds()
-        {
-            throw new NotImplementedException();
-        }
-
-        public LatLng GetCenter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IPolygon AddPolygon(PolygonOptions options)
-        {
-            throw new NotImplementedException();
-        }
+    public void Remove()
+    {
+        throw new NotImplementedException();
     }
 }
