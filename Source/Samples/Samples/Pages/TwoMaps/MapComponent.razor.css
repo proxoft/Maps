@@ -1,0 +1,17 @@
+﻿#map-container {
+    display: inline-block;
+    width: 800px;
+    height: 450px;
+}
+
+#map-container-log {
+    vertical-align: top;
+    padding-left: 10px;
+    display: inline-block;
+    overflow-y: scroll;
+    width: 600px;
+    height: 450px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+}

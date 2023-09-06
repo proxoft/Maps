@@ -111,10 +111,6 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
         map: map,    // map instance
         ref: netRef, // net object reference
 
-        addMarker: function () {
-            return 1;
-        },
-
         invokeRef: function (...args) {
             try {
                 wrapper.ref.invokeMethodAsync(...args);
@@ -133,7 +129,6 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
             console.log(m);
         }
     };
-
 
     //-- mouse events
     map.on("click", (e) => {
