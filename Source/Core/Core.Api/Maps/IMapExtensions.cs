@@ -12,12 +12,12 @@ public static class IMapExtensions
             .Filter(filter)
             .Select(e => e.Value);
 
-    public static IObservable<LatLng> OnCenter(this IMap map, Func<CenterChangedEvent, bool>? filter = null)
+    public static IObservable<LatLng> OnCenterChanged(this IMap map, Func<CenterChangedEvent, bool>? filter = null)
         => map.OnEvent
             .Filter(filter)
             .Select(e => e.Value);
 
-    public static IObservable<ZoomLevel> OnZoom(this IMap map, Func<ZoomChanged, bool>? filter = null)
+    public static IObservable<ZoomLevel> OnZoomed(this IMap map, Func<ZoomChanged, bool>? filter = null)
         => map.OnEvent
             .Filter(filter)
             .Select(e => e.Value);

@@ -14,7 +14,7 @@ namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 internal class OsmModules
 {
-    private static ValueOrWait<OsmModules> _modules = new ValueOrWait<OsmModules>(null);
+    private static ValueOrWait<OsmModules> _modules = new(null!);
     private static bool _initialized;
 
     private OsmModules(
@@ -41,6 +41,7 @@ internal class OsmModules
             _initialized = true;
 
             string v = GetJsVersion();
+            Console.WriteLine($"Loaging scripts version: {v}");
 
             var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",

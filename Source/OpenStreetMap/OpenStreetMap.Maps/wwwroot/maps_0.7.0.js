@@ -1,6 +1,6 @@
 ﻿var mapWrappers = [];
 
-console.log("osm maps_0.6.0.js loaded");
+console.log("osm maps_0.7.0.js loaded");
 
 //--Maps-----------------------------------------
 export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
@@ -19,8 +19,10 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
 }
 
 export function Remove(mapId) {
+    console.log(`remove map: ${mapId}`);
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
     let wrapper = mapWrappers.splice(i, 1);
+    wrapper[0].disconnect();
     wrapper[0].map.remove();
     wrapper[0].log("removed");
 }
@@ -110,81 +112,115 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
         mapId: mapId,
         map: map,    // map instance
         ref: netRef, // net object reference
+        refId: netRef._id,
 
         invokeRef: function (...args) {
             try {
+                wrapper.log(`invoking ${args[0]}`);
                 wrapper.ref.invokeMethodAsync(...args);
             }
             catch(e)
             {
+                console.log("error in map wrapper");
                 console.log(e);
             }
+        },
+
+        disconnect: function () {
+            wrapper.log("diconnecting map events");
+
+            map.off("click", wrapper._onMouseClick);
+            map.off("dblclick", wrapper._onMouseDblClick);
+            map.off("mousedown", wrapper._onMouseDown);
+            map.off("mouseup", wrapper._onMouseUp);
+            map.off("mouseover", wrapper._onMouseOver);
+            map.off("mousemove", wrapper._onMouseMove);
+            map.off("mouseout", wrapper._onMouseOut);
+
+            map.off("resize", wrapper._onResize);
+            map.off("move", wrapper._onMove);
+            map.off("moveend", wrapper._onMoveEnd);
+            map.off("zoom", wrapper._onZoom);
+            map.off("zoomend", wrapper._onZoomEnd);
+
+            wrapper.log("diconnected map events");
         },
 
         log: function (m) {
             if (!enableLogging) {
                 return;
             }
-            console.log(`[Map ${mapId}]`);
-            console.log(m);
+
+            console.log(`[Map ${wrapper.mapId}:${wrapper.refId}]: ${m}`);
+        },
+
+        _onMouseClick: function (e) {
+            wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseDblClick: function (e) {
+            wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseDown: function (e) {
+            wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseUp: function (e) {
+            wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseOver: function (e) {
+            wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseMove: function (e) {
+            wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseOut: function (e) {
+            wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onResize: function (e) {
+            wrapper.invokeRef("OnResized", e.newSize);
+        },
+
+        _onMove: function (e) {
+            wrapper.invokeRef("OnCenterChanging", e.newSize);
+        },
+
+        _onMoveEnd: function (e) {
+            let center = e.target.getCenter();
+            wrapper.invokeRef("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
+        },
+
+        _onZoom: function (e) {
+            let zoom = e.target.getZoom();
+            wrapper.invokeRef("OnZoomChanging", zoom);
+        },
+
+        _onZoomEnd: function (e) {
+            let zoom = e.target.getZoom();
+            wrapper.invokeRef("OnZoomChanged", zoom);
         }
     };
 
     //-- mouse events
-    map.on("click", (e) => {
-        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
+    map.on("click", wrapper._onMouseClick);
+    map.on("dblclick", wrapper._onMouseDblClick);
+    map.on("mousedown", wrapper._onMouseDblClick);
+    map.on("mouseup", wrapper._onMouseUp);
+    map.on("mouseover", wrapper._onMouseOver);
+    map.on("mousemove", wrapper._onMouseMove);
+    map.on("mouseout", wrapper._onMouseOut);
 
-    map.on("dblclick", (e) => {
-        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    map.on("mousedown", (e) => {
-        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    map.on("mouseup", (e) => {
-        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    map.on("mouseover", (e) => {
-        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    map.on("mousemove", (e) => {
-        wrapper.invokeRef("OnMouseMove", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    map.on("mouseout", (e) => {
-        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-    //------------------------
-
-    //--map events------------
-    map.on("resize", (e) => {
-        wrapper.invokeRef("OnResized", e.newSize);
-    });
-
-    map.on("move", () => {
-        let center = map.getCenter();
-        wrapper.invokeRef("OnCenterChanging", { latitude: center.lat, longitude: center.lng })
-    });
-
-    map.on("moveend", () => {
-        let center = map.getCenter();
-        wrapper.invokeRef("OnCenterChanged", { latitude: center.lat, longitude: center.lng });
-    });
-
-    map.on("zoom", () => {
-        let zoom = map.getZoom();
-        wrapper.invokeRef("OnZoomChanging", zoom);
-    });
-
-    map.on("zoomend", () => {
-        let zoom = map.getZoom();
-        wrapper.invokeRef("OnZoomChanged", zoom);
-    });
-    //------------------------
+    //-- map events
+    map.on("resize", wrapper._onResize);
+    map.on("move", wrapper._onMove);
+    map.on("moveend", wrapper._onMoveEnd);
+    map.on("zoom", wrapper._onZoom);
+    map.on("zoomend", wrapper._onZoomEnd);
 
     return wrapper;
 }

@@ -51,8 +51,7 @@ public sealed partial class TwoMaps : IDisposable
                 .Subscribe(m =>
                 {
                     _map1 = m;
-                    _map1.OnCenter()
-                        .Throttle(TimeSpan.FromMilliseconds(200))
+                    _map1.OnCenterChanged()
                         .Subscribe(ll =>
                         {
                             this.Map1Log.Add("center changed");
@@ -76,8 +75,7 @@ public sealed partial class TwoMaps : IDisposable
                 )
                 .Subscribe(m => {
                     _map2 = m;
-                    _map2.OnCenter()
-                        .Throttle(TimeSpan.FromMilliseconds(200))
+                    _map2.OnCenterChanged()
                         .Subscribe(ll =>
                         {
                             this.Map2Log.Add("center changed");

@@ -1,10 +1,10 @@
 ﻿@page "/Marker"
 @implements IDisposable
 
+@using System.Drawing;
 @using System.Reactive.Linq;
 @using Proxoft.Maps.Core.Api
 @using Proxoft.Maps.Core.Api.Icons;
-@using System.Drawing;
 
 <div class="map-container" @ref="MapHost">
 </div>
@@ -15,7 +15,6 @@
     {
         <span>@l</span><br />
     }
-    
 </div>
 
 <div>
@@ -101,57 +100,71 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
+        if (!firstRender)
         {
-            LatLng center = new()
+            return;
+        }
+
+        LatLng center = new()
+        {
+            Latitude = this.Lat,
+            Longitude = this.Lng
+        };
+
+        this.MapFactory
+            .Initialize(
+                new MapOptions { Center = center, Zoom = 7 },
+                this.MapHost
+            )
+            .Subscribe(m => {
+                _map = m;
+
+                this.InitializeMarkers(center);
+
+                _map.OnClick()
+                    .Subscribe(latlng =>
+                    {
+                        _customMarker.SetPosition(latlng);
+                        _marker.SetPosition(latlng);
+                    });
+            });
+    }
+
+    private void InitializeMarkers(LatLng center)
+    {
+        _marker = _map.AddMarker(new MarkerOptions()
             {
-                Latitude = this.Lat,
-                Longitude = this.Lng
-            };
-
-            _map = await this.MapFactory.Initialize(
-                new MapOptions { Center = center, Zoom = 7, TraceJs = true },
-                this.MapHost);
-
-            _marker = _map.AddMarker(new MarkerOptions() {
                 Position = center,
                 Draggable = _draggable,
                 Opacity = _opacity,
                 TraceJs = true
             });
 
-            _customMarker = _map.AddMarker(new MarkerOptions()
+        _customMarker = _map.AddMarker(new MarkerOptions()
+            {
+                Position = new LatLng
                 {
-                    Position = new LatLng
-                    {
-                        Latitude = center.Latitude + 1,
-                        Longitude = center.Longitude + 1
-                    },
-                    Draggable = _draggable,
-                    Opacity = _opacity,
-                    Icon = new HtmlIcon()
-                    {
-                        Size = new Size(),
-                        IconAnchor = new Point(),
-                        ClassName = "custom-marker",
-                        Html = "<span class=\"marker-span\">x</span>"
-                    },
-                    TraceJs = true
+                    Latitude = center.Latitude + 1,
+                    Longitude = center.Longitude + 1
+                },
+                Draggable = _draggable,
+                Opacity = _opacity,
+                Icon = new HtmlIcon()
+                {
+                    Size = new Size(),
+                    IconAnchor = new Point(),
+                    ClassName = "custom-marker",
+                    Html = "<span class=\"marker-span\">x</span>"
+                },
+                TraceJs = true
             });
 
-            _marker.OnEvent
-                .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}]"));
+        _marker.OnEvent
+            .OfType<MarkerLatLngEvent>()
+            .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}] {e.Value.Latitude},{e.Value.Longitude}"));
 
-            _customMarker.OnEvent
-                .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}]"));
-
-            _map.OnClick()
-                .Subscribe(latlng => {
-                    _customMarker.SetPosition(latlng);
-                    _marker.SetPosition(latlng);
-                });
-        }
+        _customMarker.OnEvent
+            .Subscribe(e => this.AddLog($"{e.Name} [{e.SourceId}]"));
     }
 
     private void PositionClick()

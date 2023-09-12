@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -8,53 +7,59 @@ using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Proxoft.Maps.Samples.Pages
+namespace Proxoft.Maps.Samples.Pages;
+
+public sealed partial class Index : IDisposable
 {
-    public sealed partial class Index : IDisposable
+    private IMap _map1 = NoMap.Instance;
+
+    [Inject]
+    public IMapFactory MapFactory { get; set; } = null!;
+
+    ElementReference MapHost { get; set; }
+
+    public string Provider => this.MapFactory.Name;
+
+    private List<string> MapLog { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        private IMap _map1 = NoMap.Instance;
+        await base.OnAfterRenderAsync(firstRender);
 
-        [Inject]
-        public IMapFactory MapFactory { get; set; } = null!;
-
-        ElementReference MapHost { get; set; }
-
-        public string Provider => this.MapFactory.Name;
-
-        private List<string> MapLog { get; set; } = new();
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        if (!firstRender)
         {
-            await base.OnAfterRenderAsync(firstRender);
+            return;
+        }
 
-            if (firstRender)
+        LatLng center = new ()
+        {
+            Latitude = -34.397m,
+            Longitude = 150.644m
+        };
+
+        _map1 = await this.MapFactory.Initialize(
+            new MapOptions
             {
-                LatLng center = new ()
-                {
-                    Latitude = -34.397m,
-                    Longitude = 150.644m
-                };
+                Center = center,
+                Zoom = 10
+            },
+            this.MapHost
+        );
 
-                _map1 = await MapFactory.Initialize(new MapOptions
-                {
-                    Center = center,
-                    Zoom = 10
-                },
-                this.MapHost);
+        _map1.OnCenterChanged()
+            .Subscribe(ll => this.AddMapLog($"center changed {ll.Latitude}, {ll.Longitude}"));
+        _map1.OnClick()
+            .Subscribe(ll => this.AddMapLog($"click: {ll.Latitude}, {ll.Longitude}"));
+    }
 
-                _map1.OnCenter()
-                    .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Subscribe(ll =>
-                    {
-                        this.MapLog.Add("center changed");
-                        this.StateHasChanged();
-                    });
-            }
-        }
+    public void Dispose()
+    {
+        _map1.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _map1.Dispose();
-        }
+    private void AddMapLog(string message)
+    {
+        this.MapLog.Add(message);
+        this.StateHasChanged();
     }
 }

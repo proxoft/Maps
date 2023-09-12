@@ -35,7 +35,7 @@ public abstract class Polygon : ApiObject, IPolygon
 
     public void SetStyle(Style style)
     {
-        this.InvokeVoidJs("setStyle", style);
+        this.InvokeVoidJs("SetStyle", style);
     }
 
     public void AddToMap(string mapId, PolygonOptions options)
@@ -46,5 +46,15 @@ public abstract class Polygon : ApiObject, IPolygon
     protected sealed override void ExecuteRemove()
     {
         this.InvokeVoidJs("RemovePolygon");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if(disposing)
+        {
+            _jsCallback.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

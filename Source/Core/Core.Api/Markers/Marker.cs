@@ -47,10 +47,8 @@ public abstract class Marker : ApiObject, IMarker
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing)
+        if(disposing)
         {
-            this.Remove();
-
             _jsCallback.Dispose();
         }
 

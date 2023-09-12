@@ -11,26 +11,26 @@ internal class MarkerJsCallback : ApiObjectJsCallback<MarkerJsCallback>
     }
 
     [JSInvokable]
-    public void OnPositionStartChange(LatLng position)
-        => this.Push(new PositionStartChangeEvent(position));
-
-    [JSInvokable]
-    public void OnPositionChanging(LatLng position)
-        => this.Push(new PositionChangingEvent(position));
-
-    [JSInvokable]
     public void OnPositionChanged(LatLng position)
         => this.Push(new PositionChangedEvent(position));
 
-    //[JSInvokable]
-    //public void OnDragStart(LatLng position)
-    //    => this.Push(new DragStartEvent(position));
+    [JSInvokable]
+    public void OnDrag(LatLng position)
+        => this.Push(new DragEvent(position));
 
-    //[JSInvokable]
-    //public void OnDraggging(LatLng position)
-    //    => this.Push(new DraggingEvent(position));
+    [JSInvokable]
+    public void OnDraggingStarted(LatLng position)
+        => this.Push(new DraggingStartEvent(position));
 
-    //[JSInvokable]
-    //public void OnDragEnd(LatLng position)
-    //    => this.Push(new DragEndEvent(position));
+    [JSInvokable]
+    public void OnDragging(LatLng position)
+        => this.Push(new DraggingEvent(position));
+
+    [JSInvokable]
+    public void OnDraggingEnd(LatLng position)
+        => this.Push(new DraggingEndEvent(position));
+
+    [JSInvokable]
+    public void OnDrop(LatLng position)
+        => this.Push(new DropEvent(position));
 }

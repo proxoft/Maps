@@ -78,17 +78,16 @@ public abstract class Map : ApiObject, IMap
     protected override sealed void ExecuteRemove()
     {
         this.InvokeVoidJs("Remove");
+
+        _markers.DisposeAll();
+        _polygons.DisposeAll();
     }
 
     protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
-            _markers.DisposeAll();
-            _polygons.DisposeAll();
-
             _mapJsCallback.Dispose();
-            this.Remove();
         }
 
         base.Dispose(disposing);
