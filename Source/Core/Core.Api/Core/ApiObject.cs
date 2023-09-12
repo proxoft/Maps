@@ -10,6 +10,7 @@ public abstract class ApiObject : IApiObject
     private readonly Subject<Event> _events = new();
     private Action<string> _onRemove;
     private bool _isRemoved;
+    private bool _disposed;
 
     protected ApiObject(
         string id,
@@ -24,12 +25,6 @@ public abstract class ApiObject : IApiObject
     public string Id { get; }
 
     protected IJSInProcessObjectReference JsModule { get; }
-
-    internal Action<string> OnRemove
-    {
-        get => _onRemove;
-        set => _onRemove = value;
-    }
 
     public IObservable<Event> OnEvent => _events;
 
@@ -87,18 +82,29 @@ public abstract class ApiObject : IApiObject
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            Console.WriteLine($"disposing already disposed object {this.Id}");
+        }
+
         this.Dispose(true);
         GC.SuppressFinalize(this);
     }
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if(!disposing)
         {
-            Console.WriteLine($"Disposing {this.Id}");
-
-            this.Remove();
-            _events.Dispose();
+            return;
         }
+
+        _disposed = true;
+
+        Console.WriteLine($"Disposing {this.Id}");
+        this.Remove();
+
+        _events.Dispose();
+
+        Console.WriteLine($"Disposed {this.Id}");
     }
 }

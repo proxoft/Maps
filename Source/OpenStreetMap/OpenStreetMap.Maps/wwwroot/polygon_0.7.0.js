@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.6.0.js';
+﻿import { findMapWrapper } from './maps_0.7.0.js';
 
-console.log("osm polygon_0.6.0.js loaded");
+console.log("osm polygon_0.7.0.js loaded");
 
 var polygonWrappers = [];
 
@@ -25,7 +25,9 @@ export function RemovePolygon(polygonId) {
     let i = findPolygonWrapperIndex(polygonId);
     let wrapper = polygonWrappers.splice(i, 1);
     wrapper[0].log("removing from map");
+    wrapper[0].ref.disconnect();
     wrapper[0].polygon.remove();
+    wrapper[0].log("removed from map");
 }
 
 export function SetLatLngs(polygonId, latLngs) {
@@ -85,7 +87,7 @@ export function GetBounds(polygonId) {
     ];
 }
 
-export function setStyle(polygonId, style) {
+export function SetStyle(polygonId, style) {
     let polygonWrapper = findPolygonWrapper(polygonId);
     polygonWrapper.log("setStyle");
     console.log(style);
@@ -102,49 +104,69 @@ function createPolygonWrapper(polygonId, polygon, map, netRef, enableLogging) {
         parentMap: map,
         polygon: polygon, // polygon instance
         ref: netRef,      // net object reference
+        refId: netRef._id,
 
         invokeRef: function (...args) {
             try {
+                wrapper.log(`${args[0]}`);
                 wrapper.ref.invokeMethodAsync(...args);
             }
             catch (e) {
+                console.log("error in polygon wrapper");
                 console.log(e);
             }
+        },
+
+        disconnect: function () {
+            //-- mouse events
+            polygon.off("click", wrapper._onClick);
+            polygon.off("dblclick", wrapper._onDblClick);
+            polygon.off("mousedown", wrapper._onMouseDown);
+            polygon.off("mouseup", wrapper._onMouseUp);
+            polygon.off("mouseover", wrapper._onMouseOver);
+            polygon.off("mouseout", wrapper._onMouseOut);
         },
 
         log: function (m) {
             if (!enableLogging) {
                 return;
             }
-            console.log("[Polygon " + polygonId + "]:");
-            console.log(m)
+
+            console.log(`[Polygon ${wrapper.polygonId}:${wrapper.refId}]: ${m}`);
+        },
+
+        _onClick: function (e) {
+            wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onDblClick: function (e) {
+            wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseDown: function (e) {
+            wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseUp: function (e) {
+            wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseOver: function (e) {
+            wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _onMouseOut: function (e) {
+            wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng });
         }
     };
 
     //-- mouse events
-    polygon.on("click", (e) => {
-        wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    polygon.on("dblclick", (e) => {
-        wrapper.invokeRef("OnMouseDoubleClick", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    polygon.on("mousedown", (e) => {
-        wrapper.invokeRef("OnMouseDown", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    polygon.on("mouseup", (e) => {
-        wrapper.invokeRef("OnMouseUp", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    polygon.on("mouseover", (e) => {
-        wrapper.invokeRef("OnMouseEnter", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
-
-    polygon.on("mouseout", (e) => {
-        wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng })
-    });
+    polygon.on("click", wrapper._onClick);
+    polygon.on("dblclick", wrapper._onDblClick);
+    polygon.on("mousedown", wrapper._onMouseDown);
+    polygon.on("mouseup", wrapper._onMouseUp);
+    polygon.on("mouseover", wrapper._onMouseOver);
+    polygon.on("mouseout", wrapper._onMouseOut);
 
     return wrapper;
 }

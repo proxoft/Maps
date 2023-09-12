@@ -1,10 +1,9 @@
-﻿namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization
+﻿namespace Proxoft.Maps.OpenStreetMap.Maps.Initialization;
+
+public enum LoadResponse
 {
-    public enum LoadResponse
-    {
-        None,
-        Loaded,
-        Failed,
-        FatalError
-    }
+    None,
+    Loaded,
+    Failed,
+    FatalError
 }

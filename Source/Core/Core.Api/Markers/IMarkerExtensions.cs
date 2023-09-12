@@ -6,16 +6,6 @@ namespace Proxoft.Maps.Core.Api;
 
 public static class IMarkerExtensions
 {
-    public static IObservable<LatLng> OnPositionStartChange(this IMarker marker, Func<PositionStartChangeEvent, bool>? filter = null)
-        => marker.OnEvent
-            .Filter(filter)
-            .Select(e => e.Value);
-
-    public static IObservable<LatLng> OnPositionChanging(this IMarker marker, Func<PositionChangingEvent, bool>? filter = null)
-        => marker.OnEvent
-            .Filter(filter)
-            .Select(e => e.Value);
-
     public static IObservable<LatLng> OnPositionChanged(this IMarker marker, Func<PositionChangedEvent, bool>? filter = null)
         => marker.OnEvent
             .Filter(filter)

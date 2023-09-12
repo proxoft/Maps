@@ -5,20 +5,27 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Api.Maps;
+using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api;
+using Proxoft.Maps.OpenStreetMap.Maps.Infrastructure;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 internal class OsmModules
 {
+    private static ValueOrWait<OsmModules> _modules = new(null!);
+    private static bool _initialized;
+
     private OsmModules(
         IJSInProcessObjectReference map,
         IJSInProcessObjectReference marker,
         IJSInProcessObjectReference polygon
         )
     {
-        Map = map;
-        Marker = marker;
-        Polygon = polygon;
+        this.Map = map;
+        this.Marker = marker;
+        this.Polygon = polygon;
     }
 
     public IJSInProcessObjectReference Map { get; }
@@ -29,31 +36,39 @@ internal class OsmModules
 
     public static IObservable<OsmModules> Load(IJSRuntime jsRuntime)
     {
-        string v = GetJsVersion();
-
-        var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                "import",
-                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
-            .AsTask()
-            .ToObservable();
-
-        var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                "import",
-                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
-            .AsTask()
-            .ToObservable();
-
-        var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                "import",
-                $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
-            .AsTask()
-            .ToObservable();
-
-        return Observable
-            .Zip(mapS, markerS, polygonsS, (map, marker, polygon) =>
+        if (!_initialized)
         {
-            return new OsmModules(map, marker, polygon);
-        });
+            _initialized = true;
+
+            string v = GetJsVersion();
+            Console.WriteLine($"Loaging scripts version: {v}");
+
+            var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                    "import",
+                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
+                .AsTask();
+
+            var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                    "import",
+                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
+                .AsTask();
+
+            var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                    "import",
+                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
+                .AsTask();
+
+            Task.WhenAll(mapS, markerS, polygonsS)
+                .ToObservable()
+                .Take(1)
+                .Subscribe(tripple =>
+                {
+                    OsmModules osm = new(tripple[0], tripple[1], tripple[2]);
+                    _modules.SetValue(osm);
+                });
+        }
+
+        return _modules;
     }
 
     private static string GetJsVersion()

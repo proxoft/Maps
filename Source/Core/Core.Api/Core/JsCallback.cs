@@ -3,14 +3,28 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Core;
 
-internal abstract class ApiObjectJsCallback : IDisposable
+internal abstract class JsCallback : IDisposable
 {
+    private static long _id;
+
+    protected JsCallback()
+    {
+        this.Id = ++_id;
+        Console.WriteLine($"created js callback {this.Id}");
+    }
+
+    public long Id { get; }
+
     protected bool Disposed { get; private set; }
 
     public void Dispose()
     {
+        Console.WriteLine($"disposing js callback {this.Id}");
+
         this.Dispose(true);
-        Disposed = true;
+        this.Disposed = true;
+
+        Console.WriteLine($"disposed js callback {this.Id}");
 
         GC.SuppressFinalize(this);
     }
@@ -20,7 +34,7 @@ internal abstract class ApiObjectJsCallback : IDisposable
     }
 }
 
-internal abstract class ApiObjectJsCallback<T> : ApiObjectJsCallback
+internal abstract class ApiObjectJsCallback<T> : JsCallback
     where T : ApiObjectJsCallback<T>
 {
     private readonly Action<Event> _onEvent;

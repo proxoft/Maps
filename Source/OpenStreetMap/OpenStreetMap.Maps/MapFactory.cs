@@ -41,7 +41,8 @@ public class MapFactory : IMapFactory
                     ? this.CreateMap(options, hostElement)
                     : Observable.Return<IMap>(NoMap.Instance);
             })
-            .Switch();
+            .Switch()
+            .Take(1);
     }
 
     private IObservable<IMap> CreateMap(MapOptions options, ElementReference hostElement)
