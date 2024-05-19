@@ -15,7 +15,7 @@ internal class ApiLoader : IAsyncDisposable
     {
         _netObjRef = DotNetObjectReference.Create(this);
         _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-           "import", "./_content/Proxoft.Maps.OpenStreetMap.Maps/apiLoader_0.1.0.js").AsTask());
+           "import", "./_content/Proxoft.Maps.OpenStreetMap.Maps/apiLoader_0.1.2.js").AsTask());
     }
 
     public async Task<LoadResponse> LoadMapScripts()
@@ -24,12 +24,18 @@ internal class ApiLoader : IAsyncDisposable
         {
             _taskCompletionSource = new TaskCompletionSource<LoadResponse>();
 
-            var v = await _moduleTask.Value;
+            IJSObjectReference v = await _moduleTask.Value;
             await v.InvokeVoidAsync("addOpenStreetMapScripts", new object[] { _netObjRef });
         }
+        else
+        {
+            Console.WriteLine("tcs is not null: skipping call");
+        }
 
-        var status = await _taskCompletionSource.Task;
-        return status;
+        LoadResponse response = await _taskCompletionSource.Task;
+        _taskCompletionSource = null;
+
+        return response;
     }
 
     [JSInvokable]
@@ -45,6 +51,12 @@ internal class ApiLoader : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        if (_taskCompletionSource is not null)
+        {
+            _taskCompletionSource.SetCanceled();
+            _taskCompletionSource = null;
+        }
+
         if (_moduleTask.IsValueCreated)
         {
             var module = await _moduleTask.Value;

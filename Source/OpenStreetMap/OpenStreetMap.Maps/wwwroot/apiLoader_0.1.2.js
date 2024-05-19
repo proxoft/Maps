@@ -1,6 +1,6 @@
 ﻿let loadResult = "none";
 
-console.log("osm apiLoader_1.0.0.js loaded");
+console.log("osm apiLoader_0.1.2.js loaded");
 
 export function addOpenStreetMapScripts(netObjRef) {
     let myScript = null;
@@ -14,19 +14,25 @@ export function addOpenStreetMapScripts(netObjRef) {
     let link = document.createElement("link");
     link.rel = "stylesheet"
     link.href = "https://unpkg.com/leaflet@latest/dist/leaflet.css";
-    document.getElementsByTagName('head')[0].appendChild(link);
+    document.body.appendChild(link);
 
     myScript = document.createElement("script");
     let src = `https://unpkg.com/leaflet@latest/dist/leaflet.js`
     myScript.setAttribute("src", src);
-    // myScript.setAttribute("integrity", "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==")
-    // myScript.setAttribute("crossorigin", " ");
     myScript.setAttribute("id", "proxoftOpenStreetMap");
 
     document.body.appendChild(myScript);
 
     myScript.addEventListener("load", scriptLoaded, false);
     myScript.addEventListener("error", scriptLoadFailed, false);
+
+    function scriptLoaded() {
+        notifyScriptLoadResult("Loaded");
+    }
+
+    function scriptLoadFailed() {
+        notifyScriptLoadResult("Failed");
+    }
 
     function notifyScriptLoadResult(result) {
 
@@ -38,13 +44,5 @@ export function addOpenStreetMapScripts(netObjRef) {
         loadResult = result;
 
         netObjRef.invokeMethodAsync("NotifyLoadScriptStatus", loadResult);
-    }
-
-    function scriptLoaded() {
-        notifyScriptLoadResult("Loaded");
-    }
-
-    function scriptLoadFailed() {
-        notifyScriptLoadResult("Failed");
     }
 }
