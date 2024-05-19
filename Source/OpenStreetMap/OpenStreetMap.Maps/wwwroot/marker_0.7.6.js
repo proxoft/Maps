@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.7.0.js';
+﻿import { findMapWrapper } from './maps_0.7.6.js';
 
-console.log("osm marker_0.7.0.js loaded");
+console.log("osm marker_0.7.6.js loaded");
 
 var markerWrappers = [];
 
