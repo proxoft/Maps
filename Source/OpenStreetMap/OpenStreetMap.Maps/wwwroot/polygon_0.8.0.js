@@ -1,12 +1,17 @@
-﻿import { findMapWrapper } from './maps_0.7.6.js';
+﻿import { findMapWrapper } from './maps_0.8.0.js';
 
-console.log("osm polygon_0.7.6.js loaded");
+console.log("osm polygon_0.8.0.js loaded");
 
 var polygonWrappers = [];
 
 // --exports----------------------------------
 export function AddPolygon(polygonId, options, mapId, netRef) {
+    if (options.traceJs) {
+        console.log(`addPolygon >> polygonId ${ polygonId }, options: ${ JSON.stringify(options) }, mapId ${ mapId }`)
+    }
+
     let mapWrapper = findMapWrapper(mapId);
+
     let outerCoords = options.latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
     let holesCoords = options.latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
 
@@ -18,21 +23,21 @@ export function AddPolygon(polygonId, options, mapId, netRef) {
     let polygonWrapper = createPolygonWrapper(polygonId, polygon, mapWrapper.map, netRef, options.traceJs);
     polygonWrappers.push(polygonWrapper);
 
-    polygonWrapper.log(`Added to the map ${mapId}`);
+    polygonWrapper.log(`addPolygon >>>> Added to the map ${mapId}`);
 }
 
 export function RemovePolygon(polygonId) {
     let i = findPolygonWrapperIndex(polygonId);
     let wrapper = polygonWrappers.splice(i, 1);
-    wrapper[0].log("removing from map");
-    wrapper[0].ref.disconnect();
+    wrapper[0].log("removePolygon >>");
+    wrapper[0].disconnect();
     wrapper[0].polygon.remove();
-    wrapper[0].log("removed from map");
+    wrapper[0].log("removePolygon >>>> removed from map");
 }
 
 export function SetLatLngs(polygonId, latLngs) {
     let polygonWrapper = findPolygonWrapper(polygonId);
-    polygonWrapper.log(`SetLatLngs ${latLngs}`);
+    polygonWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(latLngs)}`);
 
     let outerCoords = options.latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
     let holesCoords = options.latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
@@ -43,7 +48,7 @@ export function SetLatLngs(polygonId, latLngs) {
 
 export function GetLatLngs(polygonId) {
     let polygonWrapper = findPolygonWrapper(polygonId);
-    polygonWrapper.log("GetLatLngs");
+    polygonWrapper.log("getLatLngs >>");
 
     let latLngs = polygonWrapper.polygon.getLatLngs();
 
@@ -71,7 +76,7 @@ export function GetLatLngs(polygonId) {
 
 export function GetBounds(polygonId) {
     let polygonWrapper = findPolygonWrapper(polygonId);
-    polygonWrapper.log("getBounds");
+    polygonWrapper.log("getBounds >>");
 
     let bounds = polygonWrapper.polygon.getBounds();
 
@@ -89,8 +94,7 @@ export function GetBounds(polygonId) {
 
 export function SetStyle(polygonId, style) {
     let polygonWrapper = findPolygonWrapper(polygonId);
-    polygonWrapper.log("setStyle");
-    console.log(style);
+    polygonWrapper.log(`setStyle >> style ${JSON.stringify(style)}`);
 
     polygonWrapper.polygon.setStyle(style);
     polygonWrapper.polygon.redraw();
