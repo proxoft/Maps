@@ -1,8 +1,6 @@
 ﻿@page "/MapMethods"
-@implements IDisposable
 
-@using System.Reactive.Linq;
-@using Proxoft.Maps.Core.Api
+
 
 <div style="width: 100%; height: 500px;" @ref="MapHost">
 </div>
@@ -33,8 +31,14 @@
         <div>
             <button @onclick="GetBoundsClick">Get Bounds</button>
             <span>Bounds:</span>
-            <span>ne: @this.Bounds.NorthEast().Latitude @this.Bounds.NorthEast().Longitude</span>
-            <span>sw: @this.Bounds.SouthWest().Latitude @this.Bounds.SouthWest().Longitude</span>
+            <span>ne: @this.Bounds.NorthEast.Latitude @this.Bounds.NorthEast.Longitude</span>
+            <span>sw: @this.Bounds.SouthWest.Latitude @this.Bounds.SouthWest.Longitude</span>
+        </div>
+        <div>
+            <button @onclick="FitToBoundsClick">Fit Bounds</button>
+            <span>Fit to bounds:</span>
+            <span>Lat:</span><input @bind-value="FitToBoundsLat" />
+            <span>Lng:</span><input @bind-value="FitToBoundsLng" />
         </div>
     </div>
 
@@ -45,85 +49,3 @@
         }
     </div>
 </div>
-
-
-
-@code {
-    private IMap _map = NoMap.Instance;
-
-    [Inject]
-    public IMapFactory MapFactory { get; set; } = null!;
-
-    ElementReference MapHost { get; set; }
-
-    private List<string> MapLog { get; set; } = new();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            LatLng center = new()
-            {
-                Latitude = -34.397m,
-                Longitude = 150.644m
-            };
-
-            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7, TraceJs = true }, this.MapHost);
-            _map.OnEvent
-                .Where(e => !(e is MouseMoveEvent))
-                .Subscribe(e => this.AddLog(e.Name));
-
-        }
-    }
-
-    private decimal PanLat { get; set; } = 48.15m;
-    private decimal PanLng { get; set; } = 17.6m;
-
-    private decimal CenterLat { get; set; } = 48.15m;
-    private decimal CenterLng { get; set; } = 17.6m;
-
-    private int Zoom { get; set; } = 7;
-
-    private LatLngBounds Bounds { get; set; } = LatLngBounds.Empty;
-    private LatLng Center { get; set; } = LatLng.None;
-
-    private void SetCenterClick()
-    {
-        _map.SetCenter(new LatLng { Latitude = CenterLat, Longitude = CenterLng });
-    }
-
-    private void GetCenterClick()
-    {
-        System.Console.WriteLine("getting center");
-        this.Center = _map.GetCenter();
-        this.StateHasChanged();
-    }
-
-    private void PanToClick()
-    {
-        _map.PanTo(new LatLng { Latitude = PanLat, Longitude = PanLng });
-    }
-
-    private void ZoomToClick()
-    {
-        _map.ZoomTo(new ZoomLevel(this.Zoom)); 
-    }
-
-    private void GetBoundsClick()
-    {
-        this.Bounds = _map.GetBounds();
-        this.StateHasChanged();
-    }
-
-    private void AddLog(string logMessage)
-    {
-        this.MapLog.Add(logMessage);
-        this.StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        _map.Dispose();
-    }
-}

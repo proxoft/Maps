@@ -1,9 +1,13 @@
 ﻿var mapWrappers = [];
 
-console.log("osm maps_0.7.6.js loaded");
+console.log("osm maps_0.8.0.js loaded");
 
 //--Maps-----------------------------------------
 export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
+    if (options.traceJs) {
+        console.log(`InitializeMapOnElement >> mapId ${mapId}, options ${JSON.stringify(options)}`)
+    }
+
     let wrapper = findMapWrapper(mapId);
     if (wrapper !== null) {
         wrapper.ref = netObjRef;
@@ -11,7 +15,6 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
     }
 
     let map = createMapOnElement(options, hostElement);
-
     wrapper = createMapWrapper(mapId, map, netRef, options.traceJs);
     wrapper.log("initialized");
 
@@ -19,9 +22,14 @@ export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
 }
 
 export function Remove(mapId) {
-    console.log(`remove map: ${mapId}`);
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
+    if (i < 0)
+    {
+        console.log(`no map found for mapId ${mapId}`);
+    }
+
     let wrapper = mapWrappers.splice(i, 1);
+    wrapper[0].log("remove >>");
     wrapper[0].disconnect();
     wrapper[0].map.remove();
     wrapper[0].log("removed");
@@ -29,33 +37,38 @@ export function Remove(mapId) {
 
 export function PanTo(mapId, center) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log(`panTo ${center.latitude} ${center.longitude}`);
+    wrapper.log(`panTo >> center ${JSON.stringify(center)}`);
+
     wrapper.map.panTo([center.latitude, center.longitude]);
 }
 
 export function ZoomTo(mapId, zoom) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log(`zoomTo ${zoom}`);
+    wrapper.log(`zoomTo >> zoom ${zoom}`);
+
     wrapper.map.setZoom(zoom);
 }
 
 export function SetCenter(mapId, center) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log(`set center ${center.latitude} ${center.longitude}`);
+    wrapper.log(`setCenter >> center ${JSON.stringify(center)}`);
+
     wrapper.map.setView([center.latitude, center.longitude]);
 }
 
 export function GetCenter(mapId) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log("getCenter >>");
+
     let center = wrapper.map.getCenter();
-    wrapper.log(`get center ${center.lat} ${center.lng}`);
+    wrapper.log(`getCenter >>>> ${JSON.stringify(center)}`);
     return { latitude: center.lat, longitude: center.lng };
-;
 }
 
 export function FitBounds(mapId, bounds, padding, zoom) {
     let wrapper = findMapWrapper(mapId);
-    wrapper.log(`fitBounds SW: ${bounds.southWest.latitude} ${bounds.southWest.longitude} NE: ${bounds.northEast.latitude} ${bounds.northEast.longitude}`);
+    wrapper.log(`fitBounds >> bounds: ${JSON.stringify(bounds)}, padding: ${JSON.stringify(padding)}, zoom: ${zoom}`);
+
     wrapper.map.fitBounds(
         [
             [bounds.southWest.latitude, bounds.southWest.longitude],
@@ -70,8 +83,10 @@ export function FitBounds(mapId, bounds, padding, zoom) {
 
 export function GetBounds(mapId) {
     let wrapper = findMapWrapper(mapId);
+    wrapper.log("getBounds >>");
+
     let bounds = wrapper.map.getBounds();
-    wrapper.log(`getBounds sw: ${bounds.getSouth()} ${bounds.getWest()}, ne: ${bounds.getNorth()} ${bounds.getEast()}`);
+    wrapper.log(`getBounds >>>> ${JSON.stringify(bounds)}`);
 
     return [
         {

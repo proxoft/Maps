@@ -15,9 +15,9 @@ public record LatLngBounds
 
     public decimal South { get; init; }
 
-    public LatLng SouthWest() => new() {  Latitude = this.South, Longitude = this.West };
+    public LatLng SouthWest => new() {  Latitude = this.South, Longitude = this.West };
 
-    public LatLng NorthEast() => new() { Latitude = this.North, Longitude = this.East };
+    public LatLng NorthEast => new() { Latitude = this.North, Longitude = this.East };
 
     public static LatLngBounds FromPosition(LatLng position)
         => new()

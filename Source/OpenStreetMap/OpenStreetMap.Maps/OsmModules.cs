@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Microsoft.JSInterop;
-using Proxoft.Maps.Core.Api.Maps;
-using Proxoft.Maps.Core.Api.Shapes;
-using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.OpenStreetMap.Maps.Infrastructure;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps;
@@ -41,7 +36,7 @@ internal class OsmModules
             _initialized = true;
 
             string v = GetJsVersion();
-            Console.WriteLine($"Loaging scripts version: {v}");
+            Console.WriteLine($"Loading scripts version: {v}");
 
             var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",

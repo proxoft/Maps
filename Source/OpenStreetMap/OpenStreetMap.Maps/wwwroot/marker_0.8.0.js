@@ -1,13 +1,19 @@
-﻿import { findMapWrapper } from './maps_0.7.6.js';
+﻿import { findMapWrapper } from './maps_0.8.0.js';
 
-console.log("osm marker_0.7.6.js loaded");
+console.log("osm marker_0.8.0.js loaded");
 
 var markerWrappers = [];
 
 //--Markers--------------------------------------
 
 export function AddMarker(markerId, options, iconOptions, mapId, netRef) {
+    if (options.traceJs) {
+        console.log(`addMarker >> markerId ${markerId}, options: ${JSON.stringify(options)}, iconOptions: ${JSON.stringify(iconOptions)}, mapId ${mapId}`)
+    }
+
     let mapWrapper = findMapWrapper(mapId);
+    mapWrapper.log(`addMarker >> options: ${JSON.stringify(options)}, iconOptions: ${JSON.stringify(iconOptions)}, mapId ${mapId}`);
+
     let marker = L.marker([options.position.latitude, options.position.longitude], {
         draggable: options.draggable,
         opacity: options.opacity.value,
@@ -20,46 +26,49 @@ export function AddMarker(markerId, options, iconOptions, mapId, netRef) {
     let markerWrapper = createMarkerWrapper(markerId, marker, mapWrapper.map, netRef, options.traceJs);
     markerWrappers.push(markerWrapper);
 
-    markerWrapper.log(`Added to the map ${mapId}`);
+    markerWrapper.log(`addMarker >>>> Added to the map ${mapId}`);
 }
 
 export function RemoveMarker(markerId) {
     let i = findMarkerWrapperIndex(markerId);
     let wrapper = markerWrappers.splice(i, 1);
-    wrapper[0].log("removing from map");
+    wrapper[0].log(`removeMarker >>`);
     wrapper[0].disconnect();
     wrapper[0].marker.remove();
-    wrapper[0].log("removed from map");
+    wrapper[0].log(`removeMarker >>>> removed`);
 }
 
 export function SetMarkerDraggable(markerId, draggable) {
     let wrapper = findMarkerWrapper(markerId);
+    wrapper.log(`setMarkerDraggable >> draggable ${draggable}`);
+
     if (draggable) {
-        wrapper.log("set dragging enabled");
         wrapper.marker.dragging.enable();
     } else {
-        wrapper.log("set dragging disabled");
         wrapper.marker.dragging.disable();
     }
 }
 
 export function SetMarkerPosition(markerId, position) {
     let wrapper = findMarkerWrapper(markerId);
-    wrapper.log(`setting position ${position.latitude} : ${position.longitude}`);
+    wrapper.log(`setMarkerPosition >> position ${JSON.stringify(position)}`);
+
     wrapper.settingLatLng = true;
     wrapper.marker.setLatLng([position.latitude, position.longitude]);
+    wrapper.settingLatLng = false;
 }
 
 export function SetMarkerOpacity(markerId, opacity) {
     let wrapper = findMarkerWrapper(markerId);
-    wrapper.log(`setting opacity ${opacity}`);
+    wrapper.log(`setMarkerOpacity >> opacity ${opacity}`);
+
     wrapper.marker.setOpacity(opacity);
 }
 
 export function SetMarkerIcon(markerId, iconOptions) {
     let wrapper = findMarkerWrapper(markerId);
-    wrapper.log("changing icon");
-    wrapper.log(iconOptions);
+    wrapper.log(`setMarkerIcon >> iconOptions ${JSON.stringify(iconOptions)}`);
+
     setIcon(wrapper.marker, iconOptions);
 }
 
