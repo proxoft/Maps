@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
-using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
+using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Core.Api;
 
@@ -25,6 +26,9 @@ public sealed class NoMap : IMap
 
     public IPolygon AddPolygon(PolygonOptions options)
         => NoPolygon.Instance;
+
+    public IPolyline AddPolyline(PolylineOptions options)
+        => NoPolyline.Instance;
 
     public void Dispose()
     {

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
-using Microsoft.JSInterop;
 
-namespace Proxoft.Maps.Core.Api.Shapes;
+namespace Proxoft.Maps.Core.Api.Shapes.Polygones;
 
 public sealed class NoPolygon : IPolygon
 {

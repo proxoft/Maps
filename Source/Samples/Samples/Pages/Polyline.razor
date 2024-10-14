@@ -1,0 +1,114 @@
+﻿@page "/Polyline"
+@implements IDisposable
+@using Proxoft.Maps.Core.Api.Shapes
+@using Proxoft.Maps.Core.Api.Shapes.Polylines
+
+<h3>Polyline</h3>
+
+<div>
+    <div class="map-container" @ref="MapHost">
+    </div>
+</div>
+
+<div>
+</div>
+
+<br />
+
+<div>
+</div>
+
+
+@code {
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IPolyline _pol1 = NoPolyline.Instance;
+    private IPolyline _pol2 = NoPolyline.Instance;
+
+    [Inject]
+    public IMapFactory MapFactory { get; set; } = null!;
+
+    private List<string> MapLog { get; set; } = new();
+
+    private ElementReference MapHost { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Do(map =>
+            {
+                _map = map;
+                this.CreatePolylines();
+            })
+            .Subscribe(
+                _  => { },
+                ex => Console.WriteLine(ex.Message)
+            );
+    }
+
+    private void CreatePolylines()
+    {
+        PolylineOptions options = PolylineOptions.SingleLine(
+            new[]
+            {
+                new LatLng { Latitude = 51.51m, Longitude = -0.10m },
+                new LatLng { Latitude = 51.51m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.06m }
+            },
+            style: new Style()
+            {
+                Fill = false
+            },
+            traceJs: true
+        );
+
+        _pol1 = _map.AddPolyline(options);
+
+        options = PolylineOptions.MultiLine(
+            new[]
+            {
+                new[] {
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+                },
+                new[]
+                {
+                    new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+                    new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+                    new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+                }
+            },
+            style: new Style()
+                {
+                    Fill = false,
+                    FillColor = "red",
+                    Color = "red"
+                },
+            traceJs: true
+        );
+
+        _pol2 = _map.AddPolyline(options);
+    }
+
+    public void Dispose()
+    {
+        _pol1.Dispose();
+        _pol2.Dispose();
+        _map.Dispose();
+    }
+}

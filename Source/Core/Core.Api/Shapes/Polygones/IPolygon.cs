@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Proxoft.Maps.Core.Api.Shapes;
+﻿namespace Proxoft.Maps.Core.Api.Shapes.Polygones;
 
 public interface IPolygon : IApiObject
 {

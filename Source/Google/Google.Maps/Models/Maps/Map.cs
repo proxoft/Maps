@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
-using Proxoft.Maps.Core;
-using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
+using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Google.Maps.Models.Maps;
 
-internal class GoogleMap: IMap
+internal class GoogleMap : IMap
 {
     private readonly string _elementId;
     private readonly IJSInProcessObjectReference _jsRuntime;
@@ -105,6 +105,11 @@ internal class GoogleMap: IMap
     }
 
     public void Remove()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IPolyline AddPolyline(PolylineOptions options)
     {
         throw new NotImplementedException();
     }

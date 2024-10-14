@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Proxoft.Maps.Core.Api.Shapes;
+﻿namespace Proxoft.Maps.Core.Api.Shapes.Polygones;
 
 public record PolygonOptions
 {

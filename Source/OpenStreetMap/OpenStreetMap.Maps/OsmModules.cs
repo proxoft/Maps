@@ -9,18 +9,20 @@ namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 internal class OsmModules
 {
-    private static ValueOrWait<OsmModules> _modules = new(null!);
+    private static readonly ValueOrWait<OsmModules> _modules = new(null!);
     private static bool _initialized;
 
     private OsmModules(
         IJSInProcessObjectReference map,
         IJSInProcessObjectReference marker,
-        IJSInProcessObjectReference polygon
+        IJSInProcessObjectReference polygon,
+        IJSInProcessObjectReference polyline
         )
     {
         this.Map = map;
         this.Marker = marker;
         this.Polygon = polygon;
+        this.Polyline = polyline;
     }
 
     public IJSInProcessObjectReference Map { get; }
@@ -28,6 +30,8 @@ internal class OsmModules
     public IJSInProcessObjectReference Marker { get; }
 
     public IJSInProcessObjectReference Polygon { get; }
+
+    public IJSInProcessObjectReference Polyline { get; }
 
     public static IObservable<OsmModules> Load(IJSRuntime jsRuntime)
     {
@@ -53,12 +57,17 @@ internal class OsmModules
                     $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
                 .AsTask();
 
-            Task.WhenAll(mapS, markerS, polygonsS)
+            var polylinesS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                    "import",
+                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polyline_{v}.js")
+                .AsTask();
+
+            Task.WhenAll(mapS, markerS, polygonsS, polylinesS)
                 .ToObservable()
                 .Take(1)
-                .Subscribe(tripple =>
+                .Subscribe(modules =>
                 {
-                    OsmModules osm = new(tripple[0], tripple[1], tripple[2]);
+                    OsmModules osm = new(modules[0], modules[1], modules[2], modules[3]);
                     _modules.SetValue(osm);
                 });
         }
