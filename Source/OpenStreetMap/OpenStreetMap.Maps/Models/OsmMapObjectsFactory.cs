@@ -10,6 +10,7 @@ using Proxoft.Maps.OpenStreetMap.Maps.Models.Shapes;
 using Proxoft.Extensions.Options;
 using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Api.Factories;
+using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models;
 
@@ -41,5 +42,10 @@ internal class OsmMapObjectsFactory : IMapObjectsFactory
     public Polygon CreatePolygon(Action<string> onRemove)
     {
         return new OsmPolygon(_idFactory.NextPolygonId(), onRemove, _osmModules.Polygon);
+    }
+
+    public Polyline CreatePolyline(Action<string> onRemove)
+    {
+        return new OsmPolyline(_idFactory.NextPolylineId(), onRemove, _osmModules.Polyline);
     }
 }

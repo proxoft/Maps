@@ -8,7 +8,7 @@ namespace Proxoft.Maps.Core.Api;
 public abstract class ApiObject : IApiObject
 {
     private readonly Subject<Event> _events = new();
-    private Action<string> _onRemove;
+    private readonly Action<string> _onRemove;
     private bool _isRemoved;
     private bool _disposed;
 

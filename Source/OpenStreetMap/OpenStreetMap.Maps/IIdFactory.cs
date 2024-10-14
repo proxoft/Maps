@@ -7,4 +7,6 @@ public interface IIdFactory
     string NextMarkerId();
 
     string NextPolygonId();
+
+    string NextPolylineId();
 }

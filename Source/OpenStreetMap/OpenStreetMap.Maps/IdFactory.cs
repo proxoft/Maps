@@ -1,7 +1,4 @@
-﻿using System.IO.Pipes;
-using Proxoft.Maps.OpenStreetMap;
-
-namespace Proxoft.Maps.OpenStreetMap.Maps;
+﻿namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 public class IdFactory : IIdFactory
 {
@@ -19,7 +16,12 @@ public class IdFactory : IIdFactory
 
     public string NextPolygonId()
     {
-        return this.NextId("pol");
+        return this.NextId("plg");
+    }
+
+    public string NextPolylineId()
+    {
+        return this.NextId("pll");
     }
 
     private string NextId(string prefix, string separator = "-")
