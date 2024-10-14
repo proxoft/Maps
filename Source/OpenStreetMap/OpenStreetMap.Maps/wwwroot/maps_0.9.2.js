@@ -1,6 +1,6 @@
 ﻿var mapWrappers = [];
 
-console.log("osm maps_0.9.1.js loaded");
+console.log("osm maps_0.9.2.js loaded");
 
 //--Maps-----------------------------------------
 export function InitializeMapOnElement(mapId, options, hostElement, netRef) {
