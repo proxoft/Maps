@@ -28,20 +28,20 @@ export function RemovePolyline(polylineId) {
     let wrapper = polylineWrappers.splice(i, 1);
     wrapper[0].log("removePolyline >>");
     wrapper[0].disconnect();
-    wrapper[0].polygon.remove();
+    wrapper[0].polyline.remove();
     wrapper[0].log("removePolyline >>>> removed from map");
 }
 
-export function SetLatLngs(polygonId, lines) {
-    let polylineWrapper = findPolylineWrapper(polygonId);
+export function SetLatLngs(polylineId, lines) {
+    let polylineWrapper = findPolylineWrapper(polylineId);
     polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(latLngs)}`);
 
     let latLngs = lines.map(line => line.map(ll => [ll.latitude, ll.longitude]));
-    polylineWrapper.polygon.setLatLngs(latLngs);
+    polylineWrapper.polyline.setLatLngs(latLngs);
 }
 
-export function GetLatLngs(polygonId) {
-    let polylineWrapper = findPolylineWrapper(polygonId);
+export function GetLatLngs(polylineId) {
+    let polylineWrapper = findPolylineWrapper(polylineId);
     polylineWrapper.log("getLatLngs >>");
 
     let latLngs = polylineWrapper.polyline.getLatLngs();
@@ -53,7 +53,7 @@ export function GetBounds(polylineId) {
     let polylineWrapper = findPolylineWrapper(polylineId);
     polylineWrapper.log("getBounds >>");
 
-    let bounds = polylineWrapper.polygon.getBounds();
+    let bounds = polylineWrapper.polyline.getBounds();
 
     return [
         {
@@ -71,8 +71,8 @@ export function SetStyle(polylineId, style) {
     let polylineWrapper = findPolylineWrapper(polylineId);
     polylineWrapper.log(`setStyle >> style ${JSON.stringify(style)}`);
 
-    polylineWrapper.polygon.setStyle(style);
-    polylineWrapper.polygon.redraw();
+    polylineWrapper.polyline.setStyle(style);
+    polylineWrapper.polyline.redraw();
 }
 
 // -- private
@@ -81,7 +81,7 @@ function createPolylineWrapper(polylineId, polyline, map, netRef, enableLogging)
     let wrapper = {
         polylineId: polylineId,
         parentMap: map,
-        polyline: polyline, // polygon instance
+        polyline: polyline, // polyline instance
         ref: netRef,      // net object reference
         refId: netRef._id,
 
@@ -150,21 +150,14 @@ function createPolylineWrapper(polylineId, polyline, map, netRef, enableLogging)
     return wrapper;
 }
 
-function findPolylineWrapper(polygonId) {
-    let i = findPolylineWrapperIndex(polygonId);
+function findPolylineWrapper(polylineId) {
+    let i = findPolylineWrapperIndex(polylineId);
     return i === -1
         ? null
         : polylineWrappers[i];
 }
 
-function findPolylineWrapperIndex(polygonId) {
-    let i = polylineWrappers.findIndex(me => me.polygonId === polygonId);
+function findPolylineWrapperIndex(polylineId) {
+    let i = polylineWrappers.findIndex(me => me.polylineId === polylineId);
     return i;
-}
-
-function latLngToObject(latlng) {
-    return {
-        latitude: latlng.lat,
-        longitude: latlng.lng
-    };
 }
