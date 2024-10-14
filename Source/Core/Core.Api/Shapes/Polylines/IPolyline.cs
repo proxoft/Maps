@@ -6,9 +6,9 @@ public interface IPolyline : IApiObject
 
     public PolylineLatLng GetLatLngs();
 
-    public void SetLatLng(LatLng[] latLngs);
+    public void SetLatLngs(LatLng[] latLngs);
 
-    public void SetLatLng(LatLng[][] latLngs);
+    public void SetLatLngs(LatLng[][] latLngs);
 
     public void SetStyle(Style style);
 }

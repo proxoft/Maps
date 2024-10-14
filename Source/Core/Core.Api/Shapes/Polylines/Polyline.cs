@@ -29,14 +29,14 @@ public class Polyline : ApiObject, IPolyline
         return latLngs;
     }
 
-    public void SetLatLng(LatLng[] latLngs)
+    public void SetLatLngs(LatLng[] latLngs)
     {
-        this.SetLatLng(new LatLng[][] { latLngs });
+        this.SetLatLngs(new LatLng[][] { latLngs });
     }
 
-    public void SetLatLng(LatLng[][] latLngs)
+    public void SetLatLngs(LatLng[][] latLngs)
     {
-        this.InvokeVoidJs("SetLatLng", latLngs);
+        this.InvokeVoidJs("SetLatLngs", latLngs);
     }
 
     public void SetStyle(Style style)
