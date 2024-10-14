@@ -16,7 +16,7 @@ namespace Proxoft.Maps.MapBox.Hosting.Builders
         private readonly ServiceLifetime _serviceLifetime;
 
         private readonly List<ServiceDescriptor> _serviceDescriptors = new();
-        private ServiceDescriptor _optionsDescriptor;
+        private ServiceDescriptor? _optionsDescriptor;
 
         internal MapBoxBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
         {
@@ -39,7 +39,7 @@ namespace Proxoft.Maps.MapBox.Hosting.Builders
         IMapBoxApiBuilder IMapBoxOptionsBuilder.Configure(IConfigurationSection configurationSection)
         {
             var accessToken = configurationSection["AccessToken"];
-            return ((IMapBoxOptionsBuilder)this).Configure(() => new MapBoxOptions { AccessToken = accessToken } );
+            return ((IMapBoxOptionsBuilder)this).Configure(() => new MapBoxOptions { AccessToken = accessToken ?? "" } );
         }
 
         IMapBoxApiBuilder IMapBoxOptionsBuilder.UseInstance(MapBoxOptions options)
@@ -56,7 +56,13 @@ namespace Proxoft.Maps.MapBox.Hosting.Builders
 
         void IMapBoxApiBuilder.Register()
         {
+            if (_optionsDescriptor is null)
+            {
+                throw new Exception("no options have been registered");
+            }
+
             _services.Add(_optionsDescriptor);
+
             foreach (var sd in _serviceDescriptors)
             {
                 _services.Add(sd);
