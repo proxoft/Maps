@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using System.Reflection;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
-using Proxoft.Maps.Core.Api.Shapes;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Maps;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Markers;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Shapes;
@@ -11,6 +10,7 @@ using Proxoft.Extensions.Options;
 using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models;
 

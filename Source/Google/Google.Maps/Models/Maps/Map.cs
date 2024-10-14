@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
-using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Google.Maps.Models.Maps;

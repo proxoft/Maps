@@ -1,5 +1,5 @@
 ﻿using System;
-using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Core.Api.Factories;

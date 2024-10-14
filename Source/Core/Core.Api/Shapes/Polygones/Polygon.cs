@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.JSInterop;
-using Proxoft.Maps.Core.Abstractions.Models;
 
-namespace Proxoft.Maps.Core.Api.Shapes;
+namespace Proxoft.Maps.Core.Api.Shapes.Polygones;
 
 public abstract class Polygon : ApiObject, IPolygon
 {
@@ -50,7 +49,7 @@ public abstract class Polygon : ApiObject, IPolygon
 
     protected override void Dispose(bool disposing)
     {
-        if(disposing)
+        if (disposing)
         {
             _jsCallback.Dispose();
         }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Factories;
-using Proxoft.Maps.Core.Api.Shapes;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Core.Api.Maps;
