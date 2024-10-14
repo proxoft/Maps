@@ -35,11 +35,11 @@ public sealed class NoPolyline : IPolyline
     {
     }
 
-    public void SetLatLng(LatLng[] latLngs)
+    public void SetLatLngs(LatLng[] latLngs)
     {
     }
 
-    public void SetLatLng(LatLng[][] latLngs)
+    public void SetLatLngs(LatLng[][] latLngs)
     {
     }
 
