@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Shapes.Polylines;
@@ -36,7 +37,13 @@ public class Polyline : ApiObject, IPolyline
 
     public void SetLatLngs(LatLng[][] latLngs)
     {
-        this.InvokeVoidJs("SetLatLngs", latLngs);
+        // wrapping object is necessary, otherwise 2 dimension array is not properly serialized
+        var options = new
+        {
+            Lines = latLngs
+        };
+
+        this.InvokeVoidJs("SetLatLngs", options);
     }
 
     public void SetStyle(Style style)

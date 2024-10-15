@@ -78,31 +78,58 @@
 
         _pol1 = _map.AddPolyline(options);
 
-        options = PolylineOptions.MultiLine(
-            new[]
-            {
-                new[] {
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
-                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
-                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
-                },
-                new[]
-                {
-                    new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
-                    new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
-                    new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
-                }
-            },
+        options = PolylineOptions.SingleLine(
+            Array.Empty<LatLng>(),
             style: new Style()
-                {
-                    Fill = false,
-                    FillColor = "red",
-                    Color = "red"
-                },
-            traceJs: true
-        );
+            {
+                Fill = false,
+                FillColor = "red",
+                Color = "red"
+            },
+            traceJs: true);
+
+        // options = PolylineOptions.MultiLine(
+        //     new[]
+        //     {
+        //         new[] {
+        //                 new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+        //                 new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+        //                 new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+        //         },
+        //         new[]
+        //         {
+        //             new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+        //             new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+        //             new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+        //         }
+        //     },
+        //     style: new Style()
+        //         {
+        //             Fill = false,
+        //             FillColor = "red",
+        //             Color = "red"
+        //         },
+        //     traceJs: true
+        // );
 
         _pol2 = _map.AddPolyline(options);
+        LatLng[][] latLngs = new[]
+        {
+            new[]
+            {
+                    new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+                    new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+                    new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+            },
+            new[]
+            {
+                new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+                new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+                new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+            }
+        };
+
+        _pol2.SetLatLngs(latLngs);
     }
 
     public void Dispose()

@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.9.2.js';
+﻿import { findMapWrapper } from './maps_0.9.4.js';
 
-console.log("osm polygon_0.9.1.js loaded");
+console.log("osm polygon_0.9.4.js loaded");
 
 var polygonWrappers = [];
 

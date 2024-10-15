@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.9.2.js';
+﻿import { findMapWrapper } from './maps_0.9.4.js';
 
-console.log("osm polyline_0.9.2.js loaded");
+console.log("osm polyline_0.9.4.js loaded");
 
 var polylineWrappers = [];
 
@@ -32,11 +32,15 @@ export function RemovePolyline(polylineId) {
     wrapper[0].log("removePolyline >>>> removed from map");
 }
 
-export function SetLatLngs(polylineId, lines) {
+export function SetLatLngs(polylineId, options) {
     let polylineWrapper = findPolylineWrapper(polylineId);
-    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(latLngs)}`);
+    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options.lines)}`);
 
-    let latLngs = lines.map(line => line.map(ll => [ll.latitude, ll.longitude]));
+    let latLngs = options.lines
+        .map(line => {
+            return line.map(ll => [ll.latitude, ll.longitude]);
+        });
+
     polylineWrapper.polyline.setLatLngs(latLngs);
 }
 
