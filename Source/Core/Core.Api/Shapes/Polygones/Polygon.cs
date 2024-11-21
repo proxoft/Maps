@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Shapes.Polygones;
 
-public abstract class Polygon : ApiObject, IPolygon
+public abstract class Polygon : Shape, IPolygon
 {
     private readonly PolygonJsCallback _jsCallback;
 
@@ -30,11 +30,6 @@ public abstract class Polygon : ApiObject, IPolygon
     public void SetLatLng(PolygonLatLng latLngs)
     {
         this.InvokeVoidJs("SetLatLng", latLngs);
-    }
-
-    public void SetStyle(Style style)
-    {
-        this.InvokeVoidJs("SetStyle", style);
     }
 
     public void AddToMap(string mapId, PolygonOptions options)

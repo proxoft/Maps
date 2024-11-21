@@ -17,10 +17,6 @@ public sealed class NoPolyline : IPolyline
 
     public IObservable<Event> OnEvent => Observable.Never<Event>();
 
-    public void Dispose()
-    {
-    }
-
     public LatLngBounds GetBounds()
     {
         return LatLngBounds.Empty;
@@ -44,6 +40,17 @@ public sealed class NoPolyline : IPolyline
     }
 
     public void SetStyle(Style style)
+    {
+    }
+    public void AddClass(params string[] classes)
+    {
+    }
+
+    public void RemoveClass(params string[] classes)
+    {
+    }
+
+    public void Dispose()
     {
     }
 }

@@ -11,6 +11,7 @@
 </div>
 
 <div>
+    <button @onclick=this.ChangeCssClassOfPolyline2>Toggle class name</button>
 </div>
 
 <br />
@@ -23,6 +24,7 @@
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
     private IPolyline _pol1 = NoPolyline.Instance;
     private IPolyline _pol2 = NoPolyline.Instance;
+    private bool _polylineCssToggle;
 
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
@@ -96,13 +98,26 @@
             style: new Style()
                 {
                     Fill = false,
-                    FillColor = "red",
-                    Color = "red"
+                    Color = "red",
+                    ClassName = "polyline-red-stroke"
                 },
             traceJs: true
         );
 
         _pol2 = _map.AddPolyline(options);
+    }
+
+    private void ChangeCssClassOfPolyline2()
+    {
+        string toRemove = _polylineCssToggle ? "polyline-yellow-stroke" : "polyline-red-stroke";
+        string toAdd = _polylineCssToggle ? "polyline-red-stroke" : "polyline-yellow-stroke";
+
+        _pol2.RemoveClass(toRemove);
+        _pol2.RemoveClass(toRemove);
+        _pol2.AddClass(toAdd);
+        _pol2.AddClass(toAdd);
+
+        _polylineCssToggle = !_polylineCssToggle;
     }
 
     public void Dispose()

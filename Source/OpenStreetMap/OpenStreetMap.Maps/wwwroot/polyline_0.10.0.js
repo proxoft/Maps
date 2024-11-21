@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.9.0.js';
+﻿import { findMapWrapper } from './maps_0.10.0.js';
 
-console.log("osm polyline_0.9.0.js loaded");
+console.log("osm polyline_0.10.0.js loaded");
 
 var polylineWrappers = [];
 
@@ -32,11 +32,15 @@ export function RemovePolyline(polylineId) {
     wrapper[0].log("removePolyline >>>> removed from map");
 }
 
-export function SetLatLngs(polylineId, lines) {
+export function SetLatLngs(polylineId, options) {
     let polylineWrapper = findPolylineWrapper(polylineId);
-    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(latLngs)}`);
+    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options.lines)}`);
 
-    let latLngs = lines.map(line => line.map(ll => [ll.latitude, ll.longitude]));
+    let latLngs = options.lines
+        .map(line => {
+            return line.map(ll => [ll.latitude, ll.longitude]);
+        });
+
     polylineWrapper.polyline.setLatLngs(latLngs);
 }
 
@@ -73,6 +77,36 @@ export function SetStyle(polylineId, style) {
 
     polylineWrapper.polyline.setStyle(style);
     polylineWrapper.polyline.redraw();
+}
+
+export function AddClass(polylineId, classNames) {
+    let polylineWrapper = findPolylineWrapper(polylineId);
+    polylineWrapper.log(`addClass >> className ${JSON.stringify(classNames)}`);
+
+    let element = polylineWrapper.polyline._path;
+    let classes = classNames
+        .split(" ")
+        .filter(s => s.trim().length > 0);
+
+    for (var i = 0; i < classes.length; i++) {
+        let cs = classes[i];
+        element.classList.add(cs);
+    }
+}
+
+export function RemoveClass(polylineId, classNames) {
+    let polylineWrapper = findPolylineWrapper(polylineId);
+    polylineWrapper.log(`removeClass >> className ${JSON.stringify(classNames)}`);
+
+    let element = polylineWrapper.polyline._path;
+    let classes = classNames
+        .split(" ")
+        .filter(s => s.trim().length > 0);
+
+    for (var i = 0; i < classes.length; i++) {
+        let cs = classes[i];
+        element.classList.remove(cs);
+    }
 }
 
 // -- private
