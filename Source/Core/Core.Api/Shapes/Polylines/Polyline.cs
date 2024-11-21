@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api.Shapes.Polylines;
 
-public class Polyline : ApiObject, IPolyline
+public abstract class Polyline : Shape, IPolyline
 {
     private readonly PolylineJsCallback _jsCallback;
 
@@ -39,10 +39,20 @@ public class Polyline : ApiObject, IPolyline
         this.InvokeVoidJs("SetLatLng", latLngs);
     }
 
-    public void SetStyle(Style style)
-    {
-        this.InvokeVoidJs("SetStyle", style);
-    }
+    //public void SetStyle(Style style)
+    //{
+    //    this.InvokeVoidJs("SetStyle", style);
+    //}
+
+    //public void AddClass(params string[] classes)
+    //{
+    //    this.InvokeVoidJs("AddClass", string.Join(" ", classes));
+    //}
+
+    //public void RemoveClass(params string[] classes)
+    //{
+    //    this.InvokeVoidJs("RemoveClass", string.Join(" ", classes));
+    //}
 
     protected override void ExecuteRemove()
     {

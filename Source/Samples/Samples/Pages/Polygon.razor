@@ -16,6 +16,7 @@
     <button @onclick=@(() => this.RemovePolygon(_polygon))>Remove polygon 1</button>
     <button @onclick=@(() => this.RemovePolygon(_polygon2))>Remove polygon 2</button>
     <button @onclick=@(() => this.ChangeColor())>Change color of polygon 2</button>
+    <button @onclick=this.ChangeCssClassOfPolygon2>Toggle class name</button>
 </div>
 
 <br/>
@@ -37,6 +38,7 @@
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
     private IPolygon _polygon = NoPolygon.Instance;
     private IPolygon _polygon2 = NoPolygon.Instance;
+    private bool _polygon1ClassToggle;
 
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
@@ -98,6 +100,17 @@
         _polygon2.SetStyle(style);
     }
 
+    private void ChangeCssClassOfPolygon2()
+    {
+        string toRemove = _polygon1ClassToggle ? "polygon-yellow-stroke polygon-dark" : "polygon-red-stroke polygon-light";
+        string toAdd = _polygon1ClassToggle ? "polygon-red-stroke polygon-light" : "polygon-yellow-stroke polygon-dark";
+
+        _polygon2.RemoveClass(toRemove);
+        _polygon2.AddClass(toAdd);
+
+        _polygon1ClassToggle = !_polygon1ClassToggle;
+    }
+
     private void ClearLogClick()
     {
         this.MapLog.Clear();
@@ -128,7 +141,7 @@
                         new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
                         new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
                         new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
-    },
+                    },
                     Holes = new LatLng[][]
                     {
                         new[]
@@ -164,7 +177,7 @@
                 },
                 Style = new()
                 {
-                    ClassName = "custom-polygon"
+                    ClassName = "polygon-red-stroke polygon-light"
                 },
                 TraceJs = true
             };

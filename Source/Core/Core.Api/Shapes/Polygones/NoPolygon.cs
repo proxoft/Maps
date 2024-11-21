@@ -18,6 +18,10 @@ public sealed class NoPolygon : IPolygon
 
     public bool IsRemoved => false;
 
+    public void AddClass(params string[] classes)
+    {
+    }
+
     public void Dispose()
     {
     }
@@ -33,6 +37,10 @@ public sealed class NoPolygon : IPolygon
     }
 
     public void Remove()
+    {
+    }
+
+    public void RemoveClass(params string[] classes)
     {
     }
 

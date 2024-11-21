@@ -1,6 +1,18 @@
-﻿.custom-polygon {
+﻿.polygon-red-stroke {
     stroke: red;
     stroke-width: 1;
-    /*fill: aqua;*/
+}
+
+.polygon-light {
     fill-opacity: 0.4;
+}
+
+.polygon-yellow-stroke {
+    stroke: yellow;
+    stroke-width: 2;
+}
+
+.polygon-dark {
+    /*fill: aqua;*/
+    fill-opacity: 0.6;
 }
