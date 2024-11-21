@@ -10,7 +10,6 @@ internal abstract class JsCallback : IDisposable
     protected JsCallback()
     {
         this.Id = ++_id;
-        Console.WriteLine($"created js callback {this.Id}");
     }
 
     public long Id { get; }
@@ -19,12 +18,8 @@ internal abstract class JsCallback : IDisposable
 
     public void Dispose()
     {
-        Console.WriteLine($"disposing js callback {this.Id}");
-
         this.Dispose(true);
         this.Disposed = true;
-
-        Console.WriteLine($"disposed js callback {this.Id}");
 
         GC.SuppressFinalize(this);
     }

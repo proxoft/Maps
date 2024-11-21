@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.9.0.js';
+﻿import { findMapWrapper } from './maps_0.10.0.js';
 
-console.log("osm polygon_0.9.0.js loaded");
+console.log("osm polygon_0.10.0.js loaded");
 
 var polygonWrappers = [];
 
@@ -98,6 +98,36 @@ export function SetStyle(polygonId, style) {
 
     polygonWrapper.polygon.setStyle(style);
     polygonWrapper.polygon.redraw();
+}
+
+export function AddClass(polygonId, classNames) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log(`addClass >> className ${JSON.stringify(classNames)}`);
+
+    let element = polygonWrapper.polygon._path;
+    let classes = classNames
+        .split(" ")
+        .filter(s => s.trim().length > 0);
+
+    for (var i = 0; i < classes.length; i++) {
+        let cs = classes[i];
+        element.classList.add(cs);
+    }
+}
+
+export function RemoveClass(polygonId, classNames) {
+    let polygonWrapper = findPolygonWrapper(polygonId);
+    polygonWrapper.log(`removeClass >> className ${JSON.stringify(classNames)}`);
+
+    let element = polygonWrapper.polygon._path;
+    let classes = classNames
+        .split(" ")
+        .filter(s => s.trim().length > 0);
+
+    for (var i = 0; i < classes.length; i++) {
+        let cs = classes[i];
+        element.classList.remove(cs);
+    }
 }
 
 // -- private
