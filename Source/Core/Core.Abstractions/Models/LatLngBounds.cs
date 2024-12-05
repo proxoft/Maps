@@ -19,6 +19,14 @@ public record LatLngBounds
 
     public LatLng NorthEast => new() { Latitude = this.North, Longitude = this.East };
 
+    public bool Covers(LatLngBounds other)
+    {
+        return this.East >= other.East
+            && this.North >= other.North
+            && this.South <= other.South
+            && this.West <= other.West;
+    }
+
     public static LatLngBounds FromPosition(LatLng position)
         => new()
         {
@@ -34,8 +42,8 @@ public record LatLngBounds
         {
             East = Math.Max(corner1.Longitude, corner2.Longitude),
             West = Math.Min(corner1.Longitude, corner2.Longitude),
-            North = Math.Min(corner1.Latitude, corner2.Latitude),
-            South = Math.Max(corner1.Latitude, corner2.Latitude)
+            North = Math.Max(corner1.Latitude, corner2.Latitude),
+            South = Math.Min(corner1.Latitude, corner2.Latitude)
         };
     }
 }
