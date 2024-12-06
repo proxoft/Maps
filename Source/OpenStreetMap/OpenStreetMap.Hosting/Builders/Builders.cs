@@ -10,22 +10,16 @@ using Proxoft.Maps.Core.Api.Factories;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 
-internal class OpenStreetMapBuilder :
+internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime) :
     IOpenStreetMapApiBuilder,
     IOpenStreetMapOptionsBuilder,
     IGeocoderBuilder
 {
-    private readonly IServiceCollection _services;
-    private readonly ServiceLifetime _serviceLifetime;
+    private readonly IServiceCollection _services = services;
+    private readonly ServiceLifetime _serviceLifetime = serviceLifetime;
 
     private readonly List<ServiceDescriptor> _serviceDescriptors = new();
     private ServiceDescriptor _optionsDescriptor = new(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
-
-    public OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
-    {
-        _services = services;
-        _serviceLifetime = serviceLifetime;
-    }
 
     IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.UseInstance(OpenStreetMapOptions options)
     {

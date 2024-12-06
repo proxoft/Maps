@@ -51,8 +51,11 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         var searchParameters = string.Join("&", SearchParameters(city, street, streetNumber, country));
         try
         {
-            var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&{searchParameters}");
-            var maybe = this.ParseResults(response);
+            Result[]? response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&{searchParameters}");
+            var maybe = response is null
+                ? ErrorStatus.UnknownError
+                : this.ParseResults(response);
+
             return maybe;
         }
         catch(Exception ex)
@@ -69,8 +72,10 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     {
         try
         {
-            var response = await _http.GetFromJsonAsync<Result>(FormattableString.Invariant($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}"));
-            return this.ParseResult(response);
+            Result? response = await _http.GetFromJsonAsync<Result>(FormattableString.Invariant($"reverse?{_resultParameters}&lat={latitude}&lon={longitude}"));
+            return response is null
+                ? ErrorStatus.UnknownError
+                : this.ParseResult(response);
         }
         catch(Exception ex)
         {

@@ -93,7 +93,7 @@ public class GoogleGeocoder : IGeocoder
             RegisterNumber = registerNumber,
             StreetNumber = streetNumber,
             Zip = zip,
-            LatLng = new Proxoft.Maps.Core.Abstractions.Models.LatLng
+            LatLng = new Core.Abstractions.Models.LatLng
             {
                 Latitude = latitude,
                 Longitude = longitude
