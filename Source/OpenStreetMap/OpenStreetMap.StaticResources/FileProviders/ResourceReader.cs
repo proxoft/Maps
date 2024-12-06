@@ -20,7 +20,7 @@ internal static class ResourceReader
         if(version is not null)
         {
             int i = version.LastIndexOf('.');
-            version = version.Substring(0, i);
+            version = version[..i];
         }
         else
         {
