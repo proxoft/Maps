@@ -33,33 +33,33 @@ internal class OsmModules
 
     public IJSInProcessObjectReference Polyline { get; }
 
-    public static IObservable<OsmModules> Load(IJSRuntime jsRuntime)
+    public static IObservable<OsmModules> Load(IJSRuntime jsRuntime, string resourcePath)
     {
         if (!_initialized)
         {
             _initialized = true;
 
-            string v = GetJsVersion();
-            Console.WriteLine($"Loading scripts version: {v}");
+            string version = GetJsVersion();
+            Console.WriteLine($"Loading scripts version: {version}");
 
             var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
+                    $".{resourcePath}/map_{version}.js") // $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
                 .AsTask();
 
             var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
+                    $".{resourcePath}/marker_{version}.js") //$"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
                 .AsTask();
 
             var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
+                    $".{resourcePath}/polygon_{version}.js") //$"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
                 .AsTask();
 
             var polylinesS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polyline_{v}.js")
+                    $".{resourcePath}/polyline_{version}.js") //$"./_content/Proxoft.Maps.OpenStreetMap.Maps/polyline_{v}.js")
                 .AsTask();
 
             Task.WhenAll(mapS, markerS, polygonsS, polylinesS)

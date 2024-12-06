@@ -1,6 +1,6 @@
 ﻿<Project>
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <!--<TargetFramework>net6.0</TargetFramework>-->
 
         <AssemblyName>Proxoft.Maps.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>Proxoft.Maps.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>

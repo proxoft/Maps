@@ -1,5 +1,4 @@
-﻿using Proxoft.Maps.Core.Api.Core;
-using Proxoft.Maps.Core.Api.Shapes.Polygones;
+﻿using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Core.Api;

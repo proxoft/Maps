@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\Google\Google.Maps.Hosting\Google.Maps.Hosting.csproj" />
     <ProjectReference Include="..\..\MapBox\MapBox.Hosting\MapBox.Hosting.csproj" />
     <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.Hosting\OpenStreetMap.Hosting.csproj" />
+    <ProjectReference Include="..\..\OpenStreetMap\OpenStreetMap.StaticResources\OpenStreetMap.StaticResources.csproj" />
   </ItemGroup>
 
 </Project>
