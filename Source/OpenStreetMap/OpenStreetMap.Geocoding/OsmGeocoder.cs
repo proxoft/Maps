@@ -36,8 +36,11 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     {
         try
         {
-            var response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&q={location}");
-            return this.ParseResults(response);
+            Result[]? response = await _http.GetFromJsonAsync<Result[]>($"search?{_resultParameters}&q={location}");
+
+            return response is null
+                ? ErrorStatus.UnknownError
+                : this.ParseResults(response);
         }
         catch(Exception ex)
         {

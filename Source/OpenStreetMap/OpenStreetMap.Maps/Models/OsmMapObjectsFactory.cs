@@ -1,31 +1,23 @@
 ﻿using System;
-using Microsoft.Extensions.Options;
-using System.Reflection;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Maps;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Markers;
 using Proxoft.Maps.OpenStreetMap.Maps.Models.Shapes;
-using Proxoft.Extensions.Options;
 using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
+using Proxoft.Maps.Core.Api.Shapes.Circles;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models;
 
-internal class OsmMapObjectsFactory : IMapObjectsFactory
+internal class OsmMapObjectsFactory(
+    IIdFactory idFactory,
+    OsmModules osmModules) : IMapObjectsFactory
 {
-    private readonly IIdFactory _idFactory;
-    private readonly OsmModules _osmModules;
-
-    public OsmMapObjectsFactory(
-        IIdFactory idFactory,
-        OsmModules osmModules)
-    {
-        _idFactory = idFactory;
-        _osmModules = osmModules;
-    }
+    private readonly IIdFactory _idFactory = idFactory;
+    private readonly OsmModules _osmModules = osmModules;
 
     public Map CreateMap(MapOptions options, ElementReference hostElement)
     {
@@ -47,5 +39,10 @@ internal class OsmMapObjectsFactory : IMapObjectsFactory
     public Polyline CreatePolyline(Action<string> onRemove)
     {
         return new OsmPolyline(_idFactory.NextPolylineId(), onRemove, _osmModules.Polyline);
+    }
+
+    public Circle CreateCircle(Action<string> onRemove)
+    {
+        return new OsmCircle(_idFactory.NextCircleId(), onRemove, _osmModules.Circle);
     }
 }

@@ -58,3 +58,21 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.default-map-container {
+    display: inline-block;
+    width: 800px;
+    height: 450px;
+}
+
+.default-map-event-log {
+    vertical-align: top;
+    padding-left: 10px;
+    display: inline-block;
+    overflow-y: scroll;
+    width: 600px;
+    height: 450px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+}

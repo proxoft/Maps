@@ -1,4 +1,5 @@
-﻿using Proxoft.Maps.Core.Api.Shapes.Polygones;
+﻿using Proxoft.Maps.Core.Api.Shapes.Circles;
+using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 namespace Proxoft.Maps.Core.Api;
@@ -20,6 +21,8 @@ public interface IMap : IApiObject
     IPolygon AddPolygon(PolygonOptions options);
 
     IPolyline AddPolyline(PolylineOptions options);
+
+    ICircle AddCircle(CircleOptions options);
 
     void FitBounds(LatLngBounds bounds);
 

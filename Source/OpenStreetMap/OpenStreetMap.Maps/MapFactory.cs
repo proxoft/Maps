@@ -53,8 +53,12 @@ public class MapFactory : IMapFactory
 
     private IObservable<IMap> CreateMap(MapOptions options, ElementReference hostElement)
     {
+        Console.WriteLine("creating map");
+
         return OsmModules.Load(_jsRuntime, _options.ResourcePath)
             .Select(modules => {
+                Console.WriteLine("modules loaded");
+
                 OsmMapObjectsFactory mapObjectsFactory = new(_idFactory, modules);
                 Map map = mapObjectsFactory.CreateMap(options, hostElement);
                 return map;

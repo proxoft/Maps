@@ -5,26 +5,19 @@ using Microsoft.JSInterop;
 
 namespace Proxoft.Maps.Core.Api;
 
-public abstract class ApiObject : IApiObject
+public abstract class ApiObject(
+    string id,
+    Action<string> onRemove,
+    IJSInProcessObjectReference jsModule) : IApiObject
 {
     private readonly Subject<Event> _events = new();
-    private readonly Action<string> _onRemove;
+    private readonly Action<string> _onRemove = onRemove;
     private bool _isRemoved;
     private bool _disposed;
 
-    protected ApiObject(
-        string id,
-        Action<string> onRemove,
-        IJSInProcessObjectReference jsModule)
-    {
-        this.Id = id;
-        _onRemove = onRemove;
-        this.JsModule = jsModule;
-    }
+    public string Id { get; } = id;
 
-    public string Id { get; }
-
-    protected IJSInProcessObjectReference JsModule { get; }
+    protected IJSInProcessObjectReference JsModule { get; } = jsModule;
 
     public IObservable<Event> OnEvent => _events;
 
@@ -50,34 +43,34 @@ public abstract class ApiObject : IApiObject
         _events.OnNext(@event);
     }
 
-    protected void InvokeVoidJs(string identifier, params object?[] args)
+    protected void InvokeVoidJs(string jsMethodIdentifier, params object?[] args)
     {
-        this.InvokePureJs(identifier, new object?[] { this.Id }.Concat(args).ToArray());
+        this.InvokePureJs(jsMethodIdentifier, [this.Id, .. args]);
     }
 
-    protected TResult InvokeJs<TResult>(string identifier, params object?[] args)
+    protected TResult InvokeJs<TResult>(string jsMethodIdentifier, params object?[] args)
     {
-        return this.InvokePureJs<TResult>(identifier, new object?[] { this.Id }.Concat(args).ToArray());
+        return this.InvokePureJs<TResult>(jsMethodIdentifier, [this.Id, .. args]);
     }
 
-    protected void InvokePureJs(string identifier, params object?[] args)
+    protected void InvokePureJs(string jsMethodIdentifier, params object?[] args)
     {
         if (this.IsRemoved)
         {
-            throw new System.Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
+            throw new Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
         }
 
-        this.JsModule.InvokeVoid(identifier, args);
+        this.JsModule.InvokeVoid(jsMethodIdentifier, args);
     }
 
-    protected TResult InvokePureJs<TResult>(string identifier, params object?[] args)
+    protected TResult InvokePureJs<TResult>(string jsMethodIdentifier, params object?[] args)
     {
         if (this.IsRemoved)
         {
-            throw new System.Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
+            throw new Exception($"The object {this.Id} has been removed from the map. Do not use it anymore. If necessary create new one");
         }
 
-        return this.JsModule.Invoke<TResult>(identifier, args);
+        return this.JsModule.Invoke<TResult>(jsMethodIdentifier, args);
     }
 
     public void Dispose()

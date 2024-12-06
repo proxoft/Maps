@@ -1,24 +1,19 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Abstractions.Models;
-using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Api.Maps;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace Proxoft.Maps.MapSamples.Client.Pages;
 
-public partial class Home : IDisposable
+public sealed partial class Home
 {
     private IMap _map1 = NoMap.Instance;
-
-    [Inject]
-    public IMapFactory MapFactory { get; set; } = null!;
 
     ElementReference MapHost { get; set; }
 
     public string Provider => this.MapFactory.Name;
 
-    private List<string> MapLog { get; set; } = new();
+    private List<string> MapLog { get; set; } = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -39,7 +34,8 @@ public partial class Home : IDisposable
             new MapOptions
             {
                 Center = center,
-                Zoom = 10
+                Zoom = 10,
+                TraceJs = true,
             },
             this.MapHost
         );
@@ -50,9 +46,14 @@ public partial class Home : IDisposable
             .Subscribe(ll => this.AddMapLog($"click: {ll.Latitude}, {ll.Longitude}"));
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _map1.Dispose();
+        if (disposing)
+        {
+            _map1.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
     private void AddMapLog(string message)

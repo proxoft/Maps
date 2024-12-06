@@ -7,7 +7,7 @@ public abstract class Polyline : Shape, IPolyline
 {
     private readonly PolylineJsCallback _jsCallback;
 
-    public Polyline(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
+    protected Polyline(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
     {
         _jsCallback = new PolylineJsCallback(this.Push);
     }

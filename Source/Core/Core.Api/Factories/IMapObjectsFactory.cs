@@ -1,4 +1,5 @@
 ﻿using System;
+using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
@@ -11,4 +12,6 @@ public interface IMapObjectsFactory
     Polygon CreatePolygon(Action<string> onRemove);
 
     Polyline CreatePolyline(Action<string> onRemove);
+
+    Circle CreateCircle(Action<string> onRemove);
 }
