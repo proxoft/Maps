@@ -8,11 +8,17 @@
 <div class="default-map-container" @ref="_mapHost">
 </div>
 
+<div>
+    Radius: <input @bind="_radius" /> <button @onclick="this.OnApplyRadius">Apply</button>
+</div>
+
 @code {
     private IMap _map = NoMap.Instance;
     private ICircle _circle = NoCircle.Instance;
 
     private ElementReference _mapHost;
+
+    private string _radius = "";
 
     protected override void OnAfterFirstRender()
     {
@@ -29,7 +35,6 @@
                 {
                     Center = center,
                     Zoom = 10,
-                    TraceJs = true,
                 },
             _mapHost
         )
@@ -43,12 +48,22 @@
     {
         _circle = _map.AddCircle(new CircleOptions()
         {
-            
-                LatLng = new()
-                {
-                    Latitude = -34.397m,
-                    Longitude = 150.644m
-                }
+            TraceJs = true,
+            LatLng = new()
+            {
+                Latitude = -34.397m,
+                Longitude = 150.644m
+            }
         });
+    }
+
+    private void OnApplyRadius()
+    {
+        if(!decimal.TryParse(_radius, out decimal radius))
+        {
+            return;
+        }
+
+        _circle.SetRadius(radius);
     }
 }
