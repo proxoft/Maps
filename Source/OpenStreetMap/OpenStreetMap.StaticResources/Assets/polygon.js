@@ -39,8 +39,8 @@ export function SetLatLngs(polygonId, latLngs) {
     let polygonWrapper = findPolygonWrapper(polygonId);
     polygonWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(latLngs)}`);
 
-    let outerCoords = options.latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
-    let holesCoords = options.latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
+    let outerCoords = latLngs.outerRing.map(ll => [ll.latitude, ll.longitude]);
+    let holesCoords = latLngs.holes.map(hole => hole.map(ll => [ll.latitude, ll.longitude]));
 
     let coords = [outerCoords].concat(holesCoords);
     polygonWrapper.polygon.setLatLngs(coords);
