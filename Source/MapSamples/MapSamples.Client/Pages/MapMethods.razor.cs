@@ -1,21 +1,16 @@
-﻿using System.Reactive.Linq;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Abstractions.Models;
-using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api;
 
-namespace Proxoft.Maps.Samples.Pages;
+namespace Proxoft.Maps.MapSamples.Client.Pages;
 
-public partial class MapMethods : IDisposable
+public partial class MapMethods
 {
     private IMap _map = NoMap.Instance;
 
-    [Inject]
-    public IMapFactory MapFactory { get; set; } = null!;
-
     ElementReference MapHost { get; set; }
 
-    private List<string> MapLog { get; set; } = new();
+    private List<string> MapLog { get; set; } = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

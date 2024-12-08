@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.Core.Api;
-using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Maps;
 
-namespace Proxoft.Maps.Samples.Pages.TwoMaps;
+namespace Proxoft.Maps.MapSamples.Client.Pages;
 
 public sealed partial class TwoMaps : IDisposable
 {
     private IMap _map1 = NoMap.Instance;
     private IMap _map2 = NoMap.Instance;
 
-    [Inject]
-    public IMapFactory MapFactory { get; set; } = null!;
-
     ElementReference Map1Host { get; set; }
 
     ElementReference Map2Host { get; set; }
-
-    public string Provider => this.MapFactory.Name;
 
     private List<string> Map1Log { get; set; } = new();
 
