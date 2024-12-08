@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text.RegularExpressions;
 using Proxoft.Maps.Core.Abstractions.StaticMaps;
 
 namespace Proxoft.Maps.MapBox.StaticMaps.Helpers;
@@ -12,7 +9,7 @@ internal static class MarkerOptionsQueryBuilder
 {
     public static string ToQueryParameter(this IReadOnlyCollection<MarkerOptions> markers)
     {
-        if((markers?.Count ?? 0) == 0)
+        if(markers.Count == 0)
         {
             return string.Empty;
         }

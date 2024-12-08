@@ -1,11 +1,6 @@
-﻿namespace Proxoft.Maps.MapBox.Common
-{
-    public class MapBoxOptions
-    {
-        public MapBoxOptions()
-        {
-        }
+﻿namespace Proxoft.Maps.MapBox.Common;
 
-        public string AccessToken { get; set; }
-    }
+public class MapBoxOptions
+{
+    public string AccessToken { get; set; } = "";
 }

@@ -9,7 +9,7 @@ public class MapOptions
 
     public SizePixel Size { get; set; }
 
-    public ZoomLevel Zoom { get; set; }
+    public ZoomLevel Zoom { get; set; } = ZoomLevel.Default;
 
-    public IReadOnlyCollection<MarkerOptions> Markers { get; set; }
+    public IReadOnlyCollection<MarkerOptions> Markers { get; set; } = [];
 }
