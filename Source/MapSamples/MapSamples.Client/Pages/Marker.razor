@@ -1,16 +1,15 @@
 ﻿@page "/Marker"
-@implements IDisposable
 
 @using System.Drawing;
 @using System.Reactive.Linq;
 @using Proxoft.Maps.Core.Api
 @using Proxoft.Maps.Core.Api.Icons;
 
-<div class="map-container" @ref="MapHost">
+<div class="default-map-container" @ref="MapHost">
 </div>
 
 <button @onclick="ClearLogClick">Clear log</button>
-<div class="map-event-log">
+<div class="default-map-event-log">
     @foreach (var l in MapLog.Reverse<string>())
     {
         <span>@l</span><br />
@@ -50,9 +49,6 @@
             ClassName = "custom-marker",
             Html = "<span class=\"marker-span\">x</span>"
         };
-
-    [Inject]
-    public IMapFactory MapFactory { get; set; } = null!;
 
     ElementReference MapHost { get; set; }
 
@@ -100,10 +96,13 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
         if (!firstRender)
         {
             return;
         }
+
+        Console.WriteLine("OnAfterRenderAsync");
 
         LatLng center = new()
         {
@@ -183,11 +182,14 @@
         this.StateHasChanged();
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        Console.WriteLine("Disposing");
+        if (disposing)
+        {
+                _marker.Dispose();
+                _map.Dispose();
+        }
 
-        _marker.Dispose();
-        _map.Dispose();
+        base.Dispose(disposing);
     }
 }

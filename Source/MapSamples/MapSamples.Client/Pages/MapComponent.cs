@@ -11,6 +11,7 @@ public class MapComponent : ComponentBase, IDisposable
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
+
         if (firstRender)
         {
             this.OnAfterFirstRender();
