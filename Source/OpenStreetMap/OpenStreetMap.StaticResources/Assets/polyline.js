@@ -34,7 +34,7 @@ export function RemovePolyline(polylineId) {
 
 export function SetLatLngs(polylineId, options) {
     let polylineWrapper = findPolylineWrapper(polylineId);
-    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options)}`);
+    polylineWrapper.log(`setLatLngs >> ${JSON.stringify(options)}`);
 
     let jsLatLngs = linesObjectToLeafLatLngs(options.latLngs);
     polylineWrapper.polyline.setLatLngs(jsLatLngs);
@@ -45,12 +45,6 @@ export function GetLatLngs(polylineId) {
     polylineWrapper.log("getLatLngs >>");
 
     let latLngs = polylineWrapper.polyline.getLatLngs();
-    polylineWrapper.log(latLngs);
-
-    if (latLngs.length == 0) {
-        return [];
-    }
-
     let result = latLngs
         .map(line => line.map(ll => latLngToObject(ll)));
 
@@ -145,12 +139,12 @@ function createPolylineWrapper(polylineId, polyline, map, netRef, enableLogging)
             polyline.off("mouseout", wrapper._onMouseOut);
         },
 
-        log: function (m) {
+        log: function (data) {
             if (!enableLogging) {
                 return;
             }
 
-            console.log(`[Polyline ${wrapper.polylineId}:${wrapper.refId}]: ${m}`);
+            console.log(`[Polyline ${wrapper.polylineId}:${wrapper.refId}]: `, data);
         },
 
         _onClick: function (e) {
@@ -211,7 +205,7 @@ function latLngToObject(latlng) {
 function linesObjectToLeafLatLngs(obj) {
     return obj.map(
         line => line.map(
-            ll => [ll.latitude, ll.longitude]
+            ll => objectToLatLng(ll)
         )
     );
 }

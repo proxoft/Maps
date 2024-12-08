@@ -161,12 +161,12 @@ function createPolygonWrapper(polygonId, polygon, map, netRef, enableLogging) {
             polygon.off("mouseout", wrapper._onMouseOut);
         },
 
-        log: function (m) {
+        log: function (data) {
             if (!enableLogging) {
                 return;
             }
 
-            console.log(`[Polygon ${wrapper.polygonId}:${wrapper.refId}]: ${m}`);
+            console.log(`[Polygon ${wrapper.polygonId}:${wrapper.refId}]: `, data);
         },
 
         _onClick: function (e) {

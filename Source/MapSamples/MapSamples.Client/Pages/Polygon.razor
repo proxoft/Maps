@@ -111,8 +111,8 @@
             {
                 return new LatLng()
                     {
-                        Latitude = ll.Latitude + random.Next(-10, 10) / 10m,
-                        Longitude = ll.Longitude + random.Next(-10, 10) / 10m
+                        Latitude = ll.Latitude + random.Next(-10, 10) / 100m,
+                        Longitude = ll.Longitude + random.Next(-10, 10) / 100m
                     };
             })
             .ToArray();
