@@ -4,7 +4,7 @@ public interface IPolyline : IShape
 {
     public LatLngBounds GetBounds();
 
-    public PolylineLatLng GetLatLngs();
+    public LatLng[][] GetLatLngs();
 
     public void SetLatLngs(LatLng[] latLngs);
 

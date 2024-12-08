@@ -23,9 +23,9 @@ public abstract class Polyline : Shape, IPolyline
         return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
-    public PolylineLatLng GetLatLngs()
+    public LatLng[][] GetLatLngs()
     {
-        PolylineLatLng latLngs = this.InvokeJs<PolylineLatLng>("GetLatLngs");
+        LatLng[][] latLngs = this.InvokeJs<LatLng[][]>("GetLatLngs");
         return latLngs;
     }
 
@@ -36,7 +36,12 @@ public abstract class Polyline : Shape, IPolyline
 
     public void SetLatLngs(LatLng[][] latLngs)
     {
-        this.InvokeVoidJs("SetLatLngs", latLngs);
+        var options = new
+        {
+            LatLngs = latLngs
+        };
+
+        this.InvokeVoidJs("SetLatLngs", options);
     }
 
     protected override void ExecuteRemove()

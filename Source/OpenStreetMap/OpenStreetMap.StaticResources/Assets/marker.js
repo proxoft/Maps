@@ -144,12 +144,12 @@ function createMarkerWrapper(markerId, marker, map, netRef, enableLogging) {
             wrapper.log("diconnected marker events");
         },
 
-        log: function (m) {
+        log: function (data) {
             if (!enableLogging) {
                 return;
             }
 
-            console.log(`[Marker ${wrapper.markerId}:${wrapper.refId}]: ${m}`);
+            console.log(`[Marker ${wrapper.markerId}:${wrapper.refId}]: `, data);
         },
 
         // -- mouse events

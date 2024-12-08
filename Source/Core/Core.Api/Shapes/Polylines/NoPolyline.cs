@@ -22,9 +22,9 @@ public sealed class NoPolyline : IPolyline
         return LatLngBounds.Empty;
     }
 
-    public PolylineLatLng GetLatLngs()
+    public LatLng[][] GetLatLngs()
     {
-        return PolylineLatLng.Empty;
+        return [];
     }
 
     public void Remove()

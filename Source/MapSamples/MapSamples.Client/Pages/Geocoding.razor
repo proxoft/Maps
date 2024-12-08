@@ -50,9 +50,6 @@
     [Inject]
     IGeocoder Geocoder { get; set; } = null!;
 
-    [Inject]
-    IMapFactory MapFactory { get; set; } = null!;
-
     private ElementReference MapHost { get; set; }
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;

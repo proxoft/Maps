@@ -161,12 +161,12 @@ function createMapWrapper(mapId, map, netRef, enableLogging) {
             wrapper.log("diconnected map events");
         },
 
-        log: function (m) {
+        log: function (data) {
             if (!enableLogging) {
                 return;
             }
 
-            console.log(`[Map ${wrapper.mapId}:${wrapper.refId}]: ${m}`);
+            console.log(`[Map ${wrapper.mapId}:${wrapper.refId}]: `, data);
         },
 
         _onMouseClick: function (e) {

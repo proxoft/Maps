@@ -12,7 +12,7 @@ export function AddPolyline(polylineId, options, mapId, netRef) {
 
     let mapWrapper = findMapWrapper(mapId);
 
-    let latLngs = options.lines.map(line => line.map(ll => [ll.latitude, ll.longitude]));
+    let latLngs = linesObjectToLeafLatLngs(options.lines);
     let polyline = L.polyline(latLngs, options.style);
 
     polyline.addTo(mapWrapper.map);
@@ -34,14 +34,10 @@ export function RemovePolyline(polylineId) {
 
 export function SetLatLngs(polylineId, options) {
     let polylineWrapper = findPolylineWrapper(polylineId);
-    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options.lines)}`);
+    polylineWrapper.log(`setLatLngs >> ${JSON.stringify(options)}`);
 
-    let latLngs = options.lines
-        .map(line => {
-            return line.map(ll => [ll.latitude, ll.longitude]);
-        });
-
-    polylineWrapper.polyline.setLatLngs(latLngs);
+    let jsLatLngs = linesObjectToLeafLatLngs(options.latLngs);
+    polylineWrapper.polyline.setLatLngs(jsLatLngs);
 }
 
 export function GetLatLngs(polylineId) {
@@ -49,9 +45,11 @@ export function GetLatLngs(polylineId) {
     polylineWrapper.log("getLatLngs >>");
 
     let latLngs = polylineWrapper.polyline.getLatLngs();
-    polylineWrapper.log(latLngs);
+    let result = latLngs
+        .map(line => line.map(ll => latLngToObject(ll)));
 
-    return latLngs;
+    polylineWrapper.log(result);
+    return result;
 }
 
 export function GetBounds(polylineId) {
@@ -141,12 +139,12 @@ function createPolylineWrapper(polylineId, polyline, map, netRef, enableLogging)
             polyline.off("mouseout", wrapper._onMouseOut);
         },
 
-        log: function (m) {
+        log: function (data) {
             if (!enableLogging) {
                 return;
             }
 
-            console.log(`[Polyline ${wrapper.polylineId}:${wrapper.refId}]: ${m}`);
+            console.log(`[Polyline ${wrapper.polylineId}:${wrapper.refId}]: `, data);
         },
 
         _onClick: function (e) {
@@ -195,4 +193,23 @@ function findPolylineWrapper(polylineId) {
 function findPolylineWrapperIndex(polylineId) {
     let i = polylineWrappers.findIndex(me => me.polylineId === polylineId);
     return i;
+}
+
+function latLngToObject(latlng) {
+    return {
+        latitude: latlng.lat,
+        longitude: latlng.lng
+    };
+}
+
+function linesObjectToLeafLatLngs(obj) {
+    return obj.map(
+        line => line.map(
+            ll => objectToLatLng(ll)
+        )
+    );
+}
+
+function objectToLatLng(latlng) {
+    return [latlng.latitude, latlng.longitude];
 }

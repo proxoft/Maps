@@ -15,6 +15,8 @@
     <button @onclick=this.GetLatLngs>Get lat lngs of polyline</button>
     <br />
     @this.Polyline1LatLngs
+    <br />
+    @this.Polyline2LatLngs
 </div>
 
 <br />
@@ -34,6 +36,7 @@
     private ElementReference MapHost { get; set; }
 
     private string Polyline1LatLngs { get; set; } = "";
+    private string Polyline2LatLngs { get; set; } = "";
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -137,8 +140,8 @@
             {
                 return new LatLng()
                     {
-                        Latitude = ll.Latitude + random.Next(-10, 10) / 10m,
-                        Longitude = ll.Longitude + random.Next(-10, 10) / 10m
+                        Latitude = ll.Latitude + random.Next(-10, 10) / 100m,
+                        Longitude = ll.Longitude + random.Next(-10, 10) / 100m
                     };
             })
             .ToArray();
@@ -148,8 +151,14 @@
 
     private void GetLatLngs()
     {
-        PolylineLatLng ll = _pol1.GetLatLngs();
-        this.Polyline1LatLngs = ll.ToString();
+        LatLng[][] ll = _pol1.GetLatLngs();
+
+        IEnumerable<string> lines = ll.Select(line => string.Join(" ", line.Select(ll => ll.ToString())));
+        this.Polyline1LatLngs = string.Join("; ", lines);
+
+        ll = _pol2.GetLatLngs();
+        lines = ll.Select(line => string.Join(" ", line.Select(ll => ll.ToString())));
+        this.Polyline2LatLngs = string.Join("; ", lines);
     }
 
     protected override void Dispose(bool disposing)
