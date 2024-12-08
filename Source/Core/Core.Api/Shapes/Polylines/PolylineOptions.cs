@@ -4,7 +4,7 @@ namespace Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 public record class PolylineOptions
 {
-    public LatLng[][] Lines { get; init; } = Array.Empty<LatLng[]>();
+    public LatLng[][] Lines { get; init; } = [];
 
     public Style Style { get; init; } = new Style();
 
@@ -14,7 +14,7 @@ public record class PolylineOptions
     {
         return new PolylineOptions()
         {
-            Lines = new LatLng[][] { latLngs },
+            Lines = [latLngs],
             Style = style,
             TraceJs = traceJs
         };

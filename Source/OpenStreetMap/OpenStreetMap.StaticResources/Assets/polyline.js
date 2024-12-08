@@ -12,7 +12,7 @@ export function AddPolyline(polylineId, options, mapId, netRef) {
 
     let mapWrapper = findMapWrapper(mapId);
 
-    let latLngs = options.lines.map(line => line.map(ll => [ll.latitude, ll.longitude]));
+    let latLngs = linesObjectToLeafLatLngs(options.lines);
     let polyline = L.polyline(latLngs, options.style);
 
     polyline.addTo(mapWrapper.map);
@@ -34,14 +34,10 @@ export function RemovePolyline(polylineId) {
 
 export function SetLatLngs(polylineId, options) {
     let polylineWrapper = findPolylineWrapper(polylineId);
-    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options.lines)}`);
+    polylineWrapper.log(`setLatLngs >> latLngs ${JSON.stringify(options)}`);
 
-    let latLngs = options.lines
-        .map(line => {
-            return line.map(ll => [ll.latitude, ll.longitude]);
-        });
-
-    polylineWrapper.polyline.setLatLngs(latLngs);
+    let jsLatLngs = linesObjectToLeafLatLngs(options.latLngs);
+    polylineWrapper.polyline.setLatLngs(jsLatLngs);
 }
 
 export function GetLatLngs(polylineId) {
@@ -51,7 +47,15 @@ export function GetLatLngs(polylineId) {
     let latLngs = polylineWrapper.polyline.getLatLngs();
     polylineWrapper.log(latLngs);
 
-    return latLngs;
+    if (latLngs.length == 0) {
+        return [];
+    }
+
+    let result = latLngs
+        .map(line => line.map(ll => latLngToObject(ll)));
+
+    polylineWrapper.log(result);
+    return result;
 }
 
 export function GetBounds(polylineId) {
@@ -195,4 +199,23 @@ function findPolylineWrapper(polylineId) {
 function findPolylineWrapperIndex(polylineId) {
     let i = polylineWrappers.findIndex(me => me.polylineId === polylineId);
     return i;
+}
+
+function latLngToObject(latlng) {
+    return {
+        latitude: latlng.lat,
+        longitude: latlng.lng
+    };
+}
+
+function linesObjectToLeafLatLngs(obj) {
+    return obj.map(
+        line => line.map(
+            ll => [ll.latitude, ll.longitude]
+        )
+    );
+}
+
+function objectToLatLng(latlng) {
+    return [latlng.latitude, latlng.longitude];
 }
