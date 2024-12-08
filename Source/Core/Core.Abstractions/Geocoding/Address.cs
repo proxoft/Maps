@@ -4,19 +4,19 @@ namespace Proxoft.Maps.Core.Abstractions.Geocoding;
 
 public record Address
 {
-    public string Location { get; set; }
+    public string Location { get; init; } = "";
 
-    public string Country { get; set; }
+    public string Country { get; init; } = "";
 
-    public string City { get; set; }
+    public string City { get; init; } = "";
 
-    public string Street { get; set; }
+    public string Street { get; init; } = "";
 
-    public string RegisterNumber { get; set; }
+    public string RegisterNumber { get; init; } = "";
 
-    public string StreetNumber { get; set; }
+    public string StreetNumber { get; init; } = "";
 
-    public string Zip { get; set; }
+    public string Zip { get; init; } = "";
 
-    public LatLng LatLng { get; set; }
+    public LatLng LatLng { get; init; } = LatLng.None;
 }

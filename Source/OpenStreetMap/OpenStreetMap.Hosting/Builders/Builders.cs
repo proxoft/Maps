@@ -2,32 +2,24 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Proxoft.Maps.Core.Api;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Maps;
-using Microsoft.Extensions.Options;
 using Proxoft.Maps.Core.Api.Factories;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 
-internal class OpenStreetMapBuilder :
+internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime) :
     IOpenStreetMapApiBuilder,
     IOpenStreetMapOptionsBuilder,
     IGeocoderBuilder
 {
-    private readonly IServiceCollection _services;
-    private readonly ServiceLifetime _serviceLifetime;
+    private readonly IServiceCollection _services = services;
+    private readonly ServiceLifetime _serviceLifetime = serviceLifetime;
 
     private readonly List<ServiceDescriptor> _serviceDescriptors = new();
     private ServiceDescriptor _optionsDescriptor = new(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
-
-    public OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
-    {
-        _services = services;
-        _serviceLifetime = serviceLifetime;
-    }
 
     IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.UseInstance(OpenStreetMapOptions options)
     {
@@ -49,12 +41,14 @@ internal class OpenStreetMapBuilder :
 
     IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.Configure(IConfigurationSection section)
     {
-        var language = section["Language"];
+        string resourcePath = section["ResourcePath"] ?? "/openStreetMap";
+        string language = section["Language"] ?? "en";
         _ = bool.TryParse(section["ConsoleLogExceptions"], out var consoleLog);
 
         return ((IOpenStreetMapOptionsBuilder)this).Configure(
             () => new OpenStreetMapOptions
                 {
+                    ResourcePath = resourcePath,
                     Language = language,
                     ConsoleLogExceptions = consoleLog
                 }

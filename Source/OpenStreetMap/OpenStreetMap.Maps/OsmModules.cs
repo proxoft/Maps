@@ -16,13 +16,15 @@ internal class OsmModules
         IJSInProcessObjectReference map,
         IJSInProcessObjectReference marker,
         IJSInProcessObjectReference polygon,
-        IJSInProcessObjectReference polyline
+        IJSInProcessObjectReference polyline,
+        IJSInProcessObjectReference circle
         )
     {
         this.Map = map;
         this.Marker = marker;
         this.Polygon = polygon;
         this.Polyline = polyline;
+        this.Circle = circle;
     }
 
     public IJSInProcessObjectReference Map { get; }
@@ -33,43 +35,54 @@ internal class OsmModules
 
     public IJSInProcessObjectReference Polyline { get; }
 
-    public static IObservable<OsmModules> Load(IJSRuntime jsRuntime)
+    public IJSInProcessObjectReference Circle { get; }
+
+    public static IObservable<OsmModules> Load(IJSRuntime jsRuntime, string resourcePath)
     {
         if (!_initialized)
         {
             _initialized = true;
 
-            string v = GetJsVersion();
-            Console.WriteLine($"Loading scripts version: {v}");
+            string version = GetJsVersion();
+            Console.WriteLine($"Loading scripts version: {version}");
 
             var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
+                    $".{resourcePath}/map_{version}.js") // $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
                 .AsTask();
 
             var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/marker_{v}.js")
+                    $".{resourcePath}/marker_{version}.js")
                 .AsTask();
 
             var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polygon_{v}.js")
+                    $".{resourcePath}/polygon_{version}.js")
                 .AsTask();
 
             var polylinesS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
                     "import",
-                    $"./_content/Proxoft.Maps.OpenStreetMap.Maps/polyline_{v}.js")
+                    $".{resourcePath}/polyline_{version}.js")
                 .AsTask();
 
-            Task.WhenAll(mapS, markerS, polygonsS, polylinesS)
+            var circleS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+                    "import",
+                    $".{resourcePath}/circle_{version}.js")
+                .AsTask();
+
+            Task.WhenAll(mapS, markerS, polygonsS, polylinesS, circleS)
                 .ToObservable()
                 .Take(1)
-                .Subscribe(modules =>
+                .Do(modules =>
                 {
-                    OsmModules osm = new(modules[0], modules[1], modules[2], modules[3]);
+                    OsmModules osm = new(modules[0], modules[1], modules[2], modules[3], modules[4]);
                     _modules.SetValue(osm);
-                });
+                })
+                .Subscribe(
+                    _ => { },
+                    e => Console.WriteLine($"OsmModules.Load: {e.Message}")
+                );
         }
 
         return _modules;

@@ -1,0 +1,228 @@
+﻿@page "/Polygon"
+
+@using Proxoft.Maps.Core.Api.Shapes;
+@using System.Reactive.Linq;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+
+<div>
+    <div class="default-map-container" @ref="MapHost">
+    </div>
+</div>
+
+<div>
+    <button @onclick=@(() => this.RemovePolygon(_polygon))>Remove polygon 1</button>
+    <button @onclick=@(() => this.RemovePolygon(_polygon2))>Remove polygon 2</button>
+    <button @onclick=@(() => this.ChangeColor())>Change color of polygon 2</button>
+    <button @onclick=@(() => this.ChangeLatLngs())>Change lat lngs of polygone</button>
+    <button @onclick=this.ChangeCssClassOfPolygon2>Toggle class name</button>
+</div>
+
+<br/>
+
+<div>
+    <button @onclick="ClearLogClick">Clear log</button>
+    <br/>
+    <div class="map-event-log">
+        @foreach (var l in MapLog.Reverse<string>())
+        {
+            <span>@l</span>
+
+            <br />
+        }
+    </div>
+</div>
+
+@code {
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IPolygon _polygon = NoPolygon.Instance;
+    private IPolygon _polygon2 = NoPolygon.Instance;
+    private bool _polygon1ClassToggle;
+
+    private List<string> MapLog { get; set; } = new();
+
+    private ElementReference MapHost { get; set; }
+
+    private string PolygonInfo { get; set; } = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Subscribe(map =>
+            {
+                _map = map;
+                CreatePolygons();
+            });
+    }
+
+    private void AddLog(string logMessage)
+    {
+        this.MapLog.Add(logMessage);
+        this.StateHasChanged();
+    }
+
+    private void RemovePolygon(IPolygon polygon)
+    {
+        if (polygon.IsRemoved)
+        {
+            return;
+        }
+
+        polygon.Remove();
+    }
+
+    private void ChangeColor()
+    {
+        Style style = new()
+        {
+            FillColor = "red"
+        };
+
+        _polygon.SetStyle(style);
+        _polygon2.SetStyle(style);
+    }
+
+    private void ChangeLatLngs()
+    {
+        Random random = new();
+
+        LatLng[] lntLongs = new[]
+            {
+                new LatLng { Latitude = 51.51m,  Longitude = -0.10m },
+                new LatLng { Latitude = 51.51m,  Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m,  Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m,  Longitude = -0.06m }
+            }
+            .Select(ll =>
+            {
+                return new LatLng()
+                    {
+                        Latitude = ll.Latitude + random.Next(-10, 10) / 10m,
+                        Longitude = ll.Longitude + random.Next(-10, 10) / 10m
+                    };
+            })
+            .ToArray();
+
+        _polygon2.SetLatLngs(new PolygonLatLng()
+            {
+                OuterRing = lntLongs
+            });
+    }
+
+    private void ChangeCssClassOfPolygon2()
+    {
+        string toRemove = _polygon1ClassToggle ? "polygon-yellow-stroke polygon-dark" : "polygon-red-stroke polygon-light";
+        string toAdd = _polygon1ClassToggle ? "polygon-red-stroke polygon-light" : "polygon-yellow-stroke polygon-dark";
+
+        _polygon2.RemoveClass(toRemove);
+        _polygon2.AddClass(toAdd);
+
+        _polygon1ClassToggle = !_polygon1ClassToggle;
+    }
+
+    private void ClearLogClick()
+    {
+        this.MapLog.Clear();
+    }
+
+    private void OnPolygonClick(IPolygon polygon)
+    {
+        Console.WriteLine($"getting info about {polygon.Id}");
+
+        LatLngBounds bounds = polygon.GetBounds();
+        PolygonLatLng latlngs = polygon.GetLatLngs();
+
+        Console.WriteLine(bounds);
+
+        string json = JsonSerializer.Serialize(latlngs);
+        Console.WriteLine(json);
+        Console.WriteLine($"==================== {polygon.Id} ====");
+    }
+
+    private void CreatePolygons()
+    {
+        PolygonOptions options = new()
+            {
+                LatLngs = new()
+                {
+                    OuterRing = new[]
+                    {
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+            },
+                    Holes = new LatLng[][]
+                    {
+                        new[]
+                        {
+                            new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+                            new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+                            new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+                        }
+                    }
+                },
+                TraceJs = true
+            };
+
+        _polygon = _map.AddPolygon(options);
+        _polygon.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon.Id} {e.Name}"));
+
+        _polygon.OnEvent
+           .OfType<MouseClickEvent>()
+           .Subscribe(_ => this.OnPolygonClick(_polygon));
+
+        PolygonOptions options2 = new()
+            {
+                LatLngs = new()
+                {
+                    OuterRing = new[]
+                    {
+                            new LatLng { Latitude = 51.51m,  Longitude = -0.10m },
+                            new LatLng { Latitude = 51.51m,  Longitude = -0.15m },
+                            new LatLng { Latitude = 51.45m,  Longitude = -0.15m },
+                            new LatLng { Latitude = 51.45m,  Longitude = -0.06m },
+                    }
+                },
+                Style = new()
+                {
+                    ClassName = "polygon-red-stroke polygon-light"
+                },
+                TraceJs = true
+            };
+
+        _polygon2 = _map.AddPolygon(options2);
+        _polygon2.OnEvent
+            .Subscribe(e => this.AddLog($"{_polygon2.Id} {e.Name}"));
+
+        _polygon2.OnEvent
+            .OfType<MouseClickEvent>()
+            .Subscribe(_ => this.OnPolygonClick(_polygon2));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if(disposing)
+        {
+            _polygon.Dispose();
+            _polygon2.Dispose();
+            _map.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+}

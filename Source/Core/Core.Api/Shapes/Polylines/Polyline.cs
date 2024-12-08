@@ -7,7 +7,7 @@ public abstract class Polyline : Shape, IPolyline
 {
     private readonly PolylineJsCallback _jsCallback;
 
-    public Polyline(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
+    protected Polyline(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule) : base(id, onRemove, jsModule)
     {
         _jsCallback = new PolylineJsCallback(this.Push);
     }
@@ -29,30 +29,15 @@ public abstract class Polyline : Shape, IPolyline
         return latLngs;
     }
 
-    public void SetLatLng(LatLng[] latLngs)
+    public void SetLatLngs(LatLng[] latLngs)
     {
-        this.SetLatLng(new LatLng[][] { latLngs });
+        this.SetLatLngs([latLngs]);
     }
 
-    public void SetLatLng(LatLng[][] latLngs)
+    public void SetLatLngs(LatLng[][] latLngs)
     {
-        this.InvokeVoidJs("SetLatLng", latLngs);
+        this.InvokeVoidJs("SetLatLngs", latLngs);
     }
-
-    //public void SetStyle(Style style)
-    //{
-    //    this.InvokeVoidJs("SetStyle", style);
-    //}
-
-    //public void AddClass(params string[] classes)
-    //{
-    //    this.InvokeVoidJs("AddClass", string.Join(" ", classes));
-    //}
-
-    //public void RemoveClass(params string[] classes)
-    //{
-    //    this.InvokeVoidJs("RemoveClass", string.Join(" ", classes));
-    //}
 
     protected override void ExecuteRemove()
     {

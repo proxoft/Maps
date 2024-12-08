@@ -6,5 +6,5 @@ public interface IPolygon : IShape
 
     public PolygonLatLng GetLatLngs();
 
-    public void SetLatLng(PolygonLatLng latLngs);
+    public void SetLatLngs(PolygonLatLng latLngs);
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Reactive.Linq;
-using Proxoft.Maps.Core.Api.Maps;
 
 namespace Proxoft.Maps.Core.Api.Maps;
 

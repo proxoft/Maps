@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './maps_0.10.1.js';
+﻿import { findMapWrapper } from './map_{version}.js';
 
-console.log("osm polyline_0.10.1.js loaded");
+console.log("osm polyline_{version}.js loaded");
 
 var polylineWrappers = [];
 
@@ -49,6 +49,7 @@ export function GetLatLngs(polylineId) {
     polylineWrapper.log("getLatLngs >>");
 
     let latLngs = polylineWrapper.polyline.getLatLngs();
+    polylineWrapper.log(latLngs);
 
     return latLngs;
 }

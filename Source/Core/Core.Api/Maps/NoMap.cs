@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
@@ -29,6 +30,9 @@ public sealed class NoMap : IMap
 
     public IPolyline AddPolyline(PolylineOptions options)
         => NoPolyline.Instance;
+
+    public ICircle AddCircle(CircleOptions options)
+        => NoCircle.Instance;
 
     public void Dispose()
     {

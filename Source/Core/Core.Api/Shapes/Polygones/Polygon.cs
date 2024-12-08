@@ -27,9 +27,9 @@ public abstract class Polygon : Shape, IPolygon
         return latLngs;
     }
 
-    public void SetLatLng(PolygonLatLng latLngs)
+    public void SetLatLngs(PolygonLatLng latLngs)
     {
-        this.InvokeVoidJs("SetLatLng", latLngs);
+        this.InvokeVoidJs("SetLatLngs", latLngs);
     }
 
     public void AddToMap(string mapId, PolygonOptions options)

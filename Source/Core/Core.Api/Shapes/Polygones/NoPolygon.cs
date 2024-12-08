@@ -12,7 +12,7 @@ public sealed class NoPolygon : IPolygon
         this.OnEvent = Observable.Never<Event>();
     }
 
-    public IObservable<Event> OnEvent { get; }
+    public IObservable<Event> OnEvent { get; } = Observable.Empty<Event>();
 
     public string Id => "none-polygon";
 
@@ -44,7 +44,7 @@ public sealed class NoPolygon : IPolygon
     {
     }
 
-    public void SetLatLng(PolygonLatLng latLngs)
+    public void SetLatLngs(PolygonLatLng latLngs)
     {
     }
 

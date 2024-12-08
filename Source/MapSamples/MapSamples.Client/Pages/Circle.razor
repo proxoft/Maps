@@ -1,0 +1,69 @@
+﻿@page "/circle"
+
+
+<PageTitle>Counter</PageTitle>
+
+<h3>Circle</h3>
+
+<div class="default-map-container" @ref="_mapHost">
+</div>
+
+<div>
+    Radius: <input @bind="_radius" /> <button @onclick="this.OnApplyRadius">Apply</button>
+</div>
+
+@code {
+    private IMap _map = NoMap.Instance;
+    private ICircle _circle = NoCircle.Instance;
+
+    private ElementReference _mapHost;
+
+    private string _radius = "";
+
+    protected override void OnAfterFirstRender()
+    {
+        base.OnAfterFirstRender();
+
+        LatLng center = new()
+            {
+                Latitude = -34.397m,
+                Longitude = 150.644m
+            };
+
+        this.MapFactory.Initialize(
+            new MapOptions
+                {
+                    Center = center,
+                    Zoom = 10,
+                },
+            _mapHost
+        )
+        .Subscribe(map => {
+            _map = map;
+            this.InitializeCircle();
+        });
+    }
+
+    private void InitializeCircle()
+    {
+        _circle = _map.AddCircle(new CircleOptions()
+        {
+            TraceJs = true,
+            LatLng = new()
+            {
+                Latitude = -34.397m,
+                Longitude = 150.644m
+            }
+        });
+    }
+
+    private void OnApplyRadius()
+    {
+        if(!decimal.TryParse(_radius, out decimal radius))
+        {
+            return;
+        }
+
+        _circle.SetRadius(radius);
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Subjects;
 using Microsoft.JSInterop;
+using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
@@ -110,6 +111,11 @@ internal class GoogleMap : IMap
     }
 
     public IPolyline AddPolyline(PolylineOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ICircle AddCircle(CircleOptions options)
     {
         throw new NotImplementedException();
     }

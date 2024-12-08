@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Factories;
+using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 
@@ -12,9 +14,10 @@ public abstract class Map : ApiObject, IMap
     private readonly MapJsCallback _mapJsCallback;
     private readonly IMapObjectsFactory _mapObjectsFactory;
 
-    private readonly List<Marker> _markers = new();
-    private readonly List<Polygon> _polygons = new();
-    private readonly List<Polyline> _polylines = new();
+    private readonly List<Marker> _markers = [];
+    private readonly List<Polygon> _polygons = [];
+    private readonly List<Polyline> _polylines = [];
+    private readonly List<Circle> _circles = [];
 
     protected Map(
         string mapId,
@@ -79,9 +82,17 @@ public abstract class Map : ApiObject, IMap
         return polyline;
     }
 
+    public ICircle AddCircle(CircleOptions options)
+    {
+        Circle circle = _mapObjectsFactory.CreateCircle(this.OnCircleRemove);
+        _circles.Add(circle);
+        circle.AddToMap(this.Id, options);
+        return circle;
+    }
+
     public void Initialize(MapOptions options, ElementReference hostElement)
     {
-        this.InvokeVoidJs("InitializeMapOnElement", new object[] { options, hostElement, _mapJsCallback.DotNetRef });
+        this.InvokeVoidJs("InitializeMapOnElement", [options, hostElement, _mapJsCallback.DotNetRef]);
     }
 
     protected override sealed void ExecuteRemove()
@@ -90,6 +101,8 @@ public abstract class Map : ApiObject, IMap
 
         _markers.DisposeAll();
         _polygons.DisposeAll();
+        _polylines.DisposeAll();
+        _circles.DisposeAll();
     }
 
     protected override void Dispose(bool disposing)
@@ -118,5 +131,11 @@ public abstract class Map : ApiObject, IMap
     {
         var i = _polylines.FindIndex(p => p.Id == polylineId);
         _polylines.RemoveAt(i);
+    }
+
+    private void OnCircleRemove(string circleId)
+    {
+        int i = _circles.FindIndex(c => c.Id == circleId);
+        _circles.RemoveAt(i);
     }
 }

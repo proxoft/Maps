@@ -11,22 +11,22 @@ internal static class ResultExtensions
         {
             Country = result.address.ToCountry(),
             City = result.address.ToCity(),
-            Street = result.address.road,
+            Street = result.address.road ?? "",
             StreetNumber = result.address.ToStreetNumber(),
-            Zip = result.address.postcode,
+            Zip = result.address.postcode ?? "",
             LatLng = result.ToLatLng()
         };
     }
 
-    private static Maps.Core.Abstractions.Models.LatLng ToLatLng(this Result result)
+    private static Core.Abstractions.Models.LatLng ToLatLng(this Result result)
     {
         if(!decimal.TryParse(result.lat, NumberStyles.Any, CultureInfo.InvariantCulture, out var lat)
             || !decimal.TryParse(result.lon, NumberStyles.Any, CultureInfo.InvariantCulture, out var lng))
         {
-            return Maps.Core.Abstractions.Models.LatLng.None;
+            return Core.Abstractions.Models.LatLng.None;
         }
 
-        return new Maps.Core.Abstractions.Models.LatLng
+        return new Core.Abstractions.Models.LatLng
         {
             Latitude = lat,
             Longitude = lng
@@ -35,7 +35,7 @@ internal static class ResultExtensions
 
     private static string ToCountry(this AddressDetail address)
     {
-        return address.country ?? address.state;
+        return address.country ?? address.state ?? "";
     }
 
     private static string ToCity(this AddressDetail address)
@@ -43,12 +43,14 @@ internal static class ResultExtensions
         return address.village
             ?? address.town
             ?? address.city_district
-            ?? address.municipality;
+            ?? address.municipality
+            ?? "";
     }
 
     private static string ToStreetNumber(this AddressDetail address)
     {
         return address.house_number
-            ?? address.house_name;
+            ?? address.house_name
+            ?? "";
     }
 }
