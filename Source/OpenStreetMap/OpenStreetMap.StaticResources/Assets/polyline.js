@@ -49,6 +49,7 @@ export function GetLatLngs(polylineId) {
     polylineWrapper.log("getLatLngs >>");
 
     let latLngs = polylineWrapper.polyline.getLatLngs();
+    polylineWrapper.log(latLngs);
 
     return latLngs;
 }

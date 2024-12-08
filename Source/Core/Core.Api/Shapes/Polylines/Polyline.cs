@@ -36,23 +36,8 @@ public abstract class Polyline : Shape, IPolyline
 
     public void SetLatLngs(LatLng[][] latLngs)
     {
-        this.InvokeVoidJs("SetLatLng", latLngs);
+        this.InvokeVoidJs("SetLatLngs", latLngs);
     }
-
-    //public void SetStyle(Style style)
-    //{
-    //    this.InvokeVoidJs("SetStyle", style);
-    //}
-
-    //public void AddClass(params string[] classes)
-    //{
-    //    this.InvokeVoidJs("AddClass", string.Join(" ", classes));
-    //}
-
-    //public void RemoveClass(params string[] classes)
-    //{
-    //    this.InvokeVoidJs("RemoveClass", string.Join(" ", classes));
-    //}
 
     protected override void ExecuteRemove()
     {

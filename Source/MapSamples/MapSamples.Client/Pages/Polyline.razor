@@ -1,0 +1,166 @@
+﻿@page "/Polyline"
+
+<h3>Polyline</h3>
+
+<div>
+    <div class="default-map-container" @ref="MapHost">
+    </div>
+</div>
+
+<div>
+    <button @onclick=@(() => this.ChangeLatLngs())>Change lat lngs of polyline</button>
+    <button @onclick=this.ChangeCssClassOfPolyline2>Toggle class name</button>
+</div>
+<div>
+    <button @onclick=this.GetLatLngs>Get lat lngs of polyline</button>
+    <br />
+    @this.Polyline1LatLngs
+</div>
+
+<br />
+
+<div>
+</div>
+
+
+@code {
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IPolyline _pol1 = NoPolyline.Instance;
+    private IPolyline _pol2 = NoPolyline.Instance;
+    private bool _polylineCssToggle;
+
+    private List<string> MapLog { get; set; } = new();
+
+    private ElementReference MapHost { get; set; }
+
+    private string Polyline1LatLngs { get; set; } = "";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Do(map =>
+            {
+                _map = map;
+                this.CreatePolylines();
+            })
+            .Subscribe(
+                _  => { },
+                ex => Console.WriteLine(ex.Message)
+            );
+    }
+
+    private void CreatePolylines()
+    {
+        PolylineOptions options = PolylineOptions.SingleLine(
+            new[]
+            {
+                new LatLng { Latitude = 51.51m, Longitude = -0.10m },
+                new LatLng { Latitude = 51.51m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.06m }
+            },
+            style: new Style()
+            {
+                Fill = false
+            },
+            traceJs: true
+        );
+
+        _pol1 = _map.AddPolyline(options);
+
+        options = PolylineOptions.MultiLine(
+            new[]
+            {
+                new[] {
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.09m },
+                        new LatLng { Latitude = 51.51m,  Longitude = -0.05m },
+                        new LatLng { Latitude = 51.45m,  Longitude = -0.047m },
+                },
+                new[]
+                {
+                    new LatLng { Latitude = 51.5m,  Longitude = -0.08m },
+                    new LatLng { Latitude = 51.5m,  Longitude = -0.06m },
+                    new LatLng { Latitude = 51.47m,  Longitude = -0.05m },
+                }
+            },
+            style: new Style()
+                {
+                    Fill = false,
+                    Color = "red",
+                    ClassName = "polyline-red-stroke"
+                },
+            traceJs: true
+        );
+
+        _pol2 = _map.AddPolyline(options);
+    }
+
+    private void ChangeCssClassOfPolyline2()
+    {
+        string toRemove = _polylineCssToggle ? "polyline-yellow-stroke" : "polyline-red-stroke";
+        string toAdd = _polylineCssToggle ? "polyline-red-stroke" : "polyline-yellow-stroke";
+
+        _pol2.RemoveClass(toRemove);
+        _pol2.RemoveClass(toRemove);
+        _pol2.AddClass(toAdd);
+        _pol2.AddClass(toAdd);
+
+        _polylineCssToggle = !_polylineCssToggle;
+    }
+
+    private void ChangeLatLngs()
+    {
+        Random random = new();
+
+        LatLng[] lntLongs = new[]
+            {
+                new LatLng { Latitude = 51.51m, Longitude = -0.10m },
+                new LatLng { Latitude = 51.51m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.15m },
+                new LatLng { Latitude = 51.45m, Longitude = -0.06m }
+            }
+            .Select(ll =>
+            {
+                return new LatLng()
+                    {
+                        Latitude = ll.Latitude + random.Next(-10, 10) / 10m,
+                        Longitude = ll.Longitude + random.Next(-10, 10) / 10m
+                    };
+            })
+            .ToArray();
+
+        _pol1.SetLatLngs(lntLongs);
+    }
+
+    private void GetLatLngs()
+    {
+        PolylineLatLng ll = _pol1.GetLatLngs();
+        this.Polyline1LatLngs = ll.ToString();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _pol1.Dispose();
+            _pol2.Dispose();
+            _map.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+}
