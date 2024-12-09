@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using System.Collections.Generic;
 using Proxoft.Maps.OpenStreetMap.Maps.Infrastructure;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps;
 
 internal class OsmModules
 {
-    private static readonly ValueOrWait<OsmModules> _modules = new(null!);
+    private static readonly ValueOrWait<OsmModules> _modules = ValueOrWait<OsmModules>.Empty();
     private static bool _initialized;
 
     private OsmModules(
@@ -42,38 +44,16 @@ internal class OsmModules
         if (!_initialized)
         {
             _initialized = true;
+            string path = resourcePath.NormalizePath();
+            string version = VersionProvider.GetScriptsVersion();
 
-            string version = GetJsVersion();
-            Console.WriteLine($"Loading scripts version: {version}");
+            Console.WriteLine($"Loading OpenStreetMap scripts version: {version}");
 
-            var mapS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                    "import",
-                    $".{resourcePath}/map_{version}.js") // $"./_content/Proxoft.Maps.OpenStreetMap.Maps/maps_{v}.js")
-                .AsTask();
-
-            var markerS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                    "import",
-                    $".{resourcePath}/marker_{version}.js")
-                .AsTask();
-
-            var polygonsS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                    "import",
-                    $".{resourcePath}/polygon_{version}.js")
-                .AsTask();
-
-            var polylinesS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                    "import",
-                    $".{resourcePath}/polyline_{version}.js")
-                .AsTask();
-
-            var circleS = jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
-                    "import",
-                    $".{resourcePath}/circle_{version}.js")
-                .AsTask();
-
-            Task.WhenAll(mapS, markerS, polygonsS, polylinesS, circleS)
+            PrepareImportTasks(jsRuntime, path, version)
+                .WhenAll()
                 .ToObservable()
                 .Take(1)
+                .Select(modules => modules.Skip(2).ToArray())
                 .Do(modules =>
                 {
                     OsmModules osm = new(modules[0], modules[1], modules[2], modules[3], modules[4]);
@@ -88,10 +68,63 @@ internal class OsmModules
         return _modules;
     }
 
-    private static string GetJsVersion()
+    private static IEnumerable<Task<IJSInProcessObjectReference>> PrepareImportTasks(
+        IJSRuntime jsRuntime, string resourcePath, string version)
     {
-        string v = typeof(OsmModules).Assembly.GetName().Version?.ToString() ?? "0.0.0.0";
-        int i = v.LastIndexOf('.');
-        return v[..i];
+        yield return jsRuntime.ImportCss($"{resourcePath}/leafletCss.js", resourcePath);
+        yield return jsRuntime.ImportScript($"{resourcePath}/leaflet.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/map.{version}.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/marker.{version}.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/polygon.{version}.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/polyline.{version}.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/circle.{version}.js");
+    }
+}
+
+file static class JsRuntimeExtensions
+{
+    public static Task<IJSInProcessObjectReference> ImportScript(
+        this IJSRuntime jsRuntime,
+        string scriptPath)
+    {
+        return jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+            "import",
+            scriptPath)
+            .AsTask();
+    }
+
+    public static async Task<IJSInProcessObjectReference> ImportCss(
+        this IJSRuntime jsRuntime,
+        string scriptPath,
+        string resourcePath)
+    {
+        IJSInProcessObjectReference jsObjectReference = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>(
+            "import",
+            scriptPath);
+
+        await jsObjectReference.InvokeVoidAsync("appendOpenStreetMapCss", resourcePath);
+        return jsObjectReference;
+    }
+}
+
+file static class TaskExtensions
+{
+    public static Task<TResult[]> WhenAll<TResult>(this IEnumerable<Task<TResult>> tasks)
+    {
+        return Task.WhenAll(tasks);
+    }
+}
+
+file static class StringExtensions
+{
+    public static string NormalizePath(this string resourcePath)
+    {
+        string result = resourcePath;
+        if (resourcePath.EndsWith('/'))
+        {
+            result = result[..^1];
+        }
+
+        return result;
     }
 }

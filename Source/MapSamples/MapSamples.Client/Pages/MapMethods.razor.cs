@@ -90,8 +90,12 @@ public partial class MapMethods
         this.StateHasChanged();
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _map.Dispose();
+        if (disposing)
+        {
+            _map.Dispose();
+        }
+        base.Dispose(disposing);
     }
 }

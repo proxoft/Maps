@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './map_{version}.js';
+﻿import { findMapWrapper } from './map.{version}.js';
 
-console.log("osm polyline_{version}.js loaded");
+console.log("osm polyline.{version}.js loaded");
 
 var polylineWrappers = [];
 

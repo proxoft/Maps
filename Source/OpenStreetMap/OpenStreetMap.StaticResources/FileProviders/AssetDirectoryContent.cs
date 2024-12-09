@@ -4,14 +4,9 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Proxoft.Maps.OpenStreetMap.StaticResources.FileProviders;
 
-internal class AssetDirectoryContent : IDirectoryContents
+internal class AssetDirectoryContent(IFileInfo[] fileInfos) : IDirectoryContents
 {
-    private readonly IFileInfo[] _fileInfos;
-
-    public AssetDirectoryContent(IFileInfo[] fileInfos)
-    {
-        _fileInfos = fileInfos;
-    }
+    private readonly IFileInfo[] _fileInfos = fileInfos;
 
     public bool Exists => true;
 

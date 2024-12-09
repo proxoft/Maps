@@ -5,19 +5,12 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Proxoft.Maps.OpenStreetMap.StaticResources.FileProviders;
 
-internal class AssetFileInfo : IFileInfo
+internal class AssetFileInfo(
+    string name,
+    byte[] content,
+    DateTimeOffset lastModified) : IFileInfo
 {
-    private readonly string _content;
-
-    public AssetFileInfo(
-        string name,
-        string content,
-        DateTimeOffset lastModified)
-    {
-        _content = content;
-        this.Name = name;
-        this.LastModified = lastModified;
-    }
+    private readonly byte[] _content = content;
 
     public bool Exists => true;
 
@@ -25,14 +18,14 @@ internal class AssetFileInfo : IFileInfo
 
     public string? PhysicalPath => null;
 
-    public string Name { get; }
+    public string Name { get; } = name;
 
-    public DateTimeOffset LastModified { get; }
+    public DateTimeOffset LastModified { get; } = lastModified;
 
     public bool IsDirectory => false;
 
     public Stream CreateReadStream()
     {
-        return new MemoryStream(Encoding.UTF8.GetBytes(_content));
+        return new MemoryStream(_content);
     }
 }

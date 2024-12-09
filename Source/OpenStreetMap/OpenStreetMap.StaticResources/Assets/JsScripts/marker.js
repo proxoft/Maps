@@ -1,6 +1,6 @@
-﻿import { findMapWrapper } from './map_{version}.js';
+﻿import { findMapWrapper } from './map.{version}.js';
 
-console.log("osm marker_{version}.js loaded");
+console.log("osm marker.{version}.js loaded");
 
 var markerWrappers = [];
 
@@ -253,12 +253,11 @@ function createDivIcon(iconOptions) {
 
 function createPngIcon(iconOptions) {
     let options = {
-
-        iconUrl: iconOptions.url || "_content/Proxoft.Maps.OpenStreetMap.Maps/marker-icon.png",
-        retinaUrl: iconOptions.retinaUrl || "_content/Proxoft.Maps.OpenStreetMap.Maps/marker-icon-2x.png",
+        iconUrl: iconOptions.url || "openStreetMap/marker-icon.png",
+        retinaUrl: iconOptions.retinaUrl || "openStreetMap/marker-icon-2x.png",
         iconSize: [iconOptions.size.width, iconOptions.size.height],
         iconAnchor: [iconOptions.iconAnchor.x, iconOptions.iconAnchor.y],
-        shadowUrl: iconOptions.shadowUrl || "_content/Proxoft.Maps.OpenStreetMap.Maps/marker-shadow.png",
+        shadowUrl: iconOptions.shadowUrl || "openStreetMap/marker-shadow.png",
         shadowSize: [iconOptions.shadowSize.width, iconOptions.shadowSize.height],
         shadowAnchor: [iconOptions.shadowAnchor.x, iconOptions.shadowAnchor.y]
     };

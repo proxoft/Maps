@@ -8,11 +8,16 @@ public static class StaticResourcesMiddlewareConfiguration
     public static IApplicationBuilder UseOpenStreetMapAssets(
         this IApplicationBuilder app, string requestPath = "/openStreetMap")
     {
-        app.UseStaticFiles(new StaticFileOptions()
+
+        ResourceFileProvider resourceFileProvider = ResourceFileProvider.Initialize();
+        StaticFileOptions options = new()
         {
             RequestPath = requestPath,
-            FileProvider = ResourceFileProvider.Initialize()
-        });
+            FileProvider = resourceFileProvider,
+            ContentTypeProvider = resourceFileProvider
+        };
+
+        app.UseStaticFiles(options);
 
         return app;
     }
