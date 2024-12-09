@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 
 namespace Proxoft.Maps.OpenStreetMap.StaticResources.FileProviders;
 
-internal class ResourceFileProvider : IFileProvider
+internal class ResourceFileProvider : IFileProvider, IContentTypeProvider
 {
     private readonly IFileInfo[] _fileInfos;
 
@@ -21,7 +22,7 @@ internal class ResourceFileProvider : IFileProvider
 
     public IFileInfo GetFileInfo(string subpath)
     {
-        string name = subpath.StartsWith("/")
+        string name = subpath.StartsWith('/')
             ? subpath[1..]
             : subpath;
 
@@ -39,5 +40,25 @@ internal class ResourceFileProvider : IFileProvider
     public IChangeToken Watch(string filter)
     {
         return NullChangeToken.Singleton;
+    }
+
+    public bool TryGetContentType(string subpath, out string contentType)
+    {
+        IFileInfo fileInfo = this.GetFileInfo(subpath);
+        if(fileInfo is NotFoundFileInfo)
+        {
+            contentType = "";
+            return false;
+        }
+
+        string extension = fileInfo.Name.Split('.').Last().ToLower();
+        contentType = extension switch
+        {
+            "js" => "text/javascript",
+            "css" => "text/css",
+            "png" => "image/png",
+            _ => "text/plain"
+        };
+        return true;
     }
 }

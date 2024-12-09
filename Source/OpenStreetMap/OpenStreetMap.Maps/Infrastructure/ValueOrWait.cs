@@ -6,11 +6,16 @@ namespace Proxoft.Maps.OpenStreetMap.Maps.Infrastructure;
 
 internal class ValueOrWait<T> : IObservable<T>
 {
-    private readonly BehaviorSubject<(bool hasValue, T value)> _value;
+    private readonly BehaviorSubject<(bool hasValue, T? value)> _value;
 
-    public ValueOrWait(T noValue)
+    private ValueOrWait(T? noValue)
     {
-        _value = new BehaviorSubject<(bool hasValue, T value)>((false, noValue));
+        _value = new BehaviorSubject<(bool hasValue, T? value)>((false, noValue));
+    }
+
+    public static ValueOrWait<T> Empty()
+    {
+        return new ValueOrWait<T>(default);
     }
 
     public void SetValue(T value)
@@ -22,7 +27,7 @@ internal class ValueOrWait<T> : IObservable<T>
     {
         return _value
             .Where(v => v.hasValue)
-            .Select(v => v.value)
+            .Select(v => v.value!)
             .Subscribe(observer);
     }
 }

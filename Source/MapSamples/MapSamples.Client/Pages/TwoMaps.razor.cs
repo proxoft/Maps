@@ -14,9 +14,9 @@ public sealed partial class TwoMaps : IDisposable
 
     ElementReference Map2Host { get; set; }
 
-    private List<string> Map1Log { get; set; } = new();
+    private List<string> Map1Log { get; set; } = [];
 
-    private List<string> Map2Log { get; set; } = new();
+    private List<string> Map2Log { get; set; } = [];
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -80,9 +80,14 @@ public sealed partial class TwoMaps : IDisposable
         _map1.PanTo(new LatLng { Latitude = 48.15m, Longitude = 17.6m });
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _map1.Dispose();
-        _map2.Dispose();
+        if (disposing)
+        {
+            _map1.Dispose();
+            _map2.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

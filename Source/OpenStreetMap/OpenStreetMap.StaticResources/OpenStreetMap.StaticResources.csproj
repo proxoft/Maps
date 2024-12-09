@@ -1,29 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <EmbeddedResource Include="Assets\polygon.js">
+    <None Remove="Assets\Leaflet\Images\layers-2x.png" />
+    <None Remove="Assets\Leaflet\Images\layers.png" />
+    <None Remove="Assets\Leaflet\Images\marker-icon-2x.png" />
+    <None Remove="Assets\Leaflet\Images\marker-icon.png" />
+    <None Remove="Assets\Leaflet\Images\marker-shadow.png" />
+    <None Remove="Assets\Leaflet\leaflet.css" />
+    <None Remove="Assets\Leaflet\leaflet.js" />
+    <None Remove="Assets\Leaflet\leaflet.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\JsScripts\polygon.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Assets\circle.js">
+    <EmbeddedResource Include="Assets\JsScripts\circle.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Assets\polyline.js">
+    <EmbeddedResource Include="Assets\JsScripts\polyline.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\marker.js">
+    <EmbeddedResource Include="Assets\JsScripts\marker.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\map.js">
+    <EmbeddedResource Include="Assets\JsScripts\map.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Assets\Leaflet\Images\layers-2x.png" />
+    <EmbeddedResource Include="Assets\Leaflet\Images\layers.png" />
+    <EmbeddedResource Include="Assets\Leaflet\Images\marker-icon-2x.png" />
+    <EmbeddedResource Include="Assets\Leaflet\Images\marker-icon.png" />
+    <EmbeddedResource Include="Assets\Leaflet\Images\marker-shadow.png" />
+    <EmbeddedResource Include="Assets\Leaflet\leafletCss.js" />
+    <EmbeddedResource Include="Assets\Leaflet\leaflet.css" />
+    <EmbeddedResource Include="Assets\Leaflet\leaflet.js" />
+    <EmbeddedResource Include="Assets\Leaflet\leaflet.js.map" />
   </ItemGroup>
 
   <ItemGroup>

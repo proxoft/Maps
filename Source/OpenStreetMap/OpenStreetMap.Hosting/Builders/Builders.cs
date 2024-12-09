@@ -18,7 +18,7 @@ internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime
     private readonly IServiceCollection _services = services;
     private readonly ServiceLifetime _serviceLifetime = serviceLifetime;
 
-    private readonly List<ServiceDescriptor> _serviceDescriptors = new();
+    private readonly List<ServiceDescriptor> _serviceDescriptors = [];
     private ServiceDescriptor _optionsDescriptor = new(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
 
     IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.UseInstance(OpenStreetMapOptions options)

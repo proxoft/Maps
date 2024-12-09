@@ -13,4 +13,8 @@
       <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
 </Project>
