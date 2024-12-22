@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.Abstractions.Models;
 
 namespace Proxoft.Maps.Core.Abstractions.Geocoding;

@@ -3,7 +3,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.35" />
         <PackageReference Include="Microsoft.JSInterop" Version="6.0.35" />
-        <PackageReference Include="Proxoft.Extensions.Options" Version="1.4.0" />
+        <PackageReference Include="Proxoft.Optional" Version="1.2.0" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 

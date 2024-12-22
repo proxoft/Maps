@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <PackageReference Include="Proxoft.Extensions.Options" Version="1.4.0" />
+      <PackageReference Include="Proxoft.Optional" Version="1.2.0" />
     </ItemGroup>
 
 </Project>

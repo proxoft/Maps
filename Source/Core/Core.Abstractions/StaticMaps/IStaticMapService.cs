@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Proxoft.Extensions.Options;
 
 namespace Proxoft.Maps.Core.Abstractions.StaticMaps;
 

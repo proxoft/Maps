@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.Abstractions.StaticMaps;
 using Proxoft.Maps.MapBox.Common;
 using Proxoft.Maps.MapBox.StaticMaps.Helpers;
+using Proxoft.Optional;
 
 namespace Proxoft.Maps.MapBox.StaticMaps;
 
