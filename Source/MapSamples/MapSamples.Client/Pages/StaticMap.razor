@@ -1,5 +1,6 @@
 ﻿@page "/StaticMap"
-@using Proxoft.Extensions.Options
+
+@using Proxoft.Maps.Core.Abstractions.Models
 @using Proxoft.Maps.Core.Abstractions.StaticMaps
 
 <h3>StaticMap</h3>
@@ -62,15 +63,17 @@
         var either = await this.StaticMapService.CreateImage(options);
 
         this.ImageSrc = either
-            .Map(data => {
-                this.Error = string.Empty;
-                return $"data:image/png;base64, {Convert.ToBase64String(data)}";
-            })
-            .Reduce(error =>
-            {
-                this.Error = error;
-                return "";
-            });
+            .Reduce(
+                data =>
+                {
+                    this.Error = string.Empty;
+                    return $"data:image/png;base64, {Convert.ToBase64String(data)}";
+                },
+                error =>
+                {
+                    this.Error = error;
+                    return "";
+                });
 
         this.StateHasChanged();
     }

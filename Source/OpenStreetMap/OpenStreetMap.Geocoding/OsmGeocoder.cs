@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Proxoft.Extensions.Options;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding.Models;
+using Proxoft.Optional;
 
 namespace Proxoft.Maps.OpenStreetMap.Geocoding;
 
