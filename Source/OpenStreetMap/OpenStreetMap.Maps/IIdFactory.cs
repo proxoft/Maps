@@ -11,4 +11,6 @@ public interface IIdFactory
     string NextPolylineId();
 
     string NextCircleId();
+
+    string NextRectangleId();
 }

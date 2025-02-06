@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Proxoft.Maps.Core.Api.Shapes.Polylines;
+﻿namespace Proxoft.Maps.Core.Api.Shapes.Polylines;
 
 public record class PolylineOptions
 {

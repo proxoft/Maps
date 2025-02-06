@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 namespace Proxoft.Maps.Core.Abstractions.Models;
 
@@ -15,9 +14,19 @@ public record LatLngBounds
 
     public decimal South { get; init; }
 
+    public LatLng SouthEast => new() { Latitude = this.South, Longitude = this.East };
+
     public LatLng SouthWest => new() {  Latitude = this.South, Longitude = this.West };
 
     public LatLng NorthEast => new() { Latitude = this.North, Longitude = this.East };
+
+    public LatLng NorthWest => new() { Latitude = this.North, Longitude = this.West };
+
+    public LatLng Center => new()
+    {
+        Latitude = this.East + (this.West - this.East) / 2,
+        Longitude = this.South + (this.North - this.South) / 2
+    };
 
     public bool Covers(LatLngBounds other)
     {
@@ -45,5 +54,25 @@ public record LatLngBounds
             North = Math.Max(corner1.Latitude, corner2.Latitude),
             South = Math.Min(corner1.Latitude, corner2.Latitude)
         };
+    }
+
+    public LatLngBounds MoveCenter(LatLng center)
+    {
+        decimal latWidth = (this.North - this.South) / 2;
+        decimal lngWidth = (this.West - this.East) / 2;
+
+        LatLng sw = new()
+        {
+            Latitude = center.Latitude - latWidth,
+            Longitude = center.Longitude - lngWidth
+        };
+
+        LatLng ne = new()
+        {
+            Latitude = center.Latitude + latWidth,
+            Longitude = center.Longitude + lngWidth
+        };
+
+        return FromCorners(sw, ne);
     }
 }

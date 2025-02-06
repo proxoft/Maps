@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
+using Proxoft.Maps.Core.Api.Shapes.Rectangles;
 
 namespace Proxoft.Maps.Core.Api;
 
@@ -34,9 +35,8 @@ public sealed class NoMap : IMap
     public ICircle AddCircle(CircleOptions options)
         => NoCircle.Instance;
 
-    public void Dispose()
-    {
-    }
+    public IRectangle AddRectangle(RectangleOptions options)
+       => NoRectangle.Instance;
 
     public void FitBounds(LatLngBounds bounds)
     {
@@ -70,6 +70,10 @@ public sealed class NoMap : IMap
 
     public void Remove()
     {
-        throw new NotImplementedException();
     }
+
+    public void Dispose()
+    {
+    }
+
 }

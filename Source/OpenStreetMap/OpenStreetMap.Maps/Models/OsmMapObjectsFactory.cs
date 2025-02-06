@@ -9,6 +9,7 @@ using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Circles;
+using Proxoft.Maps.Core.Api.Shapes.Rectangles;
 
 namespace Proxoft.Maps.OpenStreetMap.Maps.Models;
 
@@ -44,5 +45,10 @@ internal class OsmMapObjectsFactory(
     public Circle CreateCircle(Action<string> onRemove)
     {
         return new OsmCircle(_idFactory.NextCircleId(), onRemove, _osmModules.Circle);
+    }
+
+    public Rectangle CreateRectangle(Action<string> onRemove)
+    {
+        return new OsmRectangle(_idFactory.NextRectangleId(), onRemove, _osmModules.Rectangle);
     }
 }

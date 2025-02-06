@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
+using Proxoft.Maps.Core.Api.Shapes.Rectangles;
 
 namespace Proxoft.Maps.Google.Maps.Models.Maps;
 
@@ -116,6 +117,11 @@ internal class GoogleMap : IMap
     }
 
     public ICircle AddCircle(CircleOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IRectangle AddRectangle(RectangleOptions options)
     {
         throw new NotImplementedException();
     }

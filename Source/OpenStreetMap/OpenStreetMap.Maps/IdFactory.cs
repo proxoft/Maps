@@ -29,6 +29,11 @@ public class IdFactory : IIdFactory
         return this.NextId("crc");
     }
 
+    public string NextRectangleId()
+    {
+        return this.NextId("rct");
+    }
+
     private string NextId(string prefix, string separator = "-")
     {
         int id = this.NextId();

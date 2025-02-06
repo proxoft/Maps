@@ -19,7 +19,8 @@ internal class OsmModules
         IJSInProcessObjectReference marker,
         IJSInProcessObjectReference polygon,
         IJSInProcessObjectReference polyline,
-        IJSInProcessObjectReference circle
+        IJSInProcessObjectReference circle,
+        IJSInProcessObjectReference rectangle
         )
     {
         this.Map = map;
@@ -27,6 +28,7 @@ internal class OsmModules
         this.Polygon = polygon;
         this.Polyline = polyline;
         this.Circle = circle;
+        this.Rectangle = rectangle;
     }
 
     public IJSInProcessObjectReference Map { get; }
@@ -38,6 +40,8 @@ internal class OsmModules
     public IJSInProcessObjectReference Polyline { get; }
 
     public IJSInProcessObjectReference Circle { get; }
+
+    public IJSInProcessObjectReference Rectangle { get; }
 
     public static IObservable<OsmModules> Load(IJSRuntime jsRuntime, string resourcePath)
     {
@@ -56,7 +60,7 @@ internal class OsmModules
                 .Select(modules => modules.Skip(2).ToArray())
                 .Do(modules =>
                 {
-                    OsmModules osm = new(modules[0], modules[1], modules[2], modules[3], modules[4]);
+                    OsmModules osm = new(modules[0], modules[1], modules[2], modules[3], modules[4], modules[5]);
                     _modules.SetValue(osm);
                 })
                 .Subscribe(
@@ -78,6 +82,7 @@ internal class OsmModules
         yield return jsRuntime.ImportScript($"{resourcePath}/polygon.{version}.js");
         yield return jsRuntime.ImportScript($"{resourcePath}/polyline.{version}.js");
         yield return jsRuntime.ImportScript($"{resourcePath}/circle.{version}.js");
+        yield return jsRuntime.ImportScript($"{resourcePath}/rectangle.{version}.js");
     }
 }
 

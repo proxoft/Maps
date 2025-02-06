@@ -1,0 +1,67 @@
+﻿@page "/Rectangle"
+@using Proxoft.Maps.Core.Api.Shapes.Rectangles
+
+<h3>Rectangle</h3>
+
+<div>
+    <div class="default-map-container" @ref="MapHost">
+    </div>
+</div>
+
+@code {
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IRectangle _rectangle = NoRectangle.Instance;
+
+    private ElementReference MapHost { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+                // TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Do(map =>
+            {
+                _map = map;
+                this.CreateRectangle();
+            })
+            .Subscribe(
+                _ => { },
+                ex => Console.WriteLine(ex.Message)
+            );
+    }
+
+    private void CreateRectangle()
+    {
+        LatLngBounds bounds = LatLngBounds.FromCorners(
+            new LatLng { Latitude = 51.50m, Longitude = -0.07m },
+            new LatLng { Latitude = 51.48m, Longitude = -0.05m }
+        );
+
+        RectangleOptions options = new()
+        {
+            Bounds = bounds,
+            TraceJs = true,
+            Style = new()
+            {
+                Color = "#ff7800",
+                Weight = 1,
+                FillColor = "gray",
+                FillOpacity = 0.5m,
+            },
+        };
+
+        _rectangle = _map.AddRectangle(options);
+    }
+}
