@@ -54,4 +54,8 @@ public sealed class NoRectangle : IRectangle
     public void SetCenter(LatLng latLng)
     {
     }
+
+    public void SetDraggable(bool draggable)
+    {
+    }
 }

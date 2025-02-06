@@ -20,6 +20,8 @@ export function AddRectangle(rectangleId, options, mapId, netRef) {
     let rectangleWrapper = createRectangleWrapper(rectangleId, rectangle, mapWrapper.map, netRef, options.traceJs);
     rectangleWrappers.push(rectangleWrapper);
 
+    rectangleWrapper.setDraggable(options.draggable);
+
     rectangleWrapper.log(`addRectangle >>>> Added to the map ${mapId}`);
 }
 
@@ -56,6 +58,12 @@ export function GetBounds(rectangleId) {
             longitude: bounds.getEast()
         }
     ];
+}
+
+export function SetRectangleDraggable(rectangleId, draggable) {
+    let rectangleWrapper = findRectangleWrapper(rectangleId);
+    rectangleWrapper.log("setRectangleDraggable >>");
+    rectangleWrapper.setDraggable(draggable);
 }
 
 export function SetStyle(rectangleId, style) {
@@ -101,6 +109,9 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
 
     let wrapper = {
         rectangleId: rectangleId,
+        draggable: false,
+        dragLatLngSwDelta: { lat: 0, lng: 0 },
+        mapDraggingEnabled: false,
         parentMap: map,
         rectangle: rectangle, // rectangle instance
         ref: netRef,      // net object reference
@@ -130,6 +141,24 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
             console.log(`[Rectangle ${wrapper.rectangleId}:${wrapper.refId}]: `, data);
         },
 
+        setDraggable: function (draggable) {
+            if (wrapper.draggable == draggable) {
+                return;
+            }
+
+            wrapper.draggable = draggable;
+            if (draggable) {
+                wrapper.rectangle.on("mousedown", wrapper._mouseDownOnDrag);
+                wrapper.rectangle.on("mouseup", wrapper._mouseUpOnDrag);
+                wrapper.rectangle.on("mouseout", wrapper._mouseOutOnDrag);
+            }
+            else {
+                wrapper.rectangle.off("mousedown", wrapper._mouseDownOnDrag);
+                wrapper.rectangle.off("mouseup", wrapper._mouseUpOnDrag);
+                wrapper.rectangle.off("mouseout", wrapper._mouseOutOnDrag);
+            }
+        },
+
         _onClick: function (e) {
             wrapper.invokeRef("OnMouseClick", { latitude: e.latlng.lat, longitude: e.latlng.lng });
         },
@@ -152,6 +181,48 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
 
         _onMouseOut: function (e) {
             wrapper.invokeRef("OnMouseLeave", { latitude: e.latlng.lat, longitude: e.latlng.lng });
+        },
+
+        _mouseDownOnDrag: function (e) {
+            let bounds = wrapper.rectangle.getBounds();
+            let latDelta = e.latlng.lat - bounds.getSouth();
+            let lngDelta = e.latlng.lng - bounds.getWest();
+            wrapper.dragLatLngSwDelta = { lat: latDelta, lng: lngDelta };
+            wrapper.mapDraggingEnabled = wrapper.parentMap.dragging.enabled();
+
+            wrapper.parentMap.dragging.disable();
+            wrapper.parentMap.on("mousemove", wrapper._mapMouseMove);
+        },
+
+        _mouseUpOnDrag: function () {
+            wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
+            if (wrapper.mapDraggingEnabled) {
+                wrapper.parentMap.dragging.enable();
+            }
+        },
+
+        _mouseOutOnDrag: function () {
+            wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
+            if (wrapper.mapDraggingEnabled) {
+                wrapper.parentMap.dragging.enable();
+            }
+        },
+
+        _mapMouseMove: function (e) {
+            let bounds = wrapper.rectangle.getBounds();
+            let latSize = bounds.getNorth() - bounds.getSouth();
+            let lngSize = bounds.getEast() - bounds.getWest();
+            let delta = wrapper.dragLatLngSwDelta;
+
+            let sw = L.latLng(e.latlng.lat - delta.lat, e.latlng.lng - delta.lng);
+            let ne = L.latLng(sw.lat + latSize, sw.lng + lngSize);
+
+            let newBounds = L.latLngBounds(
+                sw,
+                ne
+            );
+
+            wrapper.rectangle.setBounds(newBounds);
         }
     };
 

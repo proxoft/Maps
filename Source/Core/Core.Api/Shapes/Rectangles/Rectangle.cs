@@ -55,4 +55,9 @@ public abstract class Rectangle : Shape, IRectangle
 
         base.Dispose(disposing);
     }
+
+    public void SetDraggable(bool draggable)
+    {
+        this.InvokeVoidJs("SetRectangleDraggable", draggable);
+    }
 }

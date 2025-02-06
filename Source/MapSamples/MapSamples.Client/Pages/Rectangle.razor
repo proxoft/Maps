@@ -11,6 +11,7 @@
 <div>
     <button @onclick=@(() => this.TogglePosition())>Toggle position</button>
     <button @onclick=@(() => this.ToggleCenter())>Toggle center</button>
+    Draggable <input type="checkbox" @bind="this.Draggable" />
 </div>
 
 @code {
@@ -18,6 +19,7 @@
     private IRectangle _rectangle = NoRectangle.Instance;
     private bool _positionToggle = true;
     private bool _centerToggle = true;
+    private bool _draggable = false;
 
     private LatLngBounds _position1 = LatLngBounds.FromCorners(
             new LatLng { Latitude = 51.50m, Longitude = -0.07m },
@@ -30,6 +32,16 @@
     );
 
     private ElementReference MapHost { get; set; }
+
+    private bool Draggable
+    {
+        get => _draggable;
+        set
+        {
+            _draggable = value;
+            _rectangle.SetDraggable(_draggable);
+        }
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -69,6 +81,7 @@
         RectangleOptions options = new()
         {
             Bounds = bounds,
+            Draggable = _draggable,
             TraceJs = true,
             Style = new()
             {

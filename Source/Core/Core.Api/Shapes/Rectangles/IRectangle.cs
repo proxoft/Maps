@@ -9,4 +9,6 @@ public interface IRectangle : IShape
     LatLng GetCenter();
 
     void SetCenter(LatLng latLng);
+
+    void SetDraggable(bool draggable);
 }
