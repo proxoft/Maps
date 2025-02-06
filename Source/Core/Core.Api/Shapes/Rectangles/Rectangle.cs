@@ -38,7 +38,7 @@ public abstract class Rectangle : Shape, IRectangle
 
     public void SetBounds(LatLngBounds bounds)
     {
-        this.InvokeVoidJs("SetBounds", bounds.SouthWest, bounds.NorthEast);
+        this.InvokeVoidJs("SetBounds", bounds);
     }
 
     protected override void ExecuteRemove()

@@ -36,7 +36,7 @@ export function SetBounds(rectangleId, bounds) {
     let rectangleWrapper = findRectangleWrapper(rectangleId);
     rectangleWrapper.log(`setBounds >> ${JSON.stringify(bounds)}`);
 
-    let latLngBounds = toLatLngBounds(options.bounds);
+    let latLngBounds = toLatLngBounds(bounds);
     rectangleWrapper.rectangle.setBounds(latLngBounds);
 }
 
@@ -167,7 +167,7 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
 }
 
 function findRectangleWrapper(rectangleId) {
-    let i = rectangleWrappers(rectangleId);
+    let i = findRectangleWrapperIndex(rectangleId);
     return i === -1
         ? null
         : rectangleWrappers[i];

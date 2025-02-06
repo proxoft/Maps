@@ -24,8 +24,8 @@ public record LatLngBounds
 
     public LatLng Center => new()
     {
-        Latitude = this.East + (this.West - this.East) / 2,
-        Longitude = this.South + (this.North - this.South) / 2
+        Latitude = this.South + (this.North - this.South) / 2,
+        Longitude = this.East + (this.West - this.East) / 2
     };
 
     public bool Covers(LatLngBounds other)
