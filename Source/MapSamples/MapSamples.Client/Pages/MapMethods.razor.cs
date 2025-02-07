@@ -12,24 +12,33 @@ public partial class MapMethods
 
     private List<string> MapLog { get; set; } = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterFirstRender()
     {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
+        base.OnAfterFirstRender();
+
+        LatLng center = new()
         {
-            LatLng center = new()
+            Latitude = -34.397m,
+            Longitude = 150.644m
+        };
+
+        this.MapFactory.Initialize(
+            new MapOptions { Center = center, Zoom = 7, TraceJs = true },
+            this.MapHost
+        )
+            .Take(1)
+            .Do(map =>
             {
-                Latitude = -34.397m,
-                Longitude = 150.644m
-            };
-
-            _map = await this.MapFactory.Initialize(new MapOptions { Center = center, Zoom = 7, TraceJs = true }, this.MapHost);
-            _map.OnEvent
-                .Where(e => !(e is MouseMoveEvent))
-                .Subscribe(e => this.AddLog(e.Name));
-
-        }
+                _map = map;
+                _draggable = _map.IsDraggable();
+                _map.OnEvent
+                    .Where(e => e is not MouseMoveEvent)
+                    .Subscribe(e => this.AddLog(e.Name));
+            })
+            .Subscribe();
     }
+
+    private bool _draggable;
 
     private decimal PanLat { get; set; } = 48.15m;
     private decimal PanLng { get; set; } = 17.6m;
@@ -43,11 +52,18 @@ public partial class MapMethods
     private int Zoom { get; set; } = 7;
 
     private LatLngBounds Bounds { get; set; } = LatLngBounds.Empty;
+
     private LatLng Center { get; set; } = LatLng.None;
+
+    private bool Draggable
+    {
+        get => _map.IsDraggable();
+        set => _map.SetDraggable(value);
+    }
 
     private void SetCenterClick()
     {
-        _map.SetCenter(new LatLng { Latitude = CenterLat, Longitude = CenterLng });
+        _map.SetCenter(new LatLng { Latitude = this.CenterLat, Longitude = this.CenterLng });
     }
 
     private void GetCenterClick()
@@ -59,7 +75,7 @@ public partial class MapMethods
 
     private void PanToClick()
     {
-        _map.PanTo(new LatLng { Latitude = PanLat, Longitude = PanLng });
+        _map.PanTo(new LatLng { Latitude = this.PanLat, Longitude = this.PanLng });
     }
 
     private void ZoomToClick()
@@ -82,6 +98,11 @@ public partial class MapMethods
         });
 
         _map.FitBounds(bounds);
+    }
+
+    private void UpdateDraggable()
+    {
+        _map.SetDraggable(_draggable);
     }
 
     private void AddLog(string logMessage)

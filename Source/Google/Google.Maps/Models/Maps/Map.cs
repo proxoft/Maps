@@ -125,4 +125,14 @@ internal class GoogleMap : IMap
     {
         throw new NotImplementedException();
     }
+
+    public void SetDraggable(bool draggable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsDraggable()
+    {
+        throw new NotImplementedException();
+    }
 }

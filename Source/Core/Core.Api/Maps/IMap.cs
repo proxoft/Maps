@@ -32,4 +32,8 @@ public interface IMap : IApiObject
     void FitBounds(LatLngBounds bounds, Padding padding, ZoomLevel zoom);
 
     LatLngBounds GetBounds();
+
+    void SetDraggable(bool draggable);
+
+    bool IsDraggable();
 }

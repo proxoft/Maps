@@ -76,4 +76,12 @@ public sealed class NoMap : IMap
     {
     }
 
+    public void SetDraggable(bool draggable)
+    {
+    }
+
+    public bool IsDraggable()
+    {
+        return false;
+    }
 }

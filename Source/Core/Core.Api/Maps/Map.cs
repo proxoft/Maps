@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Factories;
@@ -56,6 +57,18 @@ public abstract class Map : ApiObject, IMap
     {
         LatLng[] corners = this.InvokeJs<LatLng[]>("GetBounds");
         return LatLngBounds.FromCorners(corners[0], corners[1]);
+    }
+
+    public void SetDraggable(bool draggable)
+    {
+        Console.WriteLine("SetDraggable");
+        this.InvokeVoidJs("SetDraggable", draggable);
+    }
+
+    public bool IsDraggable()
+    {
+        bool isDraggable = this.InvokeJs<bool>("IsDraggable");
+        return isDraggable;
     }
 
     public IMarker AddMarker(MarkerOptions options)
@@ -155,3 +168,4 @@ public abstract class Map : ApiObject, IMap
         _rectangles.RemoveAt(i);
     }
 }
+;

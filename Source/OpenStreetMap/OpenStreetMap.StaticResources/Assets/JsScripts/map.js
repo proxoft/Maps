@@ -100,6 +100,28 @@ export function GetBounds(mapId) {
     ];
 }
 
+export function SetDraggable(mapId, draggable) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.log(`setDraggable >> ${draggable}`);
+
+    if (draggable) {
+        wrapper.map.dragging.enable();
+    }
+    else {
+        wrapper.map.dragging.disable();
+    }
+}
+
+export function IsDraggable(mapId) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.log(`isDraggable >>`);
+
+    let isDraggable = wrapper.map.dragging.enabled();
+
+    wrapper.log(`isDraggable >> ${isDraggable}`);
+    return isDraggable;
+}
+
 export function findMapWrapper(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
     return i === -1
