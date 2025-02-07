@@ -3,12 +3,8 @@ using System;
 
 namespace Proxoft.Maps.Core.Api.Shapes;
 
-public abstract class Shape : ApiObject, IShape
+public abstract class Shape(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule) : ApiObject(id, onRemove, jsModule), IShape
 {
-    protected Shape(string id, Action<string> onRemove, IJSInProcessObjectReference jsModule): base(id, onRemove, jsModule)
-    {
-    }
-
     public void AddClass(params string[] classes)
     {
         this.InvokeVoidJs("AddClass", string.Join(" ", classes));

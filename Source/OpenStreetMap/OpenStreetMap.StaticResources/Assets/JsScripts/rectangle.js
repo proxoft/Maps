@@ -48,16 +48,7 @@ export function GetBounds(rectangleId) {
 
     let bounds = rectangleWrapper.rectangle.getBounds();
 
-    return [
-        {
-            latitude: bounds.getSouth(),
-            longitude: bounds.getWest()
-        },
-        {
-            latitude: bounds.getNorth(),
-            longitude: bounds.getEast()
-        }
-    ];
+    return toSwNeCorners(bounds);
 }
 
 export function SetRectangleDraggable(rectangleId, draggable) {
@@ -110,6 +101,7 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
     let wrapper = {
         rectangleId: rectangleId,
         draggable: false,
+        isDragging: false,
         dragLatLngSwDelta: { lat: 0, lng: 0 },
         mapDraggingEnabled: false,
         parentMap: map,
@@ -149,13 +141,13 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
             wrapper.draggable = draggable;
             if (draggable) {
                 wrapper.rectangle.on("mousedown", wrapper._mouseDownOnDrag);
-                wrapper.rectangle.on("mouseup", wrapper._mouseUpOnDrag);
-                wrapper.rectangle.on("mouseout", wrapper._mouseOutOnDrag);
+                wrapper.rectangle.on("mouseup", wrapper._finishDragging);
+                wrapper.rectangle.on("mouseout", wrapper._finishDragging);
             }
             else {
                 wrapper.rectangle.off("mousedown", wrapper._mouseDownOnDrag);
-                wrapper.rectangle.off("mouseup", wrapper._mouseUpOnDrag);
-                wrapper.rectangle.off("mouseout", wrapper._mouseOutOnDrag);
+                wrapper.rectangle.off("mouseup", wrapper._finishDragging);
+                wrapper.rectangle.off("mouseout", wrapper._finishDragging);
             }
         },
 
@@ -188,25 +180,32 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
             let latDelta = e.latlng.lat - bounds.getSouth();
             let lngDelta = e.latlng.lng - bounds.getWest();
             wrapper.dragLatLngSwDelta = { lat: latDelta, lng: lngDelta };
+            wrapper.isDragging = true;
             wrapper.mapDraggingEnabled = wrapper.parentMap.dragging.enabled();
 
             wrapper.parentMap.dragging.disable();
+
+            wrapper.invokeRef("OnDraggingStarted", toSwNeCorners(bounds));
             wrapper.parentMap.on("mousemove", wrapper._mapMouseMove);
         },
 
-        _mouseUpOnDrag: function () {
-            wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
-            if (wrapper.mapDraggingEnabled) {
-                wrapper.parentMap.dragging.enable();
-            }
-        },
+        //_mouseUpOnDrag: function () {
+        //    wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
 
-        _mouseOutOnDrag: function () {
-            wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
-            if (wrapper.mapDraggingEnabled) {
-                wrapper.parentMap.dragging.enable();
-            }
-        },
+        //    if (wrapper.isDragging) {
+        //        let bounds = wrapper.rectangle.getBounds();
+        //        wrapper.isDragging = false;
+        //        wrapper.invokeRef("OnDraggingEnded", toSwNeCorners(bounds));
+        //    }
+
+        //    if (wrapper.mapDraggingEnabled) {
+        //        wrapper.parentMap.dragging.enable();
+        //    }
+        //},
+
+        //_mouseOutOnDrag: function () {
+        //    wrapper._finishDragging()
+        //},
 
         _mapMouseMove: function (e) {
             let bounds = wrapper.rectangle.getBounds();
@@ -223,6 +222,21 @@ function createRectangleWrapper(rectangleId, rectangle, map, netRef, enableLoggi
             );
 
             wrapper.rectangle.setBounds(newBounds);
+            wrapper.invokeRef("OnDragging", toSwNeCorners(newBounds));
+        },
+
+        _finishDragging: function () {
+            wrapper.parentMap.off("mousemove", wrapper._mapMouseMove);
+
+            if (wrapper.isDragging) {
+                let bounds = wrapper.rectangle.getBounds();
+                wrapper.isDragging = false;
+                wrapper.invokeRef("OnDraggingEnded", toSwNeCorners(bounds));
+            }
+
+            if (wrapper.mapDraggingEnabled) {
+                wrapper.parentMap.dragging.enable();
+            }
         }
     };
 
@@ -255,4 +269,17 @@ function toLatLngBounds(netBounds) {
         L.latLng(netBounds.north, netBounds.east),
     );
     return latLngBounds;
+}
+
+function toSwNeCorners(bounds) {
+    return [
+        {
+            latitude: bounds.getSouth(),
+            longitude: bounds.getWest()
+        },
+        {
+            latitude: bounds.getNorth(),
+            longitude: bounds.getEast()
+        }
+    ];
 }
