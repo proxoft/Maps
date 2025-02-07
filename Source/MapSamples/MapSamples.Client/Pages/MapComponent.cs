@@ -3,7 +3,7 @@ using Proxoft.Maps.Core.Api.Factories;
 
 namespace Proxoft.Maps.MapSamples.Client.Pages;
 
-public class MapComponent : ComponentBase, IDisposable
+public abstract class MapComponent : ComponentBase, IDisposable
 {
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
@@ -28,8 +28,7 @@ public class MapComponent : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
+        this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 }

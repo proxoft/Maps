@@ -1,0 +1,112 @@
+﻿@page "/Rectangle"
+@using Proxoft.Maps.Core.Api.Shapes.Rectangles
+
+<h3>Rectangle</h3>
+
+<div>
+    <div class="default-map-container" @ref="MapHost">
+    </div>
+</div>
+
+<div>
+    <button @onclick=@(() => this.TogglePosition())>Toggle position</button>
+    <button @onclick=@(() => this.ToggleCenter())>Toggle center</button>
+    Draggable <input type="checkbox" @bind="this.Draggable" />
+</div>
+
+@code {
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+    private IRectangle _rectangle = NoRectangle.Instance;
+    private bool _positionToggle = true;
+    private bool _centerToggle = true;
+    private bool _draggable = false;
+
+    private LatLngBounds _position1 = LatLngBounds.FromCorners(
+            new LatLng { Latitude = 51.50m, Longitude = -0.07m },
+            new LatLng { Latitude = 51.48m, Longitude = -0.05m }
+        );
+
+    private LatLngBounds _position2 = LatLngBounds.FromCorners(
+        new LatLng { Latitude = 51.52m, Longitude = -0.09m },
+        new LatLng { Latitude = 51.46m, Longitude = -0.04m }
+    );
+
+    private ElementReference MapHost { get; set; }
+
+    private bool Draggable
+    {
+        get => _draggable;
+        set
+        {
+            _draggable = value;
+            _rectangle.SetDraggable(_draggable);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
+        MapOptions mapOptions = new MapOptions
+            {
+                Center = new LatLng { Latitude = 51.49m, Longitude = -0.06m },
+                Zoom = 12,
+            // TraceJs = true
+            };
+
+        this.MapFactory.Initialize(mapOptions, this.MapHost)
+            .Do(map =>
+            {
+                _map = map;
+                this.CreateRectangle();
+            })
+            .Subscribe(
+                _ => { },
+                ex => Console.WriteLine(ex.Message)
+            );
+    }
+
+    private void CreateRectangle()
+    {
+        LatLngBounds bounds = LatLngBounds.FromCorners(
+            new LatLng { Latitude = 51.50m, Longitude = -0.07m },
+            new LatLng { Latitude = 51.48m, Longitude = -0.05m }
+        );
+
+        RectangleOptions options = new()
+        {
+            Bounds = bounds,
+            Draggable = _draggable,
+            TraceJs = true,
+            Style = new()
+            {
+                Color = "#ff7800",
+                Weight = 1,
+                FillOpacity = 0.5m,
+            },
+        };
+
+        _rectangle = _map.AddRectangle(options);
+    }
+
+    private void TogglePosition()
+    {
+        LatLngBounds bounds = _positionToggle ? _position2 : _position1;
+        _positionToggle = !_positionToggle;
+
+        _rectangle.SetBounds(bounds);
+    }
+
+    private void ToggleCenter()
+    {
+        LatLng center = _centerToggle ? _position2.Center : _position1.Center;
+        _centerToggle = !_centerToggle;
+
+        _rectangle.SetCenter(center);
+    }
+}

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Net.Http.Headers;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Shapes.Circles;
 using Proxoft.Maps.Core.Api.Shapes.Polygones;
 using Proxoft.Maps.Core.Api.Shapes.Polylines;
+using Proxoft.Maps.Core.Api.Shapes.Rectangles;
 
 namespace Proxoft.Maps.Core.Api.Maps;
 
@@ -18,6 +19,7 @@ public abstract class Map : ApiObject, IMap
     private readonly List<Polygon> _polygons = [];
     private readonly List<Polyline> _polylines = [];
     private readonly List<Circle> _circles = [];
+    private readonly List<Rectangle> _rectangles = [];
 
     protected Map(
         string mapId,
@@ -57,6 +59,18 @@ public abstract class Map : ApiObject, IMap
         return LatLngBounds.FromCorners(corners[0], corners[1]);
     }
 
+    public void SetDraggable(bool draggable)
+    {
+        Console.WriteLine("SetDraggable");
+        this.InvokeVoidJs("SetDraggable", draggable);
+    }
+
+    public bool IsDraggable()
+    {
+        bool isDraggable = this.InvokeJs<bool>("IsDraggable");
+        return isDraggable;
+    }
+
     public IMarker AddMarker(MarkerOptions options)
     {
         Marker marker = _mapObjectsFactory.CreateMarker(this.OnMarkerRemove);
@@ -90,6 +104,14 @@ public abstract class Map : ApiObject, IMap
         return circle;
     }
 
+    public IRectangle AddRectangle(RectangleOptions options)
+    {
+        Rectangle rectangle = _mapObjectsFactory.CreateRectangle(this.OnRectangleRemove);
+        _rectangles.Add(rectangle);
+        rectangle.AddToMap(this.Id, options);
+        return rectangle;
+    }
+
     public void Initialize(MapOptions options, ElementReference hostElement)
     {
         this.InvokeVoidJs("InitializeMapOnElement", [options, hostElement, _mapJsCallback.DotNetRef]);
@@ -103,6 +125,7 @@ public abstract class Map : ApiObject, IMap
         _polygons.DisposeAll();
         _polylines.DisposeAll();
         _circles.DisposeAll();
+        _rectangles.DisposeAll();
     }
 
     protected override void Dispose(bool disposing)
@@ -138,4 +161,11 @@ public abstract class Map : ApiObject, IMap
         int i = _circles.FindIndex(c => c.Id == circleId);
         _circles.RemoveAt(i);
     }
+
+    private void OnRectangleRemove(string rectangleId)
+    {
+        int i = _rectangles.FindIndex(c => c.Id == rectangleId);
+        _rectangles.RemoveAt(i);
+    }
 }
+;
