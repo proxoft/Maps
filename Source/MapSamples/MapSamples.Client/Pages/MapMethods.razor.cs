@@ -100,17 +100,6 @@ public partial class MapMethods
         _map.FitBounds(bounds);
     }
 
-    private void UpdateDraggable()
-    {
-        _map.SetDraggable(_draggable);
-    }
-
-    private void AddLog(string logMessage)
-    {
-        this.MapLog.Add(logMessage);
-        this.StateHasChanged();
-    }
-
     protected override void Dispose(bool disposing)
     {
         if (disposing)

@@ -10,7 +10,7 @@
 
 <button @onclick="ClearLogClick">Clear log</button>
 <div class="default-map-event-log">
-    @foreach (var l in MapLog.Reverse<string>())
+    @foreach (var l in this.Log)
     {
         <span>@l</span><br />
     }
@@ -51,8 +51,6 @@
         };
 
     ElementReference MapHost { get; set; }
-
-    private List<string> MapLog { get; set; } = new();
 
     private bool Draggable {
         get => _draggable;
@@ -173,13 +171,7 @@
 
     private void ClearLogClick()
     {
-        this.MapLog.Clear();
-    }
-
-    private void AddLog(string logMessage)
-    {
-        this.MapLog.Add(logMessage);
-        this.StateHasChanged();
+        this.Log.Clear();
     }
 
     protected override void Dispose(bool disposing)

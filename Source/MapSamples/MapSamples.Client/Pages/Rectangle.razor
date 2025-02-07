@@ -14,6 +14,15 @@
     Draggable <input type="checkbox" @bind="this.Draggable" />
 </div>
 
+<div class="default-map-event-log">
+    @foreach (var l in this.Log)
+    {
+        <span>@l</span>
+
+        <br />
+    }
+</div>
+
 @code {
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
     private IRectangle _rectangle = NoRectangle.Instance;
@@ -92,6 +101,14 @@
         };
 
         _rectangle = _map.AddRectangle(options);
+        _rectangle
+            .OnEvent
+            .OfType<RectangleDragEvent>()
+            .Do(e =>
+            {
+                this.AddLog($"{e.GetType().Name}");
+            })
+            .Subscribe();
     }
 
     private void TogglePosition()

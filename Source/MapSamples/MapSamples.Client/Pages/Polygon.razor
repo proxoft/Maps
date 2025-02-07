@@ -14,7 +14,7 @@
     <button @onclick=@(() => this.RemovePolygon(_polygon))>Remove polygon 1</button>
     <button @onclick=@(() => this.RemovePolygon(_polygon2))>Remove polygon 2</button>
     <button @onclick=@(() => this.ChangeColor())>Change color of polygon 2</button>
-    <button @onclick=@(() => this.ChangeLatLngs())>Change lat lngs of polygone</button>
+    <button @onclick=@(() => this.ChangeLatLngs())>Change lat lngs of polygon</button>
     <button @onclick=this.ChangeCssClassOfPolygon2>Toggle class name</button>
 </div>
 
@@ -24,7 +24,7 @@
     <button @onclick="ClearLogClick">Clear log</button>
     <br/>
     <div class="map-event-log">
-        @foreach (var l in MapLog.Reverse<string>())
+        @foreach (var l in Log)
         {
             <span>@l</span>
 
@@ -38,8 +38,6 @@
     private IPolygon _polygon = NoPolygon.Instance;
     private IPolygon _polygon2 = NoPolygon.Instance;
     private bool _polygon1ClassToggle;
-
-    private List<string> MapLog { get; set; } = new();
 
     private ElementReference MapHost { get; set; }
 
@@ -67,12 +65,6 @@
                 _map = map;
                 CreatePolygons();
             });
-    }
-
-    private void AddLog(string logMessage)
-    {
-        this.MapLog.Add(logMessage);
-        this.StateHasChanged();
     }
 
     private void RemovePolygon(IPolygon polygon)
@@ -136,7 +128,7 @@
 
     private void ClearLogClick()
     {
-        this.MapLog.Clear();
+        this.Log.Clear();
     }
 
     private void OnPolygonClick(IPolygon polygon)

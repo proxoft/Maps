@@ -1,50 +1,29 @@
 ﻿namespace Proxoft.Maps.Core.Api;
 
-public class MouseClickEvent : Event<LatLng>
+public class MouseClickEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseClickEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseDoubleClickEvent : Event<LatLng>
+public class MouseDoubleClickEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseDoubleClickEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseDownEvent : Event<LatLng>
+public class MouseDownEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseDownEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseUpEvent : Event<LatLng>
+public class MouseUpEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseUpEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseEnterEvent : Event<LatLng>
+public class MouseEnterEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseEnterEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseMoveEvent : Event<LatLng>
+public class MouseMoveEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseMoveEvent(LatLng value) : base(value)
-    {
-    }
 }
 
-public class MouseLeaveEvent : Event<LatLng>
+public class MouseLeaveEvent(LatLng value) : Event<LatLng>(value)
 {
-    public MouseLeaveEvent(LatLng value) : base(value)
-    {
-    }
 }

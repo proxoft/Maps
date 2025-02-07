@@ -8,6 +8,8 @@ public abstract class MapComponent : ComponentBase, IDisposable
     [Inject]
     public IMapFactory MapFactory { get; set; } = null!;
 
+    protected List<string> Log { get; set; } = [];
+
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
@@ -20,6 +22,12 @@ public abstract class MapComponent : ComponentBase, IDisposable
 
     protected virtual void OnAfterFirstRender()
     {
+    }
+
+    protected void AddLog(string logMessage)
+    {
+        this.Log.Add(logMessage);
+        this.StateHasChanged();
     }
 
     protected virtual void Dispose(bool disposing)
