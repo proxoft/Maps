@@ -24,6 +24,7 @@
         <span>Address</span><br />
         @Address.Street <br />
         @Address.StreetNumber<br />
+        <span>conscription number: </span> @Address.ConscriptionNumber<br />
         @Address.City <br />
         @Address.Zip <br />
         @Address.Country <br />
@@ -100,11 +101,8 @@
     {
         this.Result = await this.Geocoder.Geocode(this.Search);
 
-        if (this.Result is Right<ErrorStatus, Address> right)
-        {
-            var addr = (Address)right;
-            _map.FitBounds(LatLngBounds.FromPosition(addr.LatLng));
-        }
+        this.Result
+            .Do(address => _map.FitBounds(LatLngBounds.FromPosition(address.LatLng)));
 
         this.StateHasChanged();
     }

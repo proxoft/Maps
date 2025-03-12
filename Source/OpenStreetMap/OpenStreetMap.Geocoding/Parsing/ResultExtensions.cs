@@ -5,18 +5,17 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 internal static class ResultExtensions
 {
-    public static Core.Abstractions.Geocoding.Address ToAddress(this Result result)
-    {
-        return new Core.Abstractions.Geocoding.Address
+    public static Core.Abstractions.Geocoding.Address ToAddress(this Result result) =>
+        new()
         {
             Country = result.address.ToCountry(),
             City = result.address.ToCity(),
             Street = result.address.road ?? "",
             StreetNumber = result.address.ToStreetNumber(),
+            ConscriptionNumber = result.address.ToConscriptionNumber(),
             Zip = result.address.postcode ?? "",
             LatLng = result.ToLatLng()
         };
-    }
 
     private static Core.Abstractions.Models.LatLng ToLatLng(this Result result)
     {
@@ -42,15 +41,35 @@ internal static class ResultExtensions
     {
         return address.village
             ?? address.town
+            ?? address.city
             ?? address.city_district
             ?? address.municipality
             ?? "";
     }
 
-    private static string ToStreetNumber(this AddressDetail address)
+    private static string ToConscriptionNumber(this AddressDetail address)
     {
-        return address.house_number
+        string text = address.house_number
             ?? address.house_name
             ?? "";
+
+        return text.Split('/', 2) switch
+        {
+            [string conscriptionNumber, _] => conscriptionNumber,
+            _ => text
+        };
+    }
+
+    private static string ToStreetNumber(this AddressDetail address)
+    {
+        string text = address.house_number
+            ?? address.house_name
+            ?? "";
+
+        return text.Split('/', 2) switch
+        {
+            [string _, string number] => number,
+            _ => text
+        };
     }
 }

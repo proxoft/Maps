@@ -90,7 +90,7 @@ public class GoogleGeocoder : IGeocoder
             Country = country,
             City = city,
             Street = street,
-            RegisterNumber = registerNumber,
+            ConscriptionNumber = registerNumber,
             StreetNumber = streetNumber,
             Zip = zip,
             LatLng = new Core.Abstractions.Models.LatLng
