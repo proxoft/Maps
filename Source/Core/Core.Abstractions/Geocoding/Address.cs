@@ -12,7 +12,7 @@ public record Address
 
     public string Street { get; init; } = "";
 
-    public string RegisterNumber { get; init; } = "";
+    public string ConscriptionNumber { get; init; } = "";
 
     public string StreetNumber { get; init; } = "";
 
