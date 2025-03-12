@@ -42,6 +42,7 @@ internal static class ResultExtensions
     {
         return address.village
             ?? address.town
+            ?? address.city
             ?? address.city_district
             ?? address.municipality
             ?? "";
