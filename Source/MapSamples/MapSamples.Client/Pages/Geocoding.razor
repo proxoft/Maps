@@ -44,7 +44,7 @@
     Lng: <span>@LatLng.Longitude</span>
 </div>
 
-<div class="map-container" @ref="MapHost"></div>
+<div class="default-map-container" @ref="MapHost"></div>
 
 @code {
     [Inject]
@@ -74,14 +74,14 @@
         if (firstRender)
         {
             _map = await this.MapFactory.Initialize(new MapOptions
-            {
-                Center = new LatLng
                 {
-                    Latitude = 48.569m,
-                    Longitude = 18.569m
-                },
-                Zoom = 9
-            }, this.MapHost);
+                    Center = new LatLng
+                    {
+                        Latitude = 48.569m,
+                        Longitude = 18.569m
+                    },
+                    Zoom = 9
+                }, this.MapHost);
 
             _map.OnClick()
                 .Select(latLng =>
@@ -89,11 +89,14 @@
                     return this.Geocoder.Geocode(latLng.Latitude, latLng.Longitude).ToObservable();
                 })
                 .Concat()
-                .Subscribe(result =>
-                {
-                    this.Result = result;
-                    this.StateHasChanged();
-                });
+                .Subscribe(
+                    result =>
+                    {
+                        this.Result = result;
+                        this.StateHasChanged();
+                    },
+                    e => Console.WriteLine(e.Message)
+                );
         }
     }
 

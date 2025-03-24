@@ -35,6 +35,7 @@ public class MapFactory(
                 OsmMapObjectsFactory mapObjectsFactory = new(_idFactory, modules);
                 Map map = mapObjectsFactory.CreateMap(options, hostElement);
                 return map;
-            });
+            })
+            .Take(1);
     }
 }

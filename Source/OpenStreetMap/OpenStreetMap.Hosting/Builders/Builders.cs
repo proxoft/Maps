@@ -7,6 +7,7 @@ using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Maps;
 using Proxoft.Maps.Core.Api.Factories;
+using Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 

@@ -1,6 +1,6 @@
 ﻿using Proxoft.Maps.OpenStreetMap.Geocoding.Models;
 
-namespace Proxoft.Maps.OpenStreetMap.Geocoding;
+namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 public interface IOsmResultParser
 {

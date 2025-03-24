@@ -1,0 +1,77 @@
+﻿@page "/StreetGeocoding"
+@using Proxoft.Maps.Core.Abstractions.Geocoding
+
+<h3>StreetGeocoding</h3>
+
+<div>
+    <input @bind="this.SearchExpression"
+           @bind:after="this.Search" />
+    <button @onclick="@this.Search">Search</button>
+</div>
+
+<div class="default-map-container" @ref="MapHost"></div>
+
+@code {
+    private IMarker[] _markers = [];
+    private IPolyline[] _lines = [];
+
+    [Inject]
+    IGeocoder Geocoder { get; set; } = null!;
+
+    private ElementReference MapHost { get; set; }
+
+    private string SearchExpression { get; set; } = "bystricky rad zvolen";
+
+    private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
+
+    protected override void OnAfterFirstRender()
+    {
+        base.OnAfterFirstRender();
+
+        this.MapFactory.Initialize(new MapOptions
+            {
+                Center = new LatLng
+                {
+                    Latitude = 48.569m,
+                    Longitude = 18.569m
+                },
+                Zoom = 9
+            }, this.MapHost)
+        .Do(map => _map = map)
+        .Subscribe();
+    }
+
+    private async Task Search()
+    {
+        foreach(IPolyline l  in _lines)
+        {
+            l.Remove();
+        }
+
+        _lines = [];
+
+        Either<ErrorStatus, StreetGeometry> either = await this.Geocoder.GeocodeStreet(this.SearchExpression);
+
+        either
+            .Do(
+                street => this.AddStreetMarkers(street.Lines),
+                e => { }
+            );
+    }
+
+    private void AddStreetMarkers(StreetLine[] lines)
+    {
+        _lines = [
+            ..lines
+                .Select(l => PolylineOptions.SingleLine(l.Nodes, new Style()))
+                .Select(options => _map.AddPolyline(options))
+        ];
+
+        LatLngBounds bounds = LatLngBounds.FromPositions([.. lines.SelectMany(l => l.Nodes)]);
+        if(bounds == LatLngBounds.Empty)
+        {
+            return;
+        }
+        _map.FitBounds(bounds);
+    }
+}

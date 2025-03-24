@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Proxoft.Maps.OpenStreetMap.Common;
-using Proxoft.Maps.OpenStreetMap.Geocoding;
+using Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders
 {

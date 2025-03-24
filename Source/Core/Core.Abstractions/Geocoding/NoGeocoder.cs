@@ -24,4 +24,13 @@ public class NoGeocoder : IGeocoder
 
     public Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
         => Task.FromResult<Either<ErrorStatus, Address>>(ErrorStatus.UnknownError);
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location) =>
+        Task.FromResult<Either<ErrorStatus, StreetGeometry>>(ErrorStatus.UnknownError);
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName) =>
+        Task.FromResult<Either<ErrorStatus, StreetGeometry>>(ErrorStatus.UnknownError);
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(decimal latitude, decimal longitude) =>
+        Task.FromResult<Either<ErrorStatus, StreetGeometry>>(ErrorStatus.UnknownError);
 }
