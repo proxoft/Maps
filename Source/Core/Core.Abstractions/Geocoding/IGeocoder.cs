@@ -18,6 +18,4 @@ public interface IGeocoder
     Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location);
 
     Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName);
-
-    Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(decimal latitude, decimal longitude);
 }

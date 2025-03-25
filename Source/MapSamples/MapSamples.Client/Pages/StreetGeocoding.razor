@@ -63,11 +63,11 @@
     {
         _lines = [
             ..lines
-                .Select(l => PolylineOptions.SingleLine(l.Nodes, new Style()))
+                .Select(l => PolylineOptions.SingleLine(l.Points, new Style()))
                 .Select(options => _map.AddPolyline(options))
         ];
 
-        LatLngBounds bounds = LatLngBounds.FromPositions([.. lines.SelectMany(l => l.Nodes)]);
+        LatLngBounds bounds = LatLngBounds.FromPositions([.. lines.SelectMany(l => l.Points)]);
         if(bounds == LatLngBounds.Empty)
         {
             return;

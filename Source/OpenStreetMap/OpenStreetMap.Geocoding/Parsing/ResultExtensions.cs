@@ -5,7 +5,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 internal static class ResultExtensions
 {
-    public static Core.Abstractions.Geocoding.Address ToAddress(this Result result) =>
+    public static Core.Abstractions.Geocoding.Address ToAddress(this GeocodeResult result) =>
         new()
         {
             Country = result.address.ToCountry(),
@@ -17,7 +17,7 @@ internal static class ResultExtensions
             LatLng = result.ToLatLng()
         };
 
-    private static Core.Abstractions.Models.LatLng ToLatLng(this Result result)
+    private static Core.Abstractions.Models.LatLng ToLatLng(this GeocodeResult result)
     {
         if(!decimal.TryParse(result.lat, NumberStyles.Any, CultureInfo.InvariantCulture, out var lat)
             || !decimal.TryParse(result.lon, NumberStyles.Any, CultureInfo.InvariantCulture, out var lng))

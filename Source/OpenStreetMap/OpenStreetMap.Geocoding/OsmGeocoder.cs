@@ -15,10 +15,10 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding;
 
 public sealed class OsmGeocoder : IGeocoder, IDisposable
 {
+    private readonly ConsoleLogger _logger;
     private readonly OpenStreetMapOptions _options;
     private readonly IOsmResultParser _parser;
     private readonly string _geocodeParameters;
-    private readonly string _streetGeometryParameters;
 
     private readonly HttpClient _http = new()
     {
@@ -27,13 +27,14 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
     {
-        _options = options;
+        Console.WriteLine($"OsmGeocoder logging to exceptions: {options.ConsoleLogExceptions}");
+        Console.WriteLine($"OsmGeocoder tracing to console: {options.ConsoleTraceLogGeocoder}");
 
-        Console.WriteLine($"Logging to console: {_options.ConsoleLogExceptions}");
+        _logger = new ConsoleLogger(options.ConsoleTraceLogGeocoder, options.ConsoleLogExceptions);
+        _options = options;
 
         _parser = parser;
         _geocodeParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
-        _streetGeometryParameters = $"osmtype=W&format=json";
     }
 
     public ApiStatus Status => ApiStatus.Available;
@@ -45,7 +46,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
             string path = $"search?{_geocodeParameters}&q={location}";
             this.ConsoleLog($"searching: {path}");
 
-            Result[]? response = await _http.GetFromJsonAsync<Result[]>(path);
+            GeocodeResult[]? response = await _http.GetFromJsonAsync<GeocodeResult[]>(path);
 
             return response is null
                 ? ErrorStatus.UnknownError
@@ -66,7 +67,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
             string path = $"search?{_geocodeParameters}&{searchParameters}";
             this.ConsoleLog($"searching: {path}");
 
-            Result[]? response = await _http.GetFromJsonAsync<Result[]>(path);
+            GeocodeResult[]? response = await _http.GetFromJsonAsync<GeocodeResult[]>(path);
             var maybe = response is null
                 ? ErrorStatus.UnknownError
                 : this.ParseResults(response);
@@ -90,7 +91,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
             string path = FormattableString.Invariant($"reverse?{_geocodeParameters}&lat={latitude}&lon={longitude}");
             this.ConsoleLog($"searching: {path}");
 
-            Result? response = await _http.GetFromJsonAsync<Result>(path);
+            GeocodeResult? response = await _http.GetFromJsonAsync<GeocodeResult>(path);
             return response is null
                 ? ErrorStatus.UnknownError
                 : this.ParseResult(response);
@@ -104,40 +105,16 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location)
     {
-        Result[] response = [];
-        try
-        {
-            response = await _http.GetFromJsonAsync<Result[]>($"search?{_streetGeometryParameters}&q={location}") ?? [];
-        }
-        catch (Exception ex)
-        {
-            this.ConsoleLogException(ex);
-            return ErrorStatus.UnknownError;
-        }
-
-        Task<StreetLine>[] tasks = [
-            ..response
-                .Where(r => r.place_rank == 26 || r.place_rank == 27)
-                .Select(r => r.osm_id)
-                .Select(osmId => _http.FindStreetCoordinates(osmId, this.ConsoleLogException))
-        ];
-
-        StreetLine[] lines = await Task.WhenAll(tasks);
-
-        return new StreetGeometry()
-        {
-            Lines = lines
-        };
+        GeocodeResult[] geocodeResults = [.. await _http.GeocodeStreet(location, _logger)];
+        Either<ErrorStatus, StreetGeometry> either =await this.FindStreetGeometry(geocodeResults);
+        return either;
     }
 
-    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName)
+    public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(decimal latitude, decimal longitude)
-    {
-        throw new NotImplementedException();
+        GeocodeResult[] geocodeResults = [.. await _http.GeocodeStreet(new AddressSearch { City = city, Street = streetName }, _logger)];
+        Either<ErrorStatus, StreetGeometry> either = await this.FindStreetGeometry(geocodeResults);
+        return either;
     }
 
     public void Dispose()
@@ -145,12 +122,26 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         _http.Dispose();
     }
 
-    private Either<ErrorStatus, Address> ParseResults(Result[] results) =>
+    private async Task<Either<ErrorStatus, StreetGeometry>> FindStreetGeometry(GeocodeResult[] geocodeResults)
+    {
+        Task<StreetResult>[] t = [
+           ..geocodeResults
+                .Where(r => r.place_rank is 26 or 27)
+                .Select(r => r.osm_id)
+                .Select(osmId => _http.GetStreetDetail(osmId, _logger))
+       ];
+
+        StreetResult[] streetResults = await Task.WhenAll(t);
+        Either<ErrorStatus, StreetGeometry> either = _parser.Parse(streetResults);
+        return either;
+    }
+
+    private Either<ErrorStatus, Address> ParseResults(GeocodeResult[] results) =>
         results.Length == 0
         ? ErrorStatus.ZeroResults
         : this.ParseResult(results[0]);
 
-    private Either<ErrorStatus, Address> ParseResult(Result result)
+    private Either<ErrorStatus, Address> ParseResult(GeocodeResult result)
     {
         try
         {
@@ -200,44 +191,90 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     }
 }
 
-file static class HttpExtensions
+file class AddressSearch
+{
+    public string? City { get; set; }
+
+    public string? Street { get; set; }
+
+    public string? StreetNumber { get; set; }
+
+    public string? Country { get; set; }
+}
+
+file static class StreetGeometryOperators
 {
     private const string _streetGeometryParameters = $"osmtype=W&format=json&polygon_geojson=1";
 
-    public static async Task<StreetLine> FindStreetCoordinates(
+    public static Task<GeocodeResult[]> GeocodeStreet(
+        this HttpClient http,
+        string location,
+        ConsoleLogger logger) =>
+        http.GetFrom<GeocodeResult[]>($"search?{_streetGeometryParameters}&q={location}", () => [], logger);
+
+    public static Task<GeocodeResult[]> GeocodeStreet(
+        this HttpClient http,
+        AddressSearch addressSearch,
+        ConsoleLogger logger)
+    {
+        string[] parameters = [_streetGeometryParameters, .. addressSearch.ToSearchParameters()];
+        string sp = string.Join("&", parameters);
+        return http.GetFrom<GeocodeResult[]>($"search?{sp}", () => [], logger);
+    }
+
+    public static async Task<StreetResult> GetStreetDetail(
         this HttpClient http,
         long osmId,
-        Action<Exception> exceptionLog)
+       ConsoleLogger logger)
     {
-        try
-        {
-            string path = $"details?{_streetGeometryParameters}&osmid={osmId}";
-            StreetResult result = await http.GetFromJsonAsync<StreetResult>(path) ?? new();
-
-            LatLng[] latLngs = [..
-                result.geometry.coordinates
-                .Select(c => new LatLng() { Longitude = c[0], Latitude = c[1] })
-            ];
-
-            return new StreetLine(latLngs);
-        }
-        catch (Exception ex)
-        {
-            exceptionLog(ex);
-            return StreetLine.Empty;
-        }
+        string path = $"details?{_streetGeometryParameters}&osmid={osmId}";
+        StreetResult result = await http.GetFrom<StreetResult>(path, () => new(), logger);
+        return result;
     }
 }
 
-file static class ParsingExtensions
+file static class HttpExtensions
 {
-    public static StreetGeometry Parse(this StreetResult street) =>
-        new()
+    public static async Task<T> GetFrom<T>(
+        this HttpClient http,
+        string queryPath,
+        Func<T> fallback,
+        ConsoleLogger logger)
+    {
+        logger.LogMessage($"querying: {queryPath}");
+
+        try
         {
-            Coordinates = [..
-                street.geometry.coordinates
-                   .Select(c => new LatLng() { Longitude = c[0], Latitude = c[1] })
-            ]
-        };
-    
+            T response = await http.GetFromJsonAsync<T>(queryPath) ?? fallback();
+            return response;
+        }
+        catch (Exception ex)
+        {
+            logger.LogException(ex, "Error GetFrom:");
+            return fallback();
+        }
+    }
+
+    public static IEnumerable<string> ToSearchParameters(this AddressSearch search)
+    {
+        if (!string.IsNullOrWhiteSpace(search.City))
+        {
+            yield return $"city={search.City}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(search.Street) || !string.IsNullOrWhiteSpace(search.StreetNumber))
+        {
+            string?[] parts = [
+                search.Street,
+                search.StreetNumber
+            ];
+
+            yield return $"street={string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)))}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(search.Country))
+        {
+            yield return $"country={search.Country}";
+        }
+    }
 }

@@ -6,5 +6,7 @@ public class OpenStreetMapOptions
 
     public string Language { get; set; } = "en";
 
-    public bool ConsoleLogExceptions { get; set; }
+    public bool ConsoleLogExceptions { get; set; } = true;
+
+    public bool ConsoleTraceLogGeocoder { get; set; } = false;
 }
