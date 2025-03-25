@@ -9,10 +9,21 @@
     <button @onclick="@this.Search">Search</button>
 </div>
 
+<div>
+    <input @bind="this.SearchStreet"
+           @bind:after="this.SearchByCityAndStreet" />
+
+    <input @bind="this.SearchCity"
+           @bind:after="this.SearchByCityAndStreet" />
+
+    <button @onclick="@this.SearchByCityAndStreet">Search</button>
+</div>
+
 <div class="default-map-container" @ref="MapHost"></div>
 
 @code {
-    private IMarker[] _markers = [];
+    
+
     private IPolyline[] _lines = [];
 
     [Inject]
@@ -21,6 +32,8 @@
     private ElementReference MapHost { get; set; }
 
     private string SearchExpression { get; set; } = "bystricky rad zvolen";
+    private string SearchStreet { get; set; } = "jozefa kozaceka";
+    private string SearchCity { get; set; } = "zvolen";
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
@@ -43,28 +56,51 @@
 
     private async Task Search()
     {
-        foreach(IPolyline l  in _lines)
-        {
-            l.Remove();
-        }
-
-        _lines = [];
+        this.ClearLines();
 
         Either<ErrorStatus, StreetGeometry> either = await this.Geocoder.GeocodeStreet(this.SearchExpression);
 
         either
             .Do(
-                street => this.AddStreetMarkers(street.Lines),
+                street => this.AddStreetLines(street.Lines),
                 e => { }
             );
     }
 
-    private void AddStreetMarkers(StreetLine[] lines)
+    private async Task SearchByCityAndStreet()
     {
+        this.ClearLines();
+
+        Either<ErrorStatus, StreetGeometry> either = await this.Geocoder.GeocodeStreet(this.SearchCity, this.SearchStreet);
+
+        either
+            .Do(
+                street => this.AddStreetLines(street.Lines),
+                e => { }
+            );
+    }
+
+    private void ClearLines()
+    {
+        foreach (IPolyline l in _lines)
+        {
+            l.Remove();
+        }
+
+        _lines = [];
+    }
+
+    private void AddStreetLines(StreetLine[] lines)
+    {
+        Style lineStyle = new()
+        {
+            Fill = false
+        };
+
         _lines = [
             ..lines
-                .Select(l => PolylineOptions.SingleLine(l.Points, new Style()))
-                .Select(options => _map.AddPolyline(options))
+            .Select(l => PolylineOptions.SingleLine(l.Points, lineStyle))
+            .Select(options => _map.AddPolyline(options))
         ];
 
         LatLngBounds bounds = LatLngBounds.FromPositions([.. lines.SelectMany(l => l.Points)]);
