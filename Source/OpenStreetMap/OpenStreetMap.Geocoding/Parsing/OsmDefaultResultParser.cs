@@ -8,6 +8,24 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 public class OsmDefaultResultParser : IOsmResultParser
 {
+    public Either<ErrorStatus, Address> Parse(GeocodeResult[] result)
+    {
+        if(result.Length == 0)
+        {
+            return ErrorStatus.ZeroResults;
+        }
+
+        try
+        {
+            GeocodeResult geocodeResult = result.OrderByDescending(r => r.place_rank).First();
+            return geocodeResult.ToAddress();
+        }
+        catch
+        {
+            return ErrorStatus.UnknownError;
+        }
+    }
+
     public Address Parse(GeocodeResult result)
         => result.ToAddress();
 

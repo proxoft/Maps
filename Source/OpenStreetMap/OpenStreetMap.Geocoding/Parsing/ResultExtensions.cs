@@ -1,11 +1,13 @@
 ﻿using System.Globalization;
+using Proxoft.Maps.Core.Abstractions.Geocoding;
+using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.OpenStreetMap.Geocoding.Models;
 
 namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 internal static class ResultExtensions
 {
-    public static Core.Abstractions.Geocoding.Address ToAddress(this GeocodeResult result) =>
+    public static Address ToAddress(this GeocodeResult result) =>
         new()
         {
             Country = result.address.ToCountry(),
@@ -17,15 +19,15 @@ internal static class ResultExtensions
             LatLng = result.ToLatLng()
         };
 
-    private static Core.Abstractions.Models.LatLng ToLatLng(this GeocodeResult result)
+    private static LatLng ToLatLng(this GeocodeResult result)
     {
         if(!decimal.TryParse(result.lat, NumberStyles.Any, CultureInfo.InvariantCulture, out var lat)
             || !decimal.TryParse(result.lon, NumberStyles.Any, CultureInfo.InvariantCulture, out var lng))
         {
-            return Core.Abstractions.Models.LatLng.None;
+            return LatLng.None;
         }
 
-        return new Core.Abstractions.Models.LatLng
+        return new LatLng
         {
             Latitude = lat,
             Longitude = lng

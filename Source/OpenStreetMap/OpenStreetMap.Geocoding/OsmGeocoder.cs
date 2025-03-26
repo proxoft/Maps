@@ -16,7 +16,6 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding;
 public sealed class OsmGeocoder : IGeocoder, IDisposable
 {
     private readonly ConsoleLogger _logger;
-    private readonly OpenStreetMapOptions _options;
     private readonly IOsmResultParser _parser;
     private readonly string _geocodeParameters;
 
@@ -31,7 +30,6 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         Console.WriteLine($"OsmGeocoder tracing to console: {options.ConsoleTraceLogGeocoder}");
 
         _logger = new ConsoleLogger(options.ConsoleTraceLogGeocoder, options.ConsoleLogExceptions);
-        _options = options;
 
         _parser = parser;
         _geocodeParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
@@ -41,44 +39,26 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public async Task<Either<ErrorStatus, Address>> Geocode(string location)
     {
-        try
-        {
-            string path = $"search?{_geocodeParameters}&q={location}";
-            this.ConsoleLog($"searching: {path}");
-
-            GeocodeResult[]? response = await _http.GetFromJsonAsync<GeocodeResult[]>(path);
-
-            return response is null
-                ? ErrorStatus.UnknownError
-                : this.ParseResults(response);
-        }
-        catch(Exception ex)
-        {
-            this.ConsoleLogException(ex);
-            return ErrorStatus.UnknownError;
-        }
+        string path = $"search?{_geocodeParameters}&q={location}";
+        GeocodeResult[] results = await _http.GetFrom<GeocodeResult[]>(path, () => [], _logger);
+        return _parser.Parse(results);
     }
 
     public async Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streetNumber = null, string? country = null)
     {
-        var searchParameters = string.Join("&", SearchParameters(city, street, streetNumber, country));
-        try
+        AddressSearch addressSearch = new()
         {
-            string path = $"search?{_geocodeParameters}&{searchParameters}";
-            this.ConsoleLog($"searching: {path}");
+            City = city,
+            Street = street,
+            StreetNumber = streetNumber,
+            Country = country
+        };
 
-            GeocodeResult[]? response = await _http.GetFromJsonAsync<GeocodeResult[]>(path);
-            var maybe = response is null
-                ? ErrorStatus.UnknownError
-                : this.ParseResults(response);
+        var searchParameters = string.Join("&", addressSearch.ToSearchParameters());
+        string path = $"search?{_geocodeParameters}&{searchParameters}";
 
-            return maybe;
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex);
-            return ErrorStatus.UnknownError;
-        }
+        GeocodeResult[] results = await _http.GetFrom<GeocodeResult[]>(path, () => [], _logger);
+        return _parser.Parse(results);
     }
 
     public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
@@ -86,21 +66,10 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public async Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
     {
-        try
-        {
-            string path = FormattableString.Invariant($"reverse?{_geocodeParameters}&lat={latitude}&lon={longitude}");
-            this.ConsoleLog($"searching: {path}");
-
-            GeocodeResult? response = await _http.GetFromJsonAsync<GeocodeResult>(path);
-            return response is null
-                ? ErrorStatus.UnknownError
-                : this.ParseResult(response);
-        }
-        catch(Exception ex)
-        {
-            this.ConsoleLogException(ex);
-            return ErrorStatus.UnknownError;
-        }
+        string path = FormattableString.Invariant($"reverse?{_geocodeParameters}&lat={latitude}&lon={longitude}");
+        GeocodeResult? result = await _http.GetFrom<GeocodeResult?>(path, () => null, _logger);
+        GeocodeResult[] results = result is null ? [] : [result];
+        return _parser.Parse(results);
     }
 
     public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location)
@@ -135,72 +104,19 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         Either<ErrorStatus, StreetGeometry> either = _parser.Parse(streetResults);
         return either;
     }
-
-    private Either<ErrorStatus, Address> ParseResults(GeocodeResult[] results) =>
-        results.Length == 0
-        ? ErrorStatus.ZeroResults
-        : this.ParseResult(results[0]);
-
-    private Either<ErrorStatus, Address> ParseResult(GeocodeResult result)
-    {
-        try
-        {
-            var address = _parser.Parse(result);
-            return address;
-        }
-        catch (Exception ex)
-        {
-            this.ConsoleLogException(ex);
-            return ErrorStatus.UnknownError;
-        }
-    }
-
-    private static IEnumerable<string> SearchParameters(string city, string? street, string? streetNumber, string? country)
-    {
-        yield return $"city={city}";
-
-        if (!string.IsNullOrWhiteSpace(street) || !string.IsNullOrWhiteSpace(streetNumber))
-        {
-            yield return $"street={streetNumber} {street}";
-        }
-
-        if (!string.IsNullOrWhiteSpace(country))
-        {
-            yield return $"country={country}";
-        }
-    }
-
-    private void ConsoleLog(string message)
-    {
-        if (!_options.ConsoleLogExceptions)
-        {
-            return;
-        }
-
-        Console.WriteLine(message);
-    }
-
-    private void ConsoleLogException(Exception exception)
-    {
-        if (!_options.ConsoleLogExceptions)
-        {
-            return;
-        }
-
-        Console.WriteLine(exception);
-    }
 }
 
-file class AddressSearch
+file record AddressSearch
 {
-    public string? City { get; set; }
+    public string? City { get; init; }
 
-    public string? Street { get; set; }
+    public string? Street { get; init; }
 
-    public string? StreetNumber { get; set; }
+    public string? StreetNumber { get; init; }
 
-    public string? Country { get; set; }
+    public string? Country { get; init; }
 }
+
 
 file static class StreetGeometryOperators
 {
