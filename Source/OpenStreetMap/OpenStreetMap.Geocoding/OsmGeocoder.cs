@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.Core.Abstractions.Models;
@@ -17,7 +19,8 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 {
     private readonly ConsoleLogger _logger;
     private readonly IOsmResultParser _parser;
-    private readonly string _geocodeParameters;
+
+    private readonly string _language;
 
     private readonly HttpClient _http = new()
     {
@@ -32,15 +35,14 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         _logger = new ConsoleLogger(options.ConsoleTraceLogGeocoder, options.ConsoleLogExceptions);
 
         _parser = parser;
-        _geocodeParameters = $"addressdetails=1&format=json&limit=1&accept-language={options.Language}";
+        _language = options.Language;
     }
 
     public ApiStatus Status => ApiStatus.Available;
 
     public async Task<Either<ErrorStatus, Address>> Geocode(string location)
     {
-        string path = $"search?{_geocodeParameters}&q={location}";
-        GeocodeResult[] results = await _http.GetFrom<GeocodeResult[]>(path, () => [], _logger);
+        GeocodeResult[] results = await _http.Geocode(location, _language, _logger);
         return _parser.Parse(results);
     }
 
@@ -54,10 +56,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
             Country = country
         };
 
-        var searchParameters = string.Join("&", addressSearch.ToSearchParameters());
-        string path = $"search?{_geocodeParameters}&{searchParameters}";
-
-        GeocodeResult[] results = await _http.GetFrom<GeocodeResult[]>(path, () => [], _logger);
+        GeocodeResult[] results = await _http.Geocode(addressSearch, _language, _logger);
         return _parser.Parse(results);
     }
 
@@ -66,9 +65,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public async Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
     {
-        string path = FormattableString.Invariant($"reverse?{_geocodeParameters}&lat={latitude}&lon={longitude}");
-        GeocodeResult? result = await _http.GetFrom<GeocodeResult?>(path, () => null, _logger);
-        GeocodeResult[] results = result is null ? [] : [result];
+        GeocodeResult[] results = await _http.Geocode(latitude, longitude, _language, _logger); 
         return _parser.Parse(results);
     }
 
@@ -120,33 +117,107 @@ file record AddressSearch
 
 file static class StreetGeometryOperators
 {
-    private const string _streetGeometryParameters = $"osmtype=W&format=json&polygon_geojson=1";
+    private static readonly string[] _streetGeometryParameters = [
+        "osmtype=W",
+        "format=json",
+        "polygon_geojson=1"
+    ];
 
     public static Task<GeocodeResult[]> GeocodeStreet(
         this HttpClient http,
         string location,
-        ConsoleLogger logger) =>
-        http.GetFrom<GeocodeResult[]>($"search?{_streetGeometryParameters}&q={location}", () => [], logger);
+        ConsoleLogger logger)
+    {
+        string path = "search".ToQueryPath(
+            [
+                .._streetGeometryParameters,
+                $"q={location}"
+            ]
+        );
+
+        return http.GetFrom<GeocodeResult[]>(path, () => [], logger);
+    }
 
     public static Task<GeocodeResult[]> GeocodeStreet(
         this HttpClient http,
         AddressSearch addressSearch,
         ConsoleLogger logger)
     {
-        string[] parameters = [_streetGeometryParameters, .. addressSearch.ToSearchParameters()];
-        string sp = string.Join("&", parameters);
-        return http.GetFrom<GeocodeResult[]>($"search?{sp}", () => [], logger);
+        string[] parameters = [
+            .._streetGeometryParameters,
+            .. addressSearch.ToSearchParameters()
+        ];
+
+        string path = "search".ToQueryPath(parameters);
+        return http.GetFrom<GeocodeResult[]>(path, () => [], logger);
     }
 
     public static async Task<StreetResult> GetStreetDetail(
         this HttpClient http,
         long osmId,
-       ConsoleLogger logger)
+        ConsoleLogger logger)
     {
-        string path = $"details?{_streetGeometryParameters}&osmid={osmId}";
+        string path ="details".ToQueryPath(
+            [
+            .._streetGeometryParameters,
+            $"osmid={osmId}"
+            ]
+        );
+
         StreetResult result = await http.GetFrom<StreetResult>(path, () => new(), logger);
         return result;
     }
+}
+
+file static class GeocodingOperators
+{
+    private static readonly string[] _geocodeParameters = [
+        "addressdetails=1",
+        "format=json"
+    ];
+
+    public static Task<GeocodeResult[]> Geocode(this HttpClient http, string location, string language, ConsoleLogger logger)
+    {
+        string[] parameters = [
+            .._geocodeParameters,
+            .. language.AcceptLanguage(),
+            $"q={location}"
+        ];
+
+        string path = "search".ToQueryPath(parameters);
+        return http.GetFrom<GeocodeResult[]>(path, () => [], logger);
+    }
+
+    public static Task<GeocodeResult[]> Geocode(this HttpClient http, AddressSearch addressSearch, string language, ConsoleLogger logger)
+    {
+        string[] parameters = [
+            .._geocodeParameters,
+            ..addressSearch.ToSearchParameters(),
+            ..language.AcceptLanguage(),
+        ];
+
+        string path = "search".ToQueryPath(parameters);
+        return http.GetFrom<GeocodeResult[]>(path, () => [], logger);
+    }
+
+    public static async Task<GeocodeResult[]> Geocode(this HttpClient http, decimal latitude, decimal longitude, string language, ConsoleLogger logger)
+    {
+        string[] parameters = [
+            .. _geocodeParameters,
+            ..language.AcceptLanguage(),
+            $"lat={latitude.ToString(CultureInfo.InvariantCulture)}",
+            $"lon={longitude.ToString(CultureInfo.InvariantCulture)}"
+        ];
+
+        string path = "reverse".ToQueryPath(parameters);
+        GeocodeResult? result =  await http.GetFrom<GeocodeResult?>(path, () => null, logger);
+        return result is null
+            ? []
+            : [result];
+    }
+
+    private static IEnumerable<string> AcceptLanguage(this string language) =>
+        string.IsNullOrEmpty(language) ? [] : [$"accept-language={language}"];
 }
 
 file static class HttpExtensions
@@ -171,6 +242,10 @@ file static class HttpExtensions
         }
     }
 
+
+    public static string ToQueryPath(this string path, IEnumerable<string> parameters) =>
+        $"{path}?{parameters.ToQueryParameters()}";
+
     public static IEnumerable<string> ToSearchParameters(this AddressSearch search)
     {
         if (!string.IsNullOrWhiteSpace(search.City))
@@ -193,4 +268,7 @@ file static class HttpExtensions
             yield return $"country={search.Country}";
         }
     }
+
+    private static string ToQueryParameters(this IEnumerable<string> items) =>
+        string.Join("&", items);
 }

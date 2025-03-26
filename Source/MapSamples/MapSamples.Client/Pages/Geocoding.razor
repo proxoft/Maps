@@ -10,8 +10,10 @@
 <h3>Geocoding</h3>
 
 <div>
-    <input @bind-value="Search" />
-    <button @onclick="async () => await this.OnSearchClick()">Search</button>
+    <input @bind="this.SearchExpression"
+           @bind:after="this.Search" />
+
+    <button @onclick="this.Search">Search</button>
 </div>
 
 <div>
@@ -23,15 +25,17 @@
     {
         <span>Address</span><br />
         @Address.Street <br />
+        @Address.ConscriptionNumber
+        <span> | </span>
         @Address.StreetNumber<br />
-        <span>conscription number: </span> @Address.ConscriptionNumber<br />
         @Address.City <br />
         @Address.Zip <br />
         @Address.Country <br />
         <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
     }
-
 </div>
+
+<br />
 
 <div>
     City: <input @bind-value="City" /> <br />
@@ -54,7 +58,7 @@
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
-    private string Search { get; set; } = "Banska Bystrica";
+    private string SearchExpression { get; set; } = "Banska Bystrica";
 
     private string City { get; set; } = "";
     private string Street { get; set; } = "";
@@ -100,9 +104,9 @@
         }
     }
 
-    private async Task OnSearchClick()
+    private async Task Search()
     {
-        this.Result = await this.Geocoder.Geocode(this.Search);
+        this.Result = await this.Geocoder.Geocode(this.SearchExpression);
 
         this.Result
             .Do(address => _map.FitBounds(LatLngBounds.FromPosition(address.LatLng)));
