@@ -115,4 +115,19 @@ public class GoogleGeocoder : IGeocoder
     {
         throw new NotImplementedException();
     }
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(decimal latitude, decimal longitude)
+    {
+        throw new NotImplementedException();
+    }
 }

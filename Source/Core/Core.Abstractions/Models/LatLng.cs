@@ -7,4 +7,11 @@ public record LatLng
     public decimal Latitude { get; init; }
 
     public decimal Longitude { get; init; }
+
+    public static LatLng From(decimal lat, decimal lng) =>
+        new()
+        {
+            Latitude = lat,
+            Longitude = lng,
+        };
 }

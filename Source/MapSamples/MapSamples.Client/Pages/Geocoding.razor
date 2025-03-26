@@ -10,8 +10,10 @@
 <h3>Geocoding</h3>
 
 <div>
-    <input @bind-value="Search" />
-    <button @onclick="async () => await this.OnSearchClick()">Search</button>
+    <input @bind="this.SearchExpression"
+           @bind:after="this.Search" />
+
+    <button @onclick="this.Search">Search</button>
 </div>
 
 <div>
@@ -23,15 +25,17 @@
     {
         <span>Address</span><br />
         @Address.Street <br />
+        @Address.ConscriptionNumber
+        <span> | </span>
         @Address.StreetNumber<br />
-        <span>conscription number: </span> @Address.ConscriptionNumber<br />
         @Address.City <br />
         @Address.Zip <br />
         @Address.Country <br />
         <span>@Address.LatLng.Latitude</span> <span>@Address.LatLng.Longitude</span>
     }
-
 </div>
+
+<br />
 
 <div>
     City: <input @bind-value="City" /> <br />
@@ -44,7 +48,7 @@
     Lng: <span>@LatLng.Longitude</span>
 </div>
 
-<div class="map-container" @ref="MapHost"></div>
+<div class="default-map-container" @ref="MapHost"></div>
 
 @code {
     [Inject]
@@ -52,9 +56,10 @@
 
     private ElementReference MapHost { get; set; }
 
+    private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
-    private string Search { get; set; } = "Banska Bystrica";
+    private string SearchExpression { get; set; } = "Banska Bystrica";
 
     private string City { get; set; } = "";
     private string Street { get; set; } = "";
@@ -74,14 +79,14 @@
         if (firstRender)
         {
             _map = await this.MapFactory.Initialize(new MapOptions
-            {
-                Center = new LatLng
                 {
-                    Latitude = 48.569m,
-                    Longitude = 18.569m
-                },
-                Zoom = 9
-            }, this.MapHost);
+                    Center = new LatLng
+                    {
+                        Latitude = 48.569m,
+                        Longitude = 18.569m
+                    },
+                    Zoom = 9
+                }, this.MapHost);
 
             _map.OnClick()
                 .Select(latLng =>
@@ -89,32 +94,57 @@
                     return this.Geocoder.Geocode(latLng.Latitude, latLng.Longitude).ToObservable();
                 })
                 .Concat()
-                .Subscribe(result =>
-                {
-                    this.Result = result;
-                    this.StateHasChanged();
-                });
+                .Subscribe(
+                    result =>
+                    {
+                        this.Result = result;
+                        this.StateHasChanged();
+                    },
+                    e => Console.WriteLine(e.Message)
+                );
         }
     }
 
-    private async Task OnSearchClick()
+    private async Task Search()
     {
-        this.Result = await this.Geocoder.Geocode(this.Search);
+        this.Result = await this.Geocoder.Geocode(this.SearchExpression);
 
         this.Result
-            .Do(address => _map.FitBounds(LatLngBounds.FromPosition(address.LatLng)));
+            .Do(address => this.UpdateMarker(address.LatLng));
 
         this.StateHasChanged();
     }
 
     private async Task OnSearchLatLngClick()
     {
-        var either = await this.Geocoder.Geocode(this.City, street: this.Street, streetNumber: this.StreetNumber);
+        var either = await this.Geocoder.Geocode(this.City,
+            street: this.Street,
+            streetNumber: this.StreetNumber,
+            country: "slovakia"
+        );
 
-        this.LatLng = either
-            .Map(l => l.LatLng)
-            .Reduce(_ => new LatLng());
+        either.Do(a =>
+            {
+                this.UpdateMarker(a.LatLng);
+            },
+            _ => { }
+        );
 
+        this.Result = either;
         this.StateHasChanged();
+    }
+
+    private void UpdateMarker(LatLng position)
+    {
+        if (_marker == Proxoft.Maps.Core.Api.NoMarker.Instance)
+        {
+            _marker = _map.AddMarker(new MarkerOptions
+                {
+                    Draggable = false,
+                });
+        }
+
+        _marker.SetPosition(position);
+        _map.FitBounds(LatLngBounds.FromPosition(position));
     }
 }

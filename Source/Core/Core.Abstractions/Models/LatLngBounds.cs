@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Proxoft.Maps.Core.Abstractions.Models;
 
@@ -44,6 +45,31 @@ public record LatLngBounds
             North= position.Latitude,
             South= position.Latitude,
         };
+
+    public static LatLngBounds FromPositions(params LatLng[] positions)
+    {
+        if(positions.Length == 0)
+        {
+            return LatLngBounds.Empty;
+        }
+
+        decimal north = positions.Select(l => l.Latitude).Max();
+        decimal south = positions.Select(l => l.Latitude).Min();
+        decimal east = positions.Select(l => l.Longitude).Max();
+        decimal west = positions.Select(l => l.Longitude).Min();
+
+        return LatLngBounds.FromCorners(new LatLng()
+            {
+                Latitude = north,
+                Longitude = west,
+            },
+            new LatLng()
+            {
+                Latitude = south,
+                Longitude = east,
+            }
+        );
+    }
 
     public static LatLngBounds FromCorners(LatLng corner1, LatLng corner2)
     {

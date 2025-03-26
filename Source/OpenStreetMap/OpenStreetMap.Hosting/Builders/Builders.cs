@@ -7,6 +7,7 @@ using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Maps;
 using Proxoft.Maps.Core.Api.Factories;
+using Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 
@@ -44,14 +45,16 @@ internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime
         string resourcePath = section["ResourcePath"] ?? "/openStreetMap";
         string language = section["Language"] ?? "en";
         _ = bool.TryParse(section["ConsoleLogExceptions"], out var consoleLog);
+        _ = bool.TryParse(section["ConsoleTraceLogGeocoder"], out var traceGeocoder);
 
         return ((IOpenStreetMapOptionsBuilder)this).Configure(
             () => new OpenStreetMapOptions
                 {
                     ResourcePath = resourcePath,
                     Language = language,
-                    ConsoleLogExceptions = consoleLog
-                }
+                    ConsoleLogExceptions = consoleLog,
+                    ConsoleTraceLogGeocoder = traceGeocoder
+            }
         );
     }
 
