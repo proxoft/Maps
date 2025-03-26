@@ -4,9 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Web;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.OpenStreetMap.Common;
@@ -118,7 +116,6 @@ file record AddressSearch
 
     public string? Country { get; init; }
 }
-
 
 file static class StreetGeometryOperators
 {
