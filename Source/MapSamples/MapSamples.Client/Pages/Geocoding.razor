@@ -56,6 +56,7 @@
 
     private ElementReference MapHost { get; set; }
 
+    private IMarker _marker = Proxoft.Maps.Core.Api.NoMarker.Instance;
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
     private string SearchExpression { get; set; } = "Banska Bystrica";
@@ -109,19 +110,41 @@
         this.Result = await this.Geocoder.Geocode(this.SearchExpression);
 
         this.Result
-            .Do(address => _map.FitBounds(LatLngBounds.FromPosition(address.LatLng)));
+            .Do(address => this.UpdateMarker(address.LatLng));
 
         this.StateHasChanged();
     }
 
     private async Task OnSearchLatLngClick()
     {
-        var either = await this.Geocoder.Geocode(this.City, street: this.Street, streetNumber: this.StreetNumber);
+        var either = await this.Geocoder.Geocode(this.City,
+            street: this.Street,
+            streetNumber: this.StreetNumber,
+            country: "slovakia"
+        );
 
-        this.LatLng = either
-            .Map(l => l.LatLng)
-            .Reduce(_ => new LatLng());
+        either.Do(a =>
+            {
+                this.UpdateMarker(a.LatLng);
+            },
+            _ => { }
+        );
 
+        this.Result = either;
         this.StateHasChanged();
+    }
+
+    private void UpdateMarker(LatLng position)
+    {
+        if (_marker == Proxoft.Maps.Core.Api.NoMarker.Instance)
+        {
+            _marker = _map.AddMarker(new MarkerOptions
+                {
+                    Draggable = false,
+                });
+        }
+
+        _marker.SetPosition(position);
+        _map.FitBounds(LatLngBounds.FromPosition(position));
     }
 }

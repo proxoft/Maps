@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Web;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.Core.Abstractions.Models;
 using Proxoft.Maps.OpenStreetMap.Common;
@@ -57,6 +58,10 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         };
 
         GeocodeResult[] results = await _http.Geocode(addressSearch, _language, _logger);
+        foreach (GeocodeResult result in results)
+        {
+            Console.WriteLine(result);
+        }
         return _parser.Parse(results);
     }
 
@@ -131,7 +136,7 @@ file static class StreetGeometryOperators
         string path = "search".ToQueryPath(
             [
                 .._streetGeometryParameters,
-                $"q={location}"
+                $"q={Uri.EscapeDataString(location)}"
             ]
         );
 
@@ -181,7 +186,7 @@ file static class GeocodingOperators
         string[] parameters = [
             .._geocodeParameters,
             .. language.AcceptLanguage(),
-            $"q={location}"
+            $"q={Uri.EscapeDataString(location)}"
         ];
 
         string path = "search".ToQueryPath(parameters);
@@ -250,7 +255,7 @@ file static class HttpExtensions
     {
         if (!string.IsNullOrWhiteSpace(search.City))
         {
-            yield return $"city={search.City}";
+            yield return $"city={Uri.EscapeDataString(search.City)}";
         }
 
         if (!string.IsNullOrWhiteSpace(search.Street) || !string.IsNullOrWhiteSpace(search.StreetNumber))
@@ -260,7 +265,7 @@ file static class HttpExtensions
                 search.StreetNumber
             ];
 
-            yield return $"street={string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)))}";
+            yield return $"street={Uri.EscapeDataString(string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s))))}";
         }
 
         if (!string.IsNullOrWhiteSpace(search.Country))
