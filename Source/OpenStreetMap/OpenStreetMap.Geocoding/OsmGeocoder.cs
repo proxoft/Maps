@@ -56,10 +56,6 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         };
 
         GeocodeResult[] results = await _http.Geocode(addressSearch, _language, _logger);
-        foreach (GeocodeResult result in results)
-        {
-            Console.WriteLine(result);
-        }
         return _parser.Parse(results);
     }
 
