@@ -6,9 +6,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 public interface IOsmResultParser
 {
-    Either<ErrorStatus, Address> Parse(GeocodeResult[] result);
-
-    Address Parse(GeocodeResult result);
+    Either<ErrorStatus, Address> ParseAddress(params GeocodeResult[] result);
 
     Either<ErrorStatus, StreetGeometry> Parse(StreetResult[] streetResults);
 }

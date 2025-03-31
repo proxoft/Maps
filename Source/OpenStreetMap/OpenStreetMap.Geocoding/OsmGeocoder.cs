@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.Core.Abstractions.Models;
@@ -42,7 +43,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     public async Task<Either<ErrorStatus, Address>> Geocode(string location)
     {
         GeocodeResult[] results = await _http.Geocode(location, _language, _logger);
-        return _parser.Parse(results);
+        return _parser.ParseAddress(results);
     }
 
     public async Task<Either<ErrorStatus, Address>> Geocode(string city, string? street = null, string? streetNumber = null, string? country = null)
@@ -56,7 +57,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
         };
 
         GeocodeResult[] results = await _http.Geocode(addressSearch, _language, _logger);
-        return _parser.Parse(results);
+        return _parser.ParseAddress(results);
     }
 
     public Task<Either<ErrorStatus, Address>> Geocode(LatLng latLng)
@@ -65,7 +66,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     public async Task<Either<ErrorStatus, Address>> Geocode(decimal latitude, decimal longitude)
     {
         GeocodeResult[] results = await _http.Geocode(latitude, longitude, _language, _logger); 
-        return _parser.Parse(results);
+        return _parser.ParseAddress(results);
     }
 
     public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location)
@@ -231,6 +232,8 @@ file static class HttpExtensions
         try
         {
             T response = await http.GetFromJsonAsync<T>(queryPath) ?? fallback();
+            logger.LogMessage(JsonSerializer.Serialize(response));
+
             return response;
         }
         catch (Exception ex)
