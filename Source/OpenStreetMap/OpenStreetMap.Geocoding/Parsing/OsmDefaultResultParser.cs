@@ -8,7 +8,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 public class OsmDefaultResultParser : IOsmResultParser
 {
-    public Either<ErrorStatus, Address> Parse(GeocodeResult[] result)
+    public Either<ErrorStatus, Address> ParseAddress(params GeocodeResult[] result)
     {
         if(result.Length == 0)
         {
@@ -26,8 +26,8 @@ public class OsmDefaultResultParser : IOsmResultParser
         }
     }
 
-    public Address Parse(GeocodeResult result)
-        => result.ToAddress();
+    //public Address ParseAddress(GeocodeResult result)
+    //    => result.ToAddress();
 
     public Either<ErrorStatus, StreetGeometry> Parse(StreetResult[] streetResults)
     {
