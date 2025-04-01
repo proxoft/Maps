@@ -36,4 +36,6 @@ public interface IMap : IApiObject
     void SetDraggable(bool draggable);
 
     bool IsDraggable();
+
+    void InvalidateSize();
 }

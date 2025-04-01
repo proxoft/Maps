@@ -135,4 +135,9 @@ internal class GoogleMap : IMap
     {
         throw new NotImplementedException();
     }
+
+    public void InvalidateSize()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -84,4 +84,8 @@ public sealed class NoMap : IMap
     {
         return false;
     }
+
+    public void InvalidateSize()
+    {
+    }
 }
