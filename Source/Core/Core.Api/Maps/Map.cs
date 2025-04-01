@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using Proxoft.Maps.Core.Api.Factories;
 using Proxoft.Maps.Core.Api.Shapes.Circles;
@@ -61,7 +62,6 @@ public abstract class Map : ApiObject, IMap
 
     public void SetDraggable(bool draggable)
     {
-        Console.WriteLine("SetDraggable");
         this.InvokeVoidJs("SetDraggable", draggable);
     }
 
@@ -117,6 +117,11 @@ public abstract class Map : ApiObject, IMap
         this.InvokeVoidJs("InitializeMapOnElement", [options, hostElement, _mapJsCallback.DotNetRef]);
     }
 
+    public void InvalidateSize()
+    {
+        this.InvokeVoidJs("InvalidateSize");
+    }
+
     protected override sealed void ExecuteRemove()
     {
         this.InvokeVoidJs("Remove");
@@ -168,4 +173,3 @@ public abstract class Map : ApiObject, IMap
         _rectangles.RemoveAt(i);
     }
 }
-;

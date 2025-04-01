@@ -30,15 +30,12 @@ public partial class MapMethods
             .Do(map =>
             {
                 _map = map;
-                _draggable = _map.IsDraggable();
                 _map.OnEvent
                     .Where(e => e is not MouseMoveEvent)
                     .Subscribe(e => this.AddLog(e.Name));
             })
             .Subscribe();
     }
-
-    private bool _draggable;
 
     private decimal PanLat { get; set; } = 48.15m;
     private decimal PanLng { get; set; } = 17.6m;
@@ -98,6 +95,11 @@ public partial class MapMethods
         });
 
         _map.FitBounds(bounds);
+    }
+
+    private void InvalidateSize()
+    {
+        _map.InvalidateSize();
     }
 
     protected override void Dispose(bool disposing)

@@ -122,6 +122,13 @@ export function IsDraggable(mapId) {
     return isDraggable;
 }
 
+export function InvalidateSize(mapId) {
+    let wrapper = findMapWrapper(mapId);
+    wrapper.log(`invalidateSize >>`);
+
+    wrapper.map.invalidateSize();
+}
+
 export function findMapWrapper(mapId) {
     let i = mapWrappers.findIndex(me => me.mapId == mapId);
     return i === -1
