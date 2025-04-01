@@ -7,7 +7,12 @@
     <input @bind="this.SearchExpression"
            @bind:after="this.Search" />
 
-    <button @onclick="@this.Search">Search</button>
+    <button @onclick="@this.Search" disabled="@this.Searching">Search</button>
+
+    @if (this.SearchingForExpression)
+    {
+        <span>..searching</span>
+    }
 </div>
 
 <div>
@@ -17,14 +22,17 @@
     <input @bind="this.SearchCity"
            @bind:after="this.SearchByCityAndStreet" />
 
-    <button @onclick="@this.SearchByCityAndStreet">Search</button>
+    <button @onclick="@this.SearchByCityAndStreet" disabled="@this.Searching">Search</button>
+
+    @if (this.SearchingForStreetAndCity)
+    {
+        <span>..searching</span>
+    }
 </div>
 
 <div class="default-map-container" @ref="MapHost"></div>
 
 @code {
-    
-
     private IPolyline[] _lines = [];
 
     [Inject]
@@ -33,8 +41,12 @@
     private ElementReference MapHost { get; set; }
 
     private string SearchExpression { get; set; } = "bystricky rad zvolen";
-    private string SearchStreet { get; set; } = "jozefa kozaceka";
-    private string SearchCity { get; set; } = "zvolen";
+    private bool SearchingForExpression { get; set; }
+    private string SearchStreet { get; set; } = "ruzinovska";
+    private string SearchCity { get; set; } = "bratislava";
+    private bool SearchingForStreetAndCity { get; set; }
+
+    private bool Searching => this.SearchingForExpression || this.SearchingForStreetAndCity;
 
     private IMap _map = Proxoft.Maps.Core.Api.NoMap.Instance;
 
@@ -57,9 +69,20 @@
 
     private async Task Search()
     {
+        if (this.Searching)
+        {
+            return;
+        }
+
+        this.SearchingForExpression = true;
+        this.StateHasChanged();
+
         this.ClearLines();
 
         Either<ErrorStatus, StreetGeometry> either = await this.Geocoder.GeocodeStreet(this.SearchExpression);
+
+        this.SearchingForExpression = false;
+        this.StateHasChanged();
 
         either
             .Do(
@@ -70,9 +93,20 @@
 
     private async Task SearchByCityAndStreet()
     {
+        if (this.Searching)
+        {
+            return;
+        }
+
+        this.SearchingForStreetAndCity = true;
+        this.StateHasChanged();
+
         this.ClearLines();
 
         Either<ErrorStatus, StreetGeometry> either = await this.Geocoder.GeocodeStreet(this.SearchCity, this.SearchStreet);
+
+        this.SearchingForStreetAndCity = false;
+        this.StateHasChanged();
 
         either
             .Do(

@@ -9,4 +9,6 @@ public class OpenStreetMapOptions
     public bool ConsoleLogExceptions { get; set; } = true;
 
     public bool ConsoleTraceLogGeocoder { get; set; } = false;
+
+    public int StreetGeometryMaxIterations { get; set; } = 8;
 }

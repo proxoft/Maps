@@ -8,5 +8,7 @@ public interface IOsmResultParser
 {
     Either<ErrorStatus, Address> ParseAddress(params GeocodeResult[] result);
 
-    Either<ErrorStatus, StreetGeometry> Parse(StreetResult[] streetResults);
+    Either<ErrorStatus, StreetGeometry> Parse(params GeocodeResult[] results);
+
+    // Either<ErrorStatus, StreetGeometry> Parse(StreetResult[] streetResults);
 }

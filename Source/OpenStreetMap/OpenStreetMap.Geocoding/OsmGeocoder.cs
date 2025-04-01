@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Proxoft.Maps.Core.Abstractions.Geocoding;
@@ -19,6 +20,11 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 {
     private readonly ConsoleLogger _logger;
     private readonly IOsmResultParser _parser;
+
+    private const int _streetSearchLimitMin = 1;
+    private const int _streetSearchLimitMax = 20;
+
+    private readonly int _streetSearchLimit;
 
     private readonly string _language;
 
@@ -36,6 +42,7 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
         _parser = parser;
         _language = options.Language;
+        _streetSearchLimit = Math.Max(_streetSearchLimitMin, Math.Min(_streetSearchLimitMax, options.StreetGeometryMaxIterations)); // ensure the number to be between 1 and 20
     }
 
     public ApiStatus Status => ApiStatus.Available;
@@ -71,35 +78,46 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
 
     public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string location)
     {
-        GeocodeResult[] geocodeResults = [.. await _http.GeocodeStreet(location, _logger)];
-        Either<ErrorStatus, StreetGeometry> either =await this.FindStreetGeometry(geocodeResults);
+        Either<ErrorStatus, StreetGeometry> either = await this.Geocode(location)
+            .Map(address => this.GeocodeStreet(address.City, address.Street));
+
         return either;
     }
 
     public async Task<Either<ErrorStatus, StreetGeometry>> GeocodeStreet(string city, string streetName)
     {
-        GeocodeResult[] geocodeResults = [.. await _http.GeocodeStreet(new AddressSearch { City = city, Street = streetName }, _logger)];
-        Either<ErrorStatus, StreetGeometry> either = await this.FindStreetGeometry(geocodeResults);
+        if (string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(streetName))
+        {
+            return ErrorStatus.ZeroResults;
+        }
+
+        GeocodeResult[] geocodeResults = [];
+        int iteration = 0;
+        do
+        {
+            iteration++;
+            _logger.LogMessage($"GeocodeStreet {iteration}/{_streetSearchLimit}..");
+
+            long[] excludePlaceIds = [.. geocodeResults.Select(r => r.place_id)];
+            GeocodeResult[] results = [.. await _http.GeocodeStreet(new AddressSearch { City = city, Street = streetName }, excludePlaceIds, _logger)];
+            geocodeResults = [
+                ..geocodeResults,
+                ..results
+            ];
+
+            if(results.Length == 0 || iteration >= _streetSearchLimit)
+            {
+                break;
+            }
+        } while (true);
+
+        Either<ErrorStatus, StreetGeometry> either = _parser.Parse(geocodeResults);
         return either;
     }
 
     public void Dispose()
     {
         _http.Dispose();
-    }
-
-    private async Task<Either<ErrorStatus, StreetGeometry>> FindStreetGeometry(GeocodeResult[] geocodeResults)
-    {
-        Task<StreetResult>[] t = [
-           ..geocodeResults
-                .Where(r => r.place_rank is 26 or 27)
-                .Select(r => r.osm_id)
-                .Select(osmId => _http.GetStreetDetail(osmId, _logger))
-       ];
-
-        StreetResult[] streetResults = await Task.WhenAll(t);
-        Either<ErrorStatus, StreetGeometry> either = _parser.Parse(streetResults);
-        return either;
     }
 }
 
@@ -119,18 +137,21 @@ file static class StreetGeometryOperators
     private static readonly string[] _streetGeometryParameters = [
         "osmtype=W",
         "format=json",
+        "limit=40",
         "polygon_geojson=1"
     ];
 
     public static Task<GeocodeResult[]> GeocodeStreet(
         this HttpClient http,
         string location,
+        IEnumerable<long> excludePlaceIds,
         ConsoleLogger logger)
     {
         string path = "search".ToQueryPath(
             [
                 .._streetGeometryParameters,
-                $"q={Uri.EscapeDataString(location)}"
+                $"q={Uri.EscapeDataString(location)}",
+                excludePlaceIds.ToQueryParameter()
             ]
         );
 
@@ -140,31 +161,17 @@ file static class StreetGeometryOperators
     public static Task<GeocodeResult[]> GeocodeStreet(
         this HttpClient http,
         AddressSearch addressSearch,
+        IReadOnlyCollection<long> excludePlaceIds,
         ConsoleLogger logger)
     {
         string[] parameters = [
             .._streetGeometryParameters,
-            .. addressSearch.ToSearchParameters()
+            .. addressSearch.ToSearchParameters(),
+            excludePlaceIds.ToQueryParameter()
         ];
 
         string path = "search".ToQueryPath(parameters);
         return http.GetFrom<GeocodeResult[]>(path, () => [], logger);
-    }
-
-    public static async Task<StreetResult> GetStreetDetail(
-        this HttpClient http,
-        long osmId,
-        ConsoleLogger logger)
-    {
-        string path ="details".ToQueryPath(
-            [
-            .._streetGeometryParameters,
-            $"osmid={osmId}"
-            ]
-        );
-
-        StreetResult result = await http.GetFrom<StreetResult>(path, () => new(), logger);
-        return result;
     }
 }
 
@@ -172,6 +179,7 @@ file static class GeocodingOperators
 {
     private static readonly string[] _geocodeParameters = [
         "addressdetails=1",
+        "limit=1",
         "format=json"
     ];
 
@@ -231,8 +239,13 @@ file static class HttpExtensions
 
         try
         {
-            T response = await http.GetFromJsonAsync<T>(queryPath) ?? fallback();
-            logger.LogMessage(JsonSerializer.Serialize(response));
+            HttpResponseMessage message = await http.GetAsync(queryPath);
+            string content = await message.Content.ReadAsStringAsync();
+            logger.LogMessage(content);
+
+            T response = JsonSerializer.Deserialize<T>(content) ?? fallback();
+            // T response = await http.GetFromJsonAsync<T>(queryPath) ?? fallback();
+            // logger.LogMessage(JsonSerializer.Serialize(response));
 
             return response;
         }
@@ -270,6 +283,14 @@ file static class HttpExtensions
         }
     }
 
+    public static string ToQueryParameter(this IEnumerable<long> excludePlaceIds)
+    {
+        string ids = string.Join(",", excludePlaceIds);
+        return string.IsNullOrWhiteSpace(ids)
+            ? ""
+            : $"exclude_place_ids={Uri.EscapeDataString(ids)}";
+    }
+
     private static string ToQueryParameters(this IEnumerable<string> items) =>
-        string.Join("&", items);
+        string.Join("&", items.Where(i => !string.IsNullOrWhiteSpace(i)));
 }
