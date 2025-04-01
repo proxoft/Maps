@@ -26,21 +26,20 @@ public class OsmDefaultResultParser : IOsmResultParser
         }
     }
 
-    //public Address ParseAddress(GeocodeResult result)
-    //    => result.ToAddress();
-
-    public Either<ErrorStatus, StreetGeometry> Parse(StreetResult[] streetResults)
+    public Either<ErrorStatus, StreetGeometry> Parse(GeocodeResult[] results)
     {
-        if(streetResults.Length == 0)
+        if(results.Length == 0)
         {
             return ErrorStatus.ZeroResults;
         }
 
         try
         {
-            StreetLine[] lines = [..
-                streetResults
-                    .Select(r => r.geometry.coordinates.ToStreetLine())
+            StreetLine[] lines = [
+                ..results
+                    .Select(r => r.geojson)
+                    .OfType<LineGeometry>()
+                    .Select(g => g.coordinates.ToStreetLine())
             ];
 
             return new StreetGeometry()

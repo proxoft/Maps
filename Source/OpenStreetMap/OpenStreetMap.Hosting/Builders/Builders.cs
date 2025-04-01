@@ -46,6 +46,7 @@ internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime
         string language = section["Language"] ?? "en";
         _ = bool.TryParse(section["ConsoleLogExceptions"], out var consoleLog);
         _ = bool.TryParse(section["ConsoleTraceLogGeocoder"], out var traceGeocoder);
+        _ = int.TryParse(section["StreetGeometryMaxIterations"], out var streetGeometryMaxIterations);
 
         return ((IOpenStreetMapOptionsBuilder)this).Configure(
             () => new OpenStreetMapOptions
@@ -53,7 +54,8 @@ internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime
                     ResourcePath = resourcePath,
                     Language = language,
                     ConsoleLogExceptions = consoleLog,
-                    ConsoleTraceLogGeocoder = traceGeocoder
+                    ConsoleTraceLogGeocoder = traceGeocoder,
+                    StreetGeometryMaxIterations = streetGeometryMaxIterations
             }
         );
     }
