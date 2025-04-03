@@ -1,34 +1,42 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Proxoft.Maps.OpenStreetMap.Common;
 using Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
+using Proxoft.Maps.OpenStreetMap.Maps;
 
-namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders
+namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
+
+public interface IOpenStreetMapOptionsBuilder
 {
-    public interface IOpenStreetMapOptionsBuilder
-    {
-        IOpenStreetMapApiBuilder Configure(Func<OpenStreetMapOptions> factory);
-        IOpenStreetMapApiBuilder Configure(IConfiguration configuration);
-        IOpenStreetMapApiBuilder Configure(IConfiguration configuration, string sectionPath);
-        IOpenStreetMapApiBuilder Configure(IConfigurationSection configurationSection);
+    IOpenStreetMapApiBuilder Configure(Func<OpenStreetMapOptions> factory);
+    IOpenStreetMapApiBuilder Configure(IConfiguration configuration);
+    IOpenStreetMapApiBuilder Configure(IConfiguration configuration, string sectionPath);
+    IOpenStreetMapApiBuilder Configure(IConfigurationSection configurationSection);
+    IOpenStreetMapApiBuilder UseInstance(OpenStreetMapOptions options);
+}
 
-        /// <summary>
-        /// Registers as singleton regardles of chosen ServiceLifetime.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        IOpenStreetMapApiBuilder UseInstance(OpenStreetMapOptions options);
-    }
+public interface IOpenStreetMapApiBuilder
+{
+    IOpenStreetMapApiBuilder AddMaps();
 
-    public interface IGeocoderBuilder
-    {
-        IGeocoderBuilder UseParser<TParser>() where TParser : IOsmResultParser;
-    }
+    IOpenStreetMapApiBuilder AddMaps(Action<IMapBuilder> builder);
 
-    public interface IOpenStreetMapApiBuilder
-    {
-        IOpenStreetMapApiBuilder AddGeocoder();
-        IOpenStreetMapApiBuilder AddGeocoder(Action<IGeocoderBuilder> builder);
+    IOpenStreetMapApiBuilder AddGeocoder();
 
-        void Register();
-    }
+    IOpenStreetMapApiBuilder AddGeocoder(Action<IGeocoderBuilder> builder);
+
+    void Register();
+}
+
+public interface IMapBuilder
+{
+    IMapBuilder UseIdFactory<TIdFactory>() where TIdFactory : IIdFactory;
+}
+
+public interface IGeocoderBuilder
+{
+    IGeocoderBuilder UseParser<TParser>() where TParser : IOsmResultParser;
+
+    IGeocoderBuilder UseHttpClient(Action<HttpClient> configureClient);
 }

@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Proxoft.Maps.Core.Abstractions.Geocoding;
 using Proxoft.Maps.OpenStreetMap.Common;
-using Proxoft.Maps.OpenStreetMap.Geocoding;
-using Proxoft.Maps.OpenStreetMap.Maps;
-using Proxoft.Maps.Core.Api.Factories;
-using Proxoft.Maps.OpenStreetMap.Geocoding.Parsing;
 
 namespace Proxoft.Maps.OpenStreetMap.Hosting.Builders;
 
 internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime serviceLifetime) :
     IOpenStreetMapApiBuilder,
-    IOpenStreetMapOptionsBuilder,
-    IGeocoderBuilder
+    IOpenStreetMapOptionsBuilder
 {
     private readonly IServiceCollection _services = services;
     private readonly ServiceLifetime _serviceLifetime = serviceLifetime;
 
-    private readonly List<ServiceDescriptor> _serviceDescriptors = [];
+    private GeocoderBuilderBase _geocoderBuilder = NoGeocoderBuilder.Instance;
+    private MapBuilderBase _mapBuilder = NoMapBuilder.Instance;
+
     private ServiceDescriptor _optionsDescriptor = new(typeof(OpenStreetMapOptions), new OpenStreetMapOptions());
 
     IOpenStreetMapApiBuilder IOpenStreetMapOptionsBuilder.UseInstance(OpenStreetMapOptions options)
@@ -60,31 +55,36 @@ internal class OpenStreetMapBuilder(IServiceCollection services, ServiceLifetime
         );
     }
 
-    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddGeocoder()
-        => ((IOpenStreetMapApiBuilder)this).AddGeocoder(b => b.UseParser<OsmDefaultResultParser>());
-
-    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddGeocoder(Action<IGeocoderBuilder> builder)
+    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddMaps()
     {
-        _serviceDescriptors.Add(new ServiceDescriptor(typeof(IGeocoder), typeof(OsmGeocoder), _serviceLifetime));
-        builder(this);
+        _mapBuilder = new MapBuilder();
         return this;
     }
 
-    IGeocoderBuilder IGeocoderBuilder.UseParser<TParser>()
+    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddMaps(Action<IMapBuilder> builder)
     {
-        _serviceDescriptors.Add(new ServiceDescriptor(typeof(IOsmResultParser), typeof(TParser), _serviceLifetime));
+        _mapBuilder = new MapBuilder();
+        builder( _mapBuilder);
+        return this;
+    }
+
+    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddGeocoder()
+    {
+        _geocoderBuilder = new GeocoderBuilder();
+        return this;
+    }
+
+    IOpenStreetMapApiBuilder IOpenStreetMapApiBuilder.AddGeocoder(Action<IGeocoderBuilder> builder)
+    {
+        _geocoderBuilder = new GeocoderBuilder();
+        builder(_geocoderBuilder);
         return this;
     }
 
     void IOpenStreetMapApiBuilder.Register()
     {
         _services.Add(_optionsDescriptor);
-        foreach(var sd in _serviceDescriptors)
-        {
-            _services.Add(sd);
-        }
-
-        _services.Add(new ServiceDescriptor(typeof(IIdFactory), typeof(IdFactory), _serviceLifetime));
-        _services.Add(new ServiceDescriptor(typeof(IMapFactory), typeof(MapFactory), _serviceLifetime));
+        _mapBuilder.Register(_services, _serviceLifetime);
+        _geocoderBuilder.Register(_services, _serviceLifetime);
     }
 }

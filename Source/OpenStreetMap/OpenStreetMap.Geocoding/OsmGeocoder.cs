@@ -17,6 +17,7 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding;
 public sealed class OsmGeocoder : IGeocoder, IDisposable
 {
     private readonly ConsoleLogger _logger;
+    
     private readonly IOsmResultParser _parser;
 
     private const int _streetSearchLimitMin = 1;
@@ -25,19 +26,15 @@ public sealed class OsmGeocoder : IGeocoder, IDisposable
     private readonly int _streetSearchLimit;
 
     private readonly string _language;
+    private readonly HttpClient _http;
 
-    private readonly HttpClient _http = new()
-    {
-        BaseAddress= new Uri("https://nominatim.openstreetmap.org/")
-    };
-
-    public OsmGeocoder(OpenStreetMapOptions options, IOsmResultParser parser)
+    public OsmGeocoder(HttpClient httpClient, OpenStreetMapOptions options, IOsmResultParser parser)
     {
         Console.WriteLine($"OsmGeocoder logging to exceptions: {options.ConsoleLogExceptions}");
         Console.WriteLine($"OsmGeocoder tracing to console: {options.ConsoleTraceLogGeocoder}");
 
         _logger = new ConsoleLogger(options.ConsoleTraceLogGeocoder, options.ConsoleLogExceptions);
-
+        _http = httpClient;
         _parser = parser;
         _language = options.Language;
         _streetSearchLimit = Math.Max(_streetSearchLimitMin, Math.Min(_streetSearchLimitMax, options.StreetGeometryMaxIterations)); // ensure the number to be between 1 and 20

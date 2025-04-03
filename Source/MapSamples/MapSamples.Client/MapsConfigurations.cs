@@ -1,12 +1,13 @@
-﻿namespace Proxoft.MapsSamples.Client;
+﻿namespace Proxoft.Maps.MapSamples.Client;
 
 public static class MapsConfigurations
 {
     public static IServiceCollection ConfigureOpenStreetMapsServices(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddOpenStreetMaps(ServiceLifetime.Scoped)
+            .ConfigureOpenStreetMapsServices(ServiceLifetime.Scoped)
             .Configure(configuration)
+            .AddMaps()
             .AddGeocoder()
             .Register();
 
