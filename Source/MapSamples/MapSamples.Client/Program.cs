@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Proxoft.MapsSamples.Client;
+using Proxoft.Maps.MapSamples.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
