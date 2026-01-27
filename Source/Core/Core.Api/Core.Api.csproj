@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.JSInterop" Version="6.0.35" />
+        <PackageReference Include="Microsoft.AspNetCore.Components" Version="10.0.2" />
+        <PackageReference Include="Microsoft.JSInterop" Version="10.0.2" />
         <PackageReference Include="Proxoft.Optional" Version="1.2.0" />
-        <PackageReference Include="System.Reactive" Version="6.0.1" />
+        <PackageReference Include="System.Reactive" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>
