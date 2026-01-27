@@ -34,4 +34,8 @@
     <File Path="Directory.Build.props" />
     <File Path="Map.png" />
   </Folder>
+  <Folder Name="/Tests/" />
+  <Folder Name="/Tests/OpenStreetMap/">
+    <Project Path="OpenStreetMap/Geocoding.Tests/OpenStreetMap.Geocoding.Tests.csproj" />
+  </Folder>
 </Solution>
