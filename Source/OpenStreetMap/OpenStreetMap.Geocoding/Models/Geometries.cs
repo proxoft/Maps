@@ -10,7 +10,6 @@ namespace Proxoft.Maps.OpenStreetMap.Geocoding.Models;
 [JsonDerivedType(typeof(PolygonGeometry), "Polygon")]
 public class Geometry
 {
-    public string type { get; set; } = "";
 }
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member")]

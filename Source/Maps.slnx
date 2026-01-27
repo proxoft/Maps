@@ -1,0 +1,41 @@
+<Solution>
+  <Folder Name="/Core/">
+    <File Path="Core/Directory.Build.props" />
+    <Project Path="Core/Core.Abstractions/Core.Abstractions.csproj" />
+    <Project Path="Core/Core.Api/Core.Api.csproj" />
+  </Folder>
+  <Folder Name="/Google/">
+    <File Path="Google/Directory.Build.props" />
+    <Project Path="Google/Google.Common/Google.Common.csproj" />
+    <Project Path="Google/Google.Geocoding/Google.Geocoding.csproj" />
+    <Project Path="Google/Google.Maps.Hosting/Google.Maps.Hosting.csproj" />
+    <Project Path="Google/Google.Maps/Google.Maps.csproj" />
+  </Folder>
+  <Folder Name="/MapBox/">
+    <File Path="MapBox/Directory.Build.props" />
+    <Project Path="MapBox/MapBox.Common/MapBox.Common.csproj" />
+    <Project Path="MapBox/MapBox.Hosting/MapBox.Hosting.csproj" />
+    <Project Path="MapBox/MapBox.StaticMaps/MapBox.StaticMaps.csproj" />
+  </Folder>
+  <Folder Name="/OpenStreetMap/">
+    <File Path="OpenStreetMap/Directory.Build.props" />
+    <Project Path="OpenStreetMap/OpenStreetMap.Common/OpenStreetMap.Common.csproj" />
+    <Project Path="OpenStreetMap/OpenStreetMap.Geocoding/OpenStreetMap.Geocoding.csproj" />
+    <Project Path="OpenStreetMap/OpenStreetMap.Hosting/OpenStreetMap.Hosting.csproj" />
+    <Project Path="OpenStreetMap/OpenStreetMap.Maps/OpenStreetMap.Maps.csproj" />
+    <Project Path="OpenStreetMap/OpenStreetMap.StaticResources/OpenStreetMap.StaticResources.csproj" />
+  </Folder>
+  <Folder Name="/Sample/">
+    <File Path=".editorconfig" />
+    <Project Path="MapSamples/MapSamples.Client/MapSamples.Client.csproj" />
+    <Project Path="MapSamples/MapSamples/MapSamples.csproj" />
+  </Folder>
+  <Folder Name="/SolutionItems/">
+    <File Path="Directory.Build.props" />
+    <File Path="Map.png" />
+  </Folder>
+  <Folder Name="/Tests/" />
+  <Folder Name="/Tests/OpenStreetMap/">
+    <Project Path="OpenStreetMap/Geocoding.Tests/OpenStreetMap.Geocoding.Tests.csproj" />
+  </Folder>
+</Solution>

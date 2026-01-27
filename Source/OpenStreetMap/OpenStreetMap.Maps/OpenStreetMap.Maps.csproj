@@ -5,16 +5,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.35" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Core.Api\Core.Api.csproj" />
-      <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
+        <ProjectReference Include="..\..\Core\Core.Api\Core.Api.csproj" />
+        <ProjectReference Include="..\OpenStreetMap.Common\OpenStreetMap.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
+        <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>
